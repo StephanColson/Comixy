@@ -91,16 +91,16 @@ export const SERIE_DATA = [
 
 export const AUTHOR_DATA = [
     {id: 1, name: "GS"},
-    {id: 1, name: "AD"},
-    {id: 1, name: "Oliver Bowden"}
+    {id: 2, name: "AD"},
+    {id: 3, name: "Oliver Bowden"}
 ]
 export const ARTIST_DATA = [
     {id: 1, name: "GS"},
-    {id: 1, name: "AD"},
-    {id: 1, name: "Neil Edwards"}
+    {id: 2, name: "AD"},
+    {id: 3, name: "Neil Edwards"}
 ]
 export const PUBLISHER_DATA = [
     {id: 1, company: "Funimation"},
-    {id: 1, company: "Yokoso"},
-    {id: 1, company: "Titan Comics"}
+    {id: 2, company: "Yokoso"},
+    {id: 3, company: "Titan Comics"}
 ]
