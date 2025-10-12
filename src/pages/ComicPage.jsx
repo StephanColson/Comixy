@@ -3,6 +3,7 @@ import {Comics} from "../components/Comics.jsx";
 
 export function ComicPage (props) {
     const {comics, title} = props;
+    const comicSorted = [...comics].sort((a, b) => a.title.localeCompare(b.title))
 
     return (
         <>
@@ -19,7 +20,7 @@ export function ComicPage (props) {
                 </div>
 
                 <Section title="Comic List">
-                    <Comics comics={comics}/>
+                    <Comics comics={comicSorted}/>
                 </Section>
             </div>
         </>
