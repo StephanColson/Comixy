@@ -66,6 +66,26 @@ export const COMIC_DATA = [
         cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
         synopsis: "",
         genres: ["History", "Action", "Fantasy"]
+    },
+
+    {
+        id: 8,
+        title: "Bofuri vol.1",
+        price: 12.5,
+        released: 2010,
+        cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
+        synopsis: "",
+        genres: ["Comedy", "Action", "Fantasy"]
+    },
+
+    {
+        id: 9,
+        title: "Bofuri Vol.2",
+        price: 12.5,
+        released: 2011,
+        cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
+        synopsis: "",
+        genres: ["Comedy", "Action", "Fantasy"]
     }
 ]
 
