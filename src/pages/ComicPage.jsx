@@ -2,6 +2,7 @@ import {Section} from "../components/Section.jsx";
 import {Comics} from "../components/Comics.jsx";
 import {SectionCard} from "../components/SectionCard.jsx";
 import {Card, Col, Container} from "react-bootstrap";
+import {useState} from "react";
 
 function YearPublished (props) {
     const {comics, yearReleased} = props;
@@ -34,26 +35,49 @@ function YearsPublished (props){
     )
 }
 
-export function ComicPage (props) {
+function FilterTitle (props) {
+    const {filterTitle, setFilterTitle} = props;
+
+    const handleChange = (e) => {
+        setFilterTitle(e.target.value);
+    };
+
+    return(
+        <div>
+            <label>Filter Title:</label>
+            <input
+                type="text"
+                className="form-control"
+                placeholder="Search title..."
+                value={filterTitle}
+                onChange={handleChange}
+            />
+        </div>
+    )
+}
+
+export function ComicPage(props) {
     const {comics, title} = props;
-    const comicSorted = [...comics].sort((a, b) => a.title.localeCompare(b.title))
+    const [filterTitle, setFilterTile] = useState("");
+    const filteredComics = [...comics]
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .filter(c => c.title.toLowerCase().includes(filterTitle.toLowerCase()));
 
     return (
         <>
-            <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between">
                 <div className="bg-dark-subtle p-2">
                     <div className="mb-2">
                         <h2>Filters</h2>
                     </div>
 
                     <div>
-                        <label>Filter Author:</label>
-                        <input className="form-control" type="text"/>
+                        <FilterTitle filterTitle={filterTitle} setFilterTitle={setFilterTile}/>
                     </div>
                 </div>
 
                 <Section title="Comic List">
-                    <Comics comics={comicSorted}/>
+                    <Comics comics={filteredComics}/>
                 </Section>
             </div>
 
