@@ -1,6 +1,5 @@
 import {Section} from "../components/Section.jsx";
 import {Comics} from "../components/Comics.jsx";
-import {SectionCard} from "../components/SectionCard.jsx";
 import {Card, Col, Container, Form} from "react-bootstrap";
 import {useState} from "react";
 
