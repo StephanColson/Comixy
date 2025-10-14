@@ -3,12 +3,13 @@ import {SectionCard} from "./SectionCard.jsx";
 
 function Comic (props) {
     const {comic} = props;
-
     return (
         <SectionCard
             coverImg={comic.cover}
             title={comic.title}
-            price={comic.price}/>
+            price={comic.price}
+            genres={comic.genres.join(", ")}>
+        </SectionCard>
     )
 }
 

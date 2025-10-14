@@ -44,8 +44,8 @@ export function ComicPage(props) {
 
     return (
         <>
-        <div className="d-flex justify-content-between">
-                <Form className="bg-dark-subtle p-2">
+        <div className="d-flex">
+                <Form className="m-2">
                     <Form.Label>Filters:</Form.Label>
                     <Form.Control className="m-2" value={filterTitle}
                                   onChange={e => setFilterTile(e.target.value)}/>
