@@ -3,15 +3,15 @@ import {Container, Col, Row} from "react-bootstrap";
 export function Section(props){
     const {children, title} = props;
     return<>
-        <Container className="pb-3 pt-2 m-2 bg-dark-subtle">
+        <Container className="p-3 bg-dark-subtle">
                 {title && (
-                    <Row>
+                    <Row className="mb-2">
                         <Col className="text-center">
                             <h5>{title}</h5>
                         </Col>
                     </Row>
                 )}
-                <Row>
+                <Row className="g-2">
                     {children}
                 </Row>
         </Container>
