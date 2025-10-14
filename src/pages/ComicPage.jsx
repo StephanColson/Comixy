@@ -37,24 +37,28 @@ function YearsPublished (props){
 
 export function ComicPage(props) {
     const {comics, title} = props;
-    const [filterTitle, setFilterTile] = useState("");
+    const [querySearch, setQuerySearch] = useState("");
+
     const filteredComics = [...comics]
         .sort((a, b) => a.title.localeCompare(b.title))
-        .filter(c => c.title.toLowerCase().includes(filterTitle.toLowerCase()));
+        .filter(c =>
+            c.title.toLowerCase().includes(querySearch.toLowerCase()) ||
+            c.author.toLowerCase().includes(querySearch.toLowerCase()) ||
+            c.artist.toLowerCase().includes(querySearch.toLowerCase()) ||
+            c.publisher.toLowerCase().includes(querySearch.toLowerCase()) ||
+            c.price === querySearch);
 
     return (
         <>
-        <div className="d-flex">
-                <Form className="m-2">
-                    <Form.Label>Filters:</Form.Label>
-                    <Form.Control className="m-2" value={filterTitle}
-                                  onChange={e => setFilterTile(e.target.value)}/>
-                </Form>
+            <Form className="my-4 mx-5">
+                <Form.Control value={querySearch}
+                              onChange={e => setQuerySearch(e.target.value)}
+                              placeholder="Search..."/>
+            </Form>
 
-                <Section title="Comic List">
-                    <Comics comics={filteredComics}/>
-                </Section>
-        </div>
+            <Section title="Catalog">
+                <Comics comics={filteredComics}/>
+            </Section>
 
             <Section title="Comics grouped by published year">
                 <YearsPublished comics={comics}/>

@@ -5,7 +5,10 @@ export const COMIC_DATA = [
         released: 2010,
         cover: "https://cdn.kobo.com/book-images/82833312-93c9-4700-a8b2-7d327a81b83f/1200/1200/False/goblin-slayer-vol-1-light-novel-2.jpg",
         synopsis: "",
-        genres: ["Fantasy", "Action", "Dark"]
+        genres: ["Fantasy", "Action", "Dark"],
+        author: "Gob",
+        artist: "Zack Kurt",
+        publisher: "P1"
     },
 
     {
@@ -15,7 +18,10 @@ export const COMIC_DATA = [
         released: 2011,
         cover: "https://i.ebayimg.com/images/g/L0sAAOSweMtl0Fdp/s-l400.jpg",
         synopsis: "",
-        genres: ["Fantasy", "Action", "Dark"]
+        genres: ["Fantasy", "Action", "Dark"],
+        author: "Gob",
+        artist: "Slayer San",
+        publisher: "P1"
     },
 
     {
@@ -25,7 +31,10 @@ export const COMIC_DATA = [
         released: 2012,
         cover: "https://static.wikia.nocookie.net/satsuriku-no-tenshi/images/1/15/Satsuriku_no_Tenshi_vol10.jpg/revision/latest?cb=20200621220918",
         synopsis: "",
-        genres: ["Fantasy", "Action", "Dark"]
+        genres: ["Fantasy", "Action", "Dark"],
+        author: "Gob",
+        artist: "Slayer San",
+        publisher: "P1"
     },
 
     {
@@ -35,7 +44,10 @@ export const COMIC_DATA = [
         released: 2009,
         cover: "https://m.media-amazon.com/images/I/81P3I8C8zbL._UF1000,1000_QL80_.jpg",
         synopsis: "",
-        genres: ["Fantasy", "Mystery", "Dark"]
+        genres: ["Fantasy", "Mystery", "Dark"],
+        author: "Zack Hemsey",
+        artist: "Angelica",
+        publisher: "Animation Studio"
     },
 
     {
@@ -45,7 +57,10 @@ export const COMIC_DATA = [
         released: 2007,
         cover: "https://static.wikia.nocookie.net/satsuriku-no-tenshi/images/1/15/Satsuriku_no_Tenshi_vol10.jpg/revision/latest?cb=20200621220918",
         synopsis: "",
-        genres: ["Fantasy", "Mystery", "Dark"]
+        genres: ["Fantasy", "Mystery", "Dark"],
+        author: "Zack Hemsey",
+        artist: "Angelica",
+        publisher: "Animation Studio"
     },
 
     {
@@ -55,7 +70,10 @@ export const COMIC_DATA = [
         released: 2013,
         cover: "https://i.ebayimg.com/images/g/0hoAAOSwY2ZkUy7p/s-l1200.jpg",
         synopsis: "",
-        genres: ["History", "Action", "Fantasy"]
+        genres: ["History", "Action", "Fantasy"],
+        author: "Ezio Auditore",
+        artist: "Ezio Auditore",
+        publisher: "Historici Publication"
     },
 
     {
@@ -65,7 +83,10 @@ export const COMIC_DATA = [
         released: 2016,
         cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
         synopsis: "",
-        genres: ["History", "Action", "Fantasy"]
+        genres: ["History", "Action", "Fantasy"],
+        author: "Ezio Auditore",
+        artist: "Ezio Auditore",
+        publisher: "Historici Publication"
     },
 
     {
@@ -75,7 +96,10 @@ export const COMIC_DATA = [
         released: 2010,
         cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
         synopsis: "",
-        genres: ["Comedy", "Action", "Fantasy"]
+        genres: ["Comedy", "Action", "Fantasy"],
+        author: "Maple",
+        artist: "Syrup",
+        publisher: "Publication of RPG"
     },
 
     {
@@ -85,7 +109,10 @@ export const COMIC_DATA = [
         released: 2011,
         cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
         synopsis: "",
-        genres: ["Comedy", "Action", "Fantasy"]
+        genres: ["Comedy", "Action", "Fantasy"],
+        author: "Maple",
+        artist: "Syrup",
+        publisher: "Publication of RPG"
     }
 ]
 
@@ -107,20 +134,4 @@ export const SERIE_DATA = [
         title: "Assassin's Creed",
         genres: ["History", "Action", "Fantasy"]
     }
-]
-
-export const AUTHOR_DATA = [
-    {id: 1, name: "GS"},
-    {id: 2, name: "AD"},
-    {id: 3, name: "Oliver Bowden"}
-]
-export const ARTIST_DATA = [
-    {id: 1, name: "GS"},
-    {id: 2, name: "AD"},
-    {id: 3, name: "Neil Edwards"}
-]
-export const PUBLISHER_DATA = [
-    {id: 1, company: "Funimation"},
-    {id: 2, company: "Yokoso"},
-    {id: 3, company: "Titan Comics"}
 ]
