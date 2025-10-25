@@ -61,27 +61,15 @@ export function ComicPage(props) {
         return comics.filter(c => c.title.toLowerCase().includes(querySearch.toLowerCase())
             || c.author.toLowerCase().includes(querySearch.toLowerCase())
             || c.artist.toLowerCase().includes(querySearch.toLowerCase()))
-            .filter(c => !minPrice || minPrice <= c.price)
-            .filter(c => !maxPrice || c.price <= maxPrice)
+            .filter(c => !minPrice || Number(minPrice) <= c.price)
+            .filter(c => !maxPrice || c.price <= Number(maxPrice))
+            .filter(c => !numberSearch || c.bookNumber === Number(numberSearch))
+            .filter(c => !releasedYear || c.released === Number(releasedYear))
             .filter(c => c.genres.some(g => g.toLowerCase().includes(genreList.toLowerCase())))
     }
 
     return (
         <>
-            <div>
-                <Dropdown>
-                    <Dropdown.Toggle>Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setSortFilter(SORT_TITLE_ASC)}>A-Z</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSortFilter(SORT_TITLE_DESC)}>Z-A</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSortFilter(SORT_PRICE_ASC)}>Lowest - Highest</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSortFilter(SORT_PRICE_DESC)}>Highest - Lowest</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSortFilter(SORT_YEAR_ASC)}>Oldest - Recent</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSortFilter(SORT_YEAR_DESC)}>Recent - Oldest</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setSortFilter(undefined)}>Default</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-            </div>
             <Form className="my-4 mx-5">
                 <Row>
                     <Col lg={12} xl={12} className="mb-3">
@@ -90,7 +78,7 @@ export function ComicPage(props) {
                                       placeholder="Search..."/>
                     </Col>
 
-                    <Col lg={12} className="d-flex gap-4">
+                    <Col lg={12} className="d-flex gap-4 mb-3">
                         <Form.Control type="number"
                                       value={minPrice}
                                       onChange={e => setMinPrice(e.target.value)}
@@ -101,20 +89,43 @@ export function ComicPage(props) {
                                       onChange={e => setMaxPrice(e.target.value)}
                                       placeholder="Max price"/>
 
-                        <Form.Control type="text"
-                                      value={genreList}
-                                      onChange={e => setGenreList(e.target.value)}
-                                      placeholder="Genres"/>
 
                         <Form.Control type="number"
                                       value={numberSearch}
                                       onChange={e => setNumberSearch(e.target.value)}
                                       placeholder="Book number"/>
                     </Col>
+
+                    <Col lg={12} className="d-flex gap-4">
+                        <Form.Control type="text"
+                                      value={genreList}
+                                      onChange={e => setGenreList(e.target.value)}
+                                      placeholder="Genres"/>
+                        <Form.Control type="number"
+                                      value={releasedYear}
+                                      onChange={e => setReleasedYear(e.target.value)}
+                                      placeholder="Year"/>
+                    </Col>
                 </Row>
             </Form>
 
             <Section title="Catalog">
+                <div className="text-center mb-3">
+                    <Dropdown>
+                        <Dropdown.Toggle variant="warning">Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => setSortFilter(SORT_TITLE_ASC)}>A-Z</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setSortFilter(SORT_TITLE_DESC)}>Z-A</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setSortFilter(SORT_PRICE_ASC)}>Lowest -
+                                Highest</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setSortFilter(SORT_PRICE_DESC)}>Highest -
+                                Lowest</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setSortFilter(SORT_YEAR_ASC)}>Oldest - Recent</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setSortFilter(SORT_YEAR_DESC)}>Recent - Oldest</Dropdown.Item>
+                            <Dropdown.Item onClick={() => setSortFilter(undefined)}>Default</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </div>
                 <Comics comics={sortedAndFiltered}/>
             </Section>
         </>
