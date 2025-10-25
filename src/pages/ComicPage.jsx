@@ -3,6 +3,11 @@ import {Comics} from "../components/Comics.jsx";
 import {Card, Col, Row, Form} from "react-bootstrap";
 import {useState} from "react";
 
+const SORT_NAME_ASC = "NAME_ASC";
+const SORT_NAME_DESC = "NAME_DESC";
+const SORT_PRICE_ASC = "PRICE_ASC";
+const SORT_PRICE_DESC = "PRICE_DESC";
+
 function YearPublished (props) {
     const {comics, yearReleased} = props;
     const comicYear = comics.filter(c => c.released === yearReleased)
@@ -38,17 +43,40 @@ export function ComicPage(props) {
     const {comics, title} = props;
     const [querySearch, setQuerySearch] = useState("");
     const [numberSearch, setNumberSearch] = useState("");
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
+    const [genreList, setGenreList] = useState("");
 
-    const filteredComics = [...comics]
-        .sort((a, b) => a.title.localeCompare(b.title))
-        .filter(c =>
-            (numberSearch === "" || c.bookNumber === Number(numberSearch)) &&
-            (c.title.toLowerCase().includes(querySearch.toLowerCase()) ||
-            c.author.toLowerCase().includes(querySearch.toLowerCase()) ||
-            c.artist.toLowerCase().includes(querySearch.toLowerCase()) ||
-            c.publisher.toLowerCase().includes(querySearch.toLowerCase()) ||
-            c.genres.some(g => g.toLowerCase().includes(querySearch.toLowerCase()))) ||
-            c.price == querySearch);
+    const [sortFilter, setSortFilter] = useState(undefined);
+
+
+    const filteredComic = filterComics(comics);
+    const sortedAndFiltered = sorting(filteredComic);
+
+    function sorting(comics){
+        if (sortFilter === SORT_NAME_ASC){
+            return [...comics].sort((a, b) => a.name.localeCompare(b.name))
+        }
+        if (sortFilter === SORT_NAME_DESC){
+            return [...comics].sort((a, b) => b.name.localeCompare(a.name))
+        }
+        if (sortFilter === SORT_PRICE_ASC) {
+            return [...comics].sort((a, b) => a.price - b.price);;
+        }
+        if (sortFilter === SORT_PRICE_DESC) {
+            return [...comics].sort((a, b) => b.price - a.price);
+        }
+        return comics
+    }
+
+    function filterComics (comics){
+        return comics.filter(c => c.title.toLowerCase().includes(querySearch.toLowerCase())
+            || c.author.toLowerCase().includes(querySearch.toLowerCase())
+            || c.artist.toLowerCase().includes(querySearch.toLowerCase()))
+            .filter(c => !minPrice || minPrice <= c.price)
+            .filter(c => !maxPrice || c.price <= maxPrice)
+            .filter(c => c.genres.some(g => g.toLowerCase().includes(genreList.toLowerCase())))
+    }
 
     return (
         <>
@@ -61,9 +89,20 @@ export function ComicPage(props) {
                     </Col>
 
                     <Col lg={12} className="d-flex gap-4">
-                        <Form.Control placeholder="Minimum price"/>
+                        <Form.Control type="number"
+                                      value={minPrice}
+                                      onChange={e => setMinPrice(e.target.value)}
+                                      placeholder="Min price"/>
 
-                        <Form.Control placeholder="Maximum price"/>
+                        <Form.Control type="number"
+                                      value={maxPrice}
+                                      onChange={e => setMaxPrice(e.target.value)}
+                                      placeholder="Max price"/>
+
+                        <Form.Control type="text"
+                                      value={genreList}
+                                      onChange={e => setGenreList(e.target.value)}
+                                      placeholder="Genres"/>
 
                         <Form.Control type="number"
                                       value={numberSearch}
@@ -74,11 +113,7 @@ export function ComicPage(props) {
             </Form>
 
             <Section title="Catalog">
-                <Comics comics={filteredComics}/>
-            </Section>
-
-            <Section title="Comics grouped by published year">
-                <YearsPublished comics={comics}/>
+                <Comics comics={sortedAndFiltered}/>
             </Section>
         </>
     )
