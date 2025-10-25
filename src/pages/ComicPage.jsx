@@ -1,51 +1,23 @@
 import {Section} from "../components/Section.jsx";
 import {Comics} from "../components/Comics.jsx";
-import {Card, Col, Row, Form} from "react-bootstrap";
+import {Card, Col, Row, Form, Dropdown} from "react-bootstrap";
 import {useState} from "react";
 
-const SORT_NAME_ASC = "NAME_ASC";
-const SORT_NAME_DESC = "NAME_DESC";
+const SORT_TITLE_ASC = "TITLE_ASC";
+const SORT_TITLE_DESC = "TITLE_DESC";
 const SORT_PRICE_ASC = "PRICE_ASC";
 const SORT_PRICE_DESC = "PRICE_DESC";
-
-function YearPublished (props) {
-    const {comics, yearReleased} = props;
-    const comicYear = comics.filter(c => c.released === yearReleased)
-
-    return(
-        <Col md={4} lg={3} xl={3}>
-            <Card className="text-center mb-2">
-                <Card.Title>
-                    {yearReleased}
-                </Card.Title>
-                <Card.Body>
-                    {comicYear.map(c => c.title).join(", ")}
-                </Card.Body>
-            </Card>
-        </Col>
-    )
-}
-
-function YearsPublished (props){
-    const {comics} = props;
-    const publishedYear = comics.map(c => c.released);
-    const uniqueYear = [...new Set(publishedYear)];
-    const sortUniqueYear = uniqueYear.toSorted((a, b) => a - b);
-
-    return (
-        <Section>
-            {sortUniqueYear.map(c => <YearPublished key={c} yearReleased={c} comics={comics}/>)}
-        </Section>
-    )
-}
+const SORT_YEAR_ASC = "YEAR_ASC";
+const SORT_YEAR_DESC = "YEAR_DESC";
 
 export function ComicPage(props) {
-    const {comics, title} = props;
+    const {comics} = props;
     const [querySearch, setQuerySearch] = useState("");
     const [numberSearch, setNumberSearch] = useState("");
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
     const [genreList, setGenreList] = useState("");
+    const [releasedYear, setReleasedYear] = useState("");
 
     const [sortFilter, setSortFilter] = useState(undefined);
 
@@ -54,19 +26,35 @@ export function ComicPage(props) {
     const sortedAndFiltered = sorting(filteredComic);
 
     function sorting(comics){
-        if (sortFilter === SORT_NAME_ASC){
-            return [...comics].sort((a, b) => a.name.localeCompare(b.name))
+        if (sortFilter === SORT_TITLE_ASC){
+            return [...comics].sort((a, b) => a.title.localeCompare(b.title))
         }
-        if (sortFilter === SORT_NAME_DESC){
-            return [...comics].sort((a, b) => b.name.localeCompare(a.name))
+        if (sortFilter === SORT_TITLE_DESC){
+            return [...comics].sort((a, b) => b.title.localeCompare(a.title))
         }
         if (sortFilter === SORT_PRICE_ASC) {
-            return [...comics].sort((a, b) => a.price - b.price);;
+            return [...comics].sort((a, b) => a.price - b.price);
         }
         if (sortFilter === SORT_PRICE_DESC) {
             return [...comics].sort((a, b) => b.price - a.price);
         }
+        if (sortFilter === SORT_YEAR_ASC) {
+            return [...comics].sort((a, b) => a.released - b.released);
+        }
+        if (sortFilter === SORT_YEAR_DESC) {
+            return [...comics].sort((a, b) => b.released - a.released);
+        }
         return comics
+    }
+
+    const sortLables = {
+        [SORT_TITLE_ASC]: "Title A-Z",
+        [SORT_TITLE_DESC]: "Title Z-A",
+        [SORT_PRICE_ASC]: "Lowest - Highest",
+        [SORT_PRICE_DESC]: "Highest - Lowest",
+        [SORT_YEAR_ASC]: "Oldest - Recent",
+        [SORT_YEAR_DESC]: "Recent - Oldest",
+        undefined: "Default"
     }
 
     function filterComics (comics){
@@ -80,6 +68,20 @@ export function ComicPage(props) {
 
     return (
         <>
+            <div>
+                <Dropdown>
+                    <Dropdown.Toggle>Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => setSortFilter(SORT_TITLE_ASC)}>A-Z</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortFilter(SORT_TITLE_DESC)}>Z-A</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortFilter(SORT_PRICE_ASC)}>Lowest - Highest</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortFilter(SORT_PRICE_DESC)}>Highest - Lowest</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortFilter(SORT_YEAR_ASC)}>Oldest - Recent</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortFilter(SORT_YEAR_DESC)}>Recent - Oldest</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setSortFilter(undefined)}>Default</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div>
             <Form className="my-4 mx-5">
                 <Row>
                     <Col lg={12} xl={12} className="mb-3">
