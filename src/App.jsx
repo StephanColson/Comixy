@@ -22,7 +22,7 @@ function App() {
                 </TabList>
 
                 <TabPanel>
-                    <HomePage/>
+                    <HomePage comics={COMIC_DATA}/>
                 </TabPanel>
                 <TabPanel>
                     <ComicPage comics={COMIC_DATA}/>

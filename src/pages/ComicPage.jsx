@@ -133,6 +133,7 @@ export function ComicPage(props) {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
+                <Pagination className="mb-3 mt-2" align="center" current={currentPage} pageSize={displayComic} total={sortedAndFiltered.length} onChange={setCurrentPage}/>
                 <Comics comics={paginatedComics}/>
             </Section>
             <Pagination className="my-3" align="center" current={currentPage} pageSize={displayComic} total={sortedAndFiltered.length} onChange={setCurrentPage}/>
