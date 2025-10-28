@@ -2,6 +2,7 @@ import {Section} from "../components/Section.jsx";
 import {Comics} from "../components/Comics.jsx";
 import {Card, Col, Row, Form, Dropdown} from "react-bootstrap";
 import {useState} from "react";
+import Pagination from "rc-pagination";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
 const SORT_TITLE_DESC = "TITLE_DESC";
@@ -19,11 +20,17 @@ export function ComicPage(props) {
     const [genreList, setGenreList] = useState("");
     const [releasedYear, setReleasedYear] = useState("");
 
-    const [sortFilter, setSortFilter] = useState(undefined);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [displayComic, setDisplayComics] = useState(12);
 
+    const [sortFilter, setSortFilter] = useState(undefined);
 
     const filteredComic = filterComics(comics);
     const sortedAndFiltered = sorting(filteredComic);
+
+    const startIndex = (currentPage - 1) * displayComic;
+    const endIndex = startIndex + displayComic;
+    const paginatedComics = sortedAndFiltered.slice(startIndex, endIndex);
 
     function sorting(comics){
         if (sortFilter === SORT_TITLE_ASC){
@@ -126,8 +133,9 @@ export function ComicPage(props) {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
-                <Comics comics={sortedAndFiltered}/>
+                <Comics comics={paginatedComics}/>
             </Section>
+            <Pagination className="my-3" align="center" current={currentPage} pageSize={displayComic} total={sortedAndFiltered.length} onChange={setCurrentPage}/>
         </>
     )
 }

@@ -1,8 +1,9 @@
 export const COMIC_DATA = [
     {   id: 1,
         title: "Goblin Slayer",
+        serie: "Goblin Slayer",
         bookNumber: 1,
-        numberName: "Vol. 1",
+        numberName: "1",
         price: 15,
         released: 2010,
         cover: "https://cdn.kobo.com/book-images/82833312-93c9-4700-a8b2-7d327a81b83f/1200/1200/False/goblin-slayer-vol-1-light-novel-2.jpg",
@@ -10,12 +11,13 @@ export const COMIC_DATA = [
         genres: ["Fantasy", "Action", "Dark"],
         author: "Gob",
         artist: "Zack Kurt",
-        publisher: "P1"
+        publisher: "P1",
     },
 
     {
         id: 2,
         title: "Goblin Slayer",
+        serie: "Goblin Slayer",
         bookNumber: 2,
         numberName: "Vol.2",
         price: 15.5,
@@ -25,12 +27,13 @@ export const COMIC_DATA = [
         genres: ["Fantasy", "Action", "Dark"],
         author: "Gob",
         artist: "Slayer San",
-        publisher: "P1"
+        publisher: "P1",
     },
 
     {
         id: 3,
         title: "Goblin Slayer",
+        serie: "Goblin Slayer",
         bookNumber: 3,
         numberName: "Vol.3",
         price: 14,
@@ -40,12 +43,13 @@ export const COMIC_DATA = [
         genres: ["Fantasy", "Action", "Dark"],
         author: "Gob",
         artist: "Slayer San",
-        publisher: "P1"
+        publisher: "P1",
     },
 
     {
         id: 4,
         title: "Angel Of Death",
+        serie: "Angel Of Death",
         bookNumber: 6,
         numberName: "Vol.6",
         price: 12,
@@ -55,12 +59,13 @@ export const COMIC_DATA = [
         genres: ["Fantasy", "Mystery", "Dark"],
         author: "Zack Hemsey",
         artist: "Angelica",
-        publisher: "Animation Studio"
+        publisher: "Animation Studio",
     },
 
     {
         id: 5,
         title: "Angel Of Death",
+        serie: "Angel Of Death",
         bookNumber: 1,
         numberName: "Vol.1",
         price: 12,
@@ -70,12 +75,13 @@ export const COMIC_DATA = [
         genres: ["Fantasy", "Mystery", "Dark"],
         author: "Zack Hemsey",
         artist: "Angelica",
-        publisher: "Animation Studio"
+        publisher: "Animation Studio",
     },
 
     {
         id: 6,
         title: "Ac: Brotherhood",
+        serie: "Assassin's Creed",
         bookNumber: 1,
         numberName: "Vol.1",
         price: 16,
@@ -85,12 +91,13 @@ export const COMIC_DATA = [
         genres: ["History", "Action", "Fantasy"],
         author: "Ezio Auditore",
         artist: "Ezio Auditore",
-        publisher: "Historici Publication"
+        publisher: "Historici Publication",
     },
 
     {
         id: 7,
         title: "AC: Unity",
+        serie: "Assassin's Creed",
         bookNumber: 4,
         numberName: "Vol.4",
         price: 8.5,
@@ -100,12 +107,13 @@ export const COMIC_DATA = [
         genres: ["History", "Action", "Fantasy"],
         author: "Ezio Auditore",
         artist: "Ezio Auditore",
-        publisher: "Historici Publication"
+        publisher: "Historici Publication",
     },
 
     {
         id: 8,
         title: "Bofuri",
+        serie: "Bofuri",
         bookNumber: 1,
         numberName: "Vol.1",
         price: 12.5,
@@ -115,12 +123,13 @@ export const COMIC_DATA = [
         genres: ["Comedy", "Action", "Fantasy"],
         author: "Maple",
         artist: "Syrup",
-        publisher: "Publication of RPG"
+        publisher: "Publication of RPG",
     },
 
     {
         id: 9,
         title: "Bofuri",
+        serie: "Bofuri",
         bookNumber: 2,
         numberName: "Vol.2",
         price: 12.5,
@@ -130,26 +139,93 @@ export const COMIC_DATA = [
         genres: ["Comedy", "Action", "Fantasy"],
         author: "Maple",
         artist: "Syrup",
-        publisher: "Publication of RPG"
-    }
-]
-
-export const SERIE_DATA = [
-    {
-        id: 1,
-        title: "Goblin Slayer",
-        genres: ["Fantasy", "Dark", "Action"]
+        publisher: "Publication of RPG",
     },
 
     {
-        id: 2,
-        title: "Angel Of Death",
-        genres: ["Fantasy", "Dark", "Mystery"]
+        id: 10,
+        title: "No Game No Life",
+        serie: "No Game No Life",
+        bookNumber: 2,
+        numberName: "Vol.2",
+        price: 12.5,
+        released: 2011,
+        cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
+        synopsis: "",
+        genres: ["Comedy", "Action", "Fantasy"],
+        author: "Maple",
+        artist: "Syrup",
+        publisher: "Publication of RPG",
     },
 
     {
-        id: 3,
-        title: "Assassin's Creed",
-        genres: ["History", "Action", "Fantasy"]
-    }
-]
+        id: 11,
+        title: "Fate/Apocrypha",
+        serie: "Fate",
+        bookNumber: 8,
+        numberName: "Vol.8",
+        price: 12.5,
+        released: 2011,
+        cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
+        synopsis: "",
+        genres: ["Dark", "Action", "Fantasy", "History"],
+        author: "Maple",
+        artist: "Syrup",
+        publisher: "Publication of RPG",
+    },
+
+    {
+        id: 12,
+        title: "Fate Zero",
+        serie: "Fate",
+        bookNumber: 16,
+        numberName: "Vol.16",
+        price: 22.5,
+        released: 2011,
+        cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
+        synopsis: "",
+        genres: ["Dark", "Action", "Fantasy", "History"],
+        author: "Maple",
+        artist: "Syrup",
+        publisher: "Publication of RPG",
+    },
+
+    {
+        id: 13,
+        title: "Fate/Apocrypha",
+        serie: "Fate",
+        bookNumber: 11,
+        numberName: "Vol.11",
+        price: 17,
+        released: 2011,
+        cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
+        synopsis: "",
+        genres: ["Dark", "Action", "Fantasy", "History"],
+        author: "Maple",
+        artist: "Syrup",
+        publisher: "Publication of RPG",
+    },
+
+    {
+        id: 14,
+        title: "Fate/Apocrypha",
+        serie: "Fate",
+        bookNumber: 8,
+        numberName: "Vol.8",
+        price: 12.5,
+        released: 2011,
+        cover: "https://i.ebayimg.com/images/g/fZUAAOSw0vBUbisK/s-l1200.jpg",
+        synopsis: "",
+        genres: ["Dark", "Action", "Fantasy", "History"],
+        author: "Maple",
+        artist: "Syrup",
+        publisher: "Publication of RPG",
+    },
+];
+
+export const USER_DATA = [
+    {name: "Arthur", ownedComics: [], birthdate: "2002-01-05"},
+    {name: "Mordred", ownedComics: [], birthdate: "2018-09-23"},
+    {name: "Lancelot", ownedComics: [], birthdate: "2010-03-25"},
+    {name: "Merlin", ownedComics: [], birthdate: "2000-02-14"},
+];

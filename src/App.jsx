@@ -2,6 +2,7 @@ import 'normalize.css'
 import './App.css'
 import 'react-tabs/style/react-tabs.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'rc-pagination/assets/index.css';
 import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import {ComicPage} from "./pages/ComicPage.jsx";
 import {HomePage} from "./pages/HomePage.jsx";
