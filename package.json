@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "firebase": "^12.4.0",
     "normalize.css": "^8.0.1",
     "rc-pagination": "^5.1.0",
     "react": "^19.1.1",
