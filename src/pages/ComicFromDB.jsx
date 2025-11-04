@@ -1,11 +1,12 @@
 import {useComicCollectionData} from "../api/comicInfo.js";
+import {Comics} from "../components/Comics.jsx";
 
 export function ComicFromDB(){
     const {comics} = useComicCollectionData()
     console.log(comics)
     return(
         <>
-            <div>Comic from Database</div>
+            <Comics comics={comics}/>
         </>
     )
 }

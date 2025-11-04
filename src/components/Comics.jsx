@@ -21,7 +21,7 @@ export function Comics (props) {
     return (
         <Section>
             <FlipMove typeName={Row}>
-                {comics.map(c => (
+                {comics?.map(c => (
                     <Col md={6} lg={3} xl={3} key={c.id}>
                         <Comic comic={c}/>
                     </Col>

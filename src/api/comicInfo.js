@@ -19,10 +19,14 @@ const comicConverter = {
         artist: dataInApp.artist,
         publisher: dataInApp.publisher,
     }),
+    fromFirestore: (snapshot, option) => {
+        const data = snapshot.data(option);
+        return {...data, id: snapshot.id, ref: snapshot.ref}
+    }
 };
 
 export function useComicCollectionData(){
-    const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME);
+    const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME).withConverter(comicConverter);
     const queryRef = query(collectionRef);
     const [comics, loading, error] = useCollectionData(queryRef);
     return {comics, loading, error}
