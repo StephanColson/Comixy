@@ -1,8 +1,9 @@
 import {Section} from "../components/Section.jsx";
 import {Comics} from "../components/Comics.jsx";
-import {Card, Col, Row, Form, Dropdown} from "react-bootstrap";
+import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
 import {useState} from "react";
 import Pagination from "rc-pagination";
+import {addComic} from "../api/comicInfo.js";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
 const SORT_TITLE_DESC = "TITLE_DESC";
@@ -75,6 +76,10 @@ export function ComicPage(props) {
             .filter(c => c.genres.some(g => g.toLowerCase().includes(genreList.toLowerCase())))
     }
 
+    async function handleAddComic(comicsToAdd){
+        await addComic(comicsToAdd);
+    }
+
     return (
         <>
             <Form className="my-4 mx-5">
@@ -118,6 +123,7 @@ export function ComicPage(props) {
 
             <Section title="Catalog">
                 <div className="text-center mb-3">
+                    <Button className="mb-2 btn-warning" onClick={() => handleAddComic(comics)}>New Comic</Button>
                     <Dropdown>
                         <Dropdown.Toggle variant="warning">Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
                         <Dropdown.Menu>
