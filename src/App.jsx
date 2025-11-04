@@ -30,7 +30,7 @@ function App() {
                     <HomePage comics={COMIC_DATA}/>
                 </TabPanel>
                 <TabPanel>
-                    <ComicPage comics={COMIC_DATA}/>
+                    <ComicPage/>
                 </TabPanel>
                 <TabPanel>
                     <ComicFromDB/>

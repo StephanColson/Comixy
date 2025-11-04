@@ -3,7 +3,7 @@ import {Comics} from "../components/Comics.jsx";
 import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
 import {useState} from "react";
 import Pagination from "rc-pagination";
-import {addComic} from "../api/comicInfo.js";
+import {addComic, useComicCollectionData} from "../api/comicInfo.js";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
 const SORT_TITLE_DESC = "TITLE_DESC";
@@ -12,8 +12,10 @@ const SORT_PRICE_DESC = "PRICE_DESC";
 const SORT_YEAR_ASC = "YEAR_ASC";
 const SORT_YEAR_DESC = "YEAR_DESC";
 
-export function ComicPage(props) {
-    const {comics} = props;
+export function ComicPage() {
+    const {comics} = useComicCollectionData();
+
+    /*Search Filters*/
     const [querySearch, setQuerySearch] = useState("");
     const [numberSearch, setNumberSearch] = useState("");
     const [minPrice, setMinPrice] = useState("");
@@ -21,17 +23,22 @@ export function ComicPage(props) {
     const [genreList, setGenreList] = useState("");
     const [releasedYear, setReleasedYear] = useState("");
 
+    /*Pagination*/
     const [currentPage, setCurrentPage] = useState(1);
     const [displayComic, setDisplayComics] = useState(12);
 
     const [sortFilter, setSortFilter] = useState(undefined);
 
-    const filteredComic = filterComics(comics);
-    const sortedAndFiltered = sorting(filteredComic);
-
-    const startIndex = (currentPage - 1) * displayComic;
-    const endIndex = startIndex + displayComic;
-    const paginatedComics = sortedAndFiltered.slice(startIndex, endIndex);
+    function filterComics (comics){
+        return comics.filter(c => c.title.toLowerCase().includes(querySearch.toLowerCase())
+            || c.author.toLowerCase().includes(querySearch.toLowerCase())
+            || c.artist.toLowerCase().includes(querySearch.toLowerCase()))
+            .filter(c => !minPrice || Number(minPrice) <= c.price)
+            .filter(c => !maxPrice || c.price <= Number(maxPrice))
+            .filter(c => !numberSearch || c.bookNumber === Number(numberSearch))
+            .filter(c => !releasedYear || c.released === Number(releasedYear))
+            .filter(c => c.genres.some(g => g.toLowerCase().includes(genreList.toLowerCase())))
+    }
 
     function sorting(comics){
         if (sortFilter === SORT_TITLE_ASC){
@@ -65,20 +72,22 @@ export function ComicPage(props) {
         undefined: "Default"
     }
 
-    function filterComics (comics){
-        return comics.filter(c => c.title.toLowerCase().includes(querySearch.toLowerCase())
-            || c.author.toLowerCase().includes(querySearch.toLowerCase())
-            || c.artist.toLowerCase().includes(querySearch.toLowerCase()))
-            .filter(c => !minPrice || Number(minPrice) <= c.price)
-            .filter(c => !maxPrice || c.price <= Number(maxPrice))
-            .filter(c => !numberSearch || c.bookNumber === Number(numberSearch))
-            .filter(c => !releasedYear || c.released === Number(releasedYear))
-            .filter(c => c.genres.some(g => g.toLowerCase().includes(genreList.toLowerCase())))
-    }
-
     async function handleAddComic(comicsToAdd){
         await addComic(comicsToAdd);
     }
+
+    if(!comics){
+        return <div>Loading Comics....</div>;
+    }
+
+    /*Combine Filter and Sorting to work together*/
+    const filteredComic = filterComics(comics);
+    const sortedAndFiltered = sorting(filteredComic);
+
+    /*Pagination*/
+    const startIndex = (currentPage - 1) * displayComic;
+    const endIndex = startIndex + displayComic;
+    const paginatedComics = sortedAndFiltered.slice(startIndex, endIndex);
 
     return (
         <>
