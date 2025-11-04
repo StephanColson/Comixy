@@ -1,5 +1,6 @@
 import { addDoc, collection, query} from "firebase/firestore";
 import {firestoreDB} from "./firebase.js";
+import {useCollectionData} from "react-firebase-hooks/firestore";
 
 const COMIC_COLLECTION_NAME = 'comics';
 
@@ -23,7 +24,7 @@ const comicConverter = {
 export function useComicCollectionData(){
     const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME);
     const queryRef = query(collectionRef);
-    const [comics, loading, error] = useComicCollectionData(queryRef);
+    const [comics, loading, error] = useCollectionData(queryRef);
     return {comics, loading, error}
 }
 

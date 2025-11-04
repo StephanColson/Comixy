@@ -8,6 +8,7 @@ import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import {ComicPage} from "./pages/ComicPage.jsx";
 import {HomePage} from "./pages/HomePage.jsx";
 import {COMIC_DATA} from "./data/data.js";
+import {ComicFromDB} from "./pages/ComicFromDB.jsx";
 
 function App() {
     return (
@@ -20,6 +21,9 @@ function App() {
                     <Tab>
                         Comic shelf
                     </Tab>
+                    <Tab>
+                        Comic Database Test
+                    </Tab>
                 </TabList>
 
                 <TabPanel>
@@ -27,6 +31,9 @@ function App() {
                 </TabPanel>
                 <TabPanel>
                     <ComicPage comics={COMIC_DATA}/>
+                </TabPanel>
+                <TabPanel>
+                    <ComicFromDB/>
                 </TabPanel>
             </Tabs>
         </>
