@@ -32,9 +32,6 @@ function App() {
                 <TabPanel>
                     <ComicPage/>
                 </TabPanel>
-                <TabPanel>
-                    <ComicFromDB/>
-                </TabPanel>
             </Tabs>
         </>
     )

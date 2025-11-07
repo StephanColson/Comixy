@@ -1,4 +1,4 @@
-import { addDoc, collection, query} from "firebase/firestore";
+import {deleteDoc, updateDoc, addDoc, collection, query} from "firebase/firestore";
 import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
@@ -32,7 +32,20 @@ export function useComicCollectionData(){
     return {comics, loading, error}
 }
 
-export async function addComic(comicsToAdd){
+export async function addComic(newComic){
+    const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME).withConverter(comicConverter);
+    await addDoc(collectionRef, newComic);
+}
+
+export async function updateComic(comic){
+    await updateDoc(comic.ref, comic);
+}
+
+export async function deleteComic(removeComic){
+    await deleteDoc(removeComic.ref);
+}
+
+export async function addComics(comicsToAdd){
     const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME).withConverter(comicConverter);
     await Promise.all(comicsToAdd.map(comic => addDoc(collectionRef, comic)));
 }

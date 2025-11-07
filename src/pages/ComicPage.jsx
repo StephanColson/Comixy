@@ -3,7 +3,7 @@ import {Comics} from "../components/Comics.jsx";
 import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
 import {useState} from "react";
 import Pagination from "rc-pagination";
-import {addComic, useComicCollectionData} from "../api/comicInfo.js";
+import {addComic, addComics, useComicCollectionData} from "../api/comicInfo.js";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
 const SORT_TITLE_DESC = "TITLE_DESC";
@@ -73,7 +73,7 @@ export function ComicPage() {
     }
 
     async function handleAddComic(comicsToAdd){
-        await addComic(comicsToAdd);
+        await addComics(comicsToAdd);
     }
 
     if(!comics){

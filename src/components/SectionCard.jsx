@@ -1,10 +1,10 @@
 import {Card} from "react-bootstrap";
 
 export function SectionCard(props) {
-    const {coverImg, title, price, genres} = props;
+    const {coverImg, title, price, genres, onClick} = props;
 
     return <>
-        <Card className="mb-2">
+        <Card className="mb-2" onClick={onClick}>
             {coverImg && (
                 <Card.Img src={coverImg} className="object-fit-cover"/>
             )}
