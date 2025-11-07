@@ -8,7 +8,6 @@ import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import {ComicPage} from "./pages/ComicPage.jsx";
 import {HomePage} from "./pages/HomePage.jsx";
 import {COMIC_DATA} from "./data/data.js";
-import {ComicFromDB} from "./pages/ComicFromDB.jsx";
 
 function App() {
     return (
