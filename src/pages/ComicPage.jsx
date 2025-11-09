@@ -3,7 +3,7 @@ import {Comics} from "../components/Comics.jsx";
 import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import Pagination from "rc-pagination";
-import {addComic, addComics, useComicCollectionData} from "../api/comicInfo.js";
+import {addComics, useComicCollectionData} from "../api/comicInfo.js";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
 const SORT_TITLE_DESC = "TITLE_DESC";
@@ -29,6 +29,12 @@ export function ComicPage() {
 
     const [sortFilter, setSortFilter] = useState(undefined);
 
+    const allGenres = Array.from(
+        new Set(
+            comics ? comics.reduce((acc, comic) => acc.concat(comic.genres), []) : []
+        )
+    );
+
     useEffect(() => {
         setCurrentPage(1)
     }, [querySearch, numberSearch, releasedYear, minPrice, maxPrice, genreList, sortFilter]);
@@ -45,7 +51,11 @@ export function ComicPage() {
             .filter(c => !maxPrice || c.price <= Number(maxPrice))
             .filter(c => !numberSearch || c.bookNumber === Number(numberSearch))
             .filter(c => !releasedYear || c.released === Number(releasedYear))
-            .filter(c => c.genres.some(g => g.toLowerCase().includes(genreList.toLowerCase())))
+            .filter(c => {
+                if (!genreList) return true;
+                const inputGenres = genreList.split(",").map(g => g.trim().toLowerCase()).filter(g => g);
+                return c.genres.some(genre => inputGenres.includes(genre.toLowerCase()));
+            })
     }
 
     function sorting(comics){
@@ -124,9 +134,15 @@ export function ComicPage() {
 
                     <Col lg={12} className="d-flex gap-4">
                         <Form.Control type="text"
+                                      list="genre-options"
                                       value={genreList}
                                       onChange={e => setGenreList(e.target.value)}
                                       placeholder="Genres"/>
+                        <datalist id="genre-options">
+                            {allGenres.map(g => (
+                                <option key={g} value={g} />
+                            ))}
+                        </datalist>
                         <Form.Control type="number"
                                       value={releasedYear}
                                       onChange={e => setReleasedYear(e.target.value)}
