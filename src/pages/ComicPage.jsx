@@ -1,7 +1,7 @@
 import {Section} from "../components/Section.jsx";
 import {Comics} from "../components/Comics.jsx";
 import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Pagination from "rc-pagination";
 import {addComic, addComics, useComicCollectionData} from "../api/comicInfo.js";
 
@@ -28,6 +28,14 @@ export function ComicPage() {
     const [displayComic, setDisplayComics] = useState(12);
 
     const [sortFilter, setSortFilter] = useState(undefined);
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [querySearch, numberSearch, releasedYear, minPrice, maxPrice, genreList, sortFilter]);
+
+    if(!comics){
+        return <div>Loading Comics....</div>;
+    }
 
     function filterComics (comics){
         return comics.filter(c => c.title.toLowerCase().includes(querySearch.toLowerCase())
@@ -76,10 +84,6 @@ export function ComicPage() {
         await addComics(comicsToAdd);
     }
 
-    if(!comics){
-        return <div>Loading Comics....</div>;
-    }
-
     /*Combine Filter and Sorting to work together*/
     const filteredComic = filterComics(comics);
     const sortedAndFiltered = sorting(filteredComic);
@@ -88,6 +92,7 @@ export function ComicPage() {
     const startIndex = (currentPage - 1) * displayComic;
     const endIndex = startIndex + displayComic;
     const paginatedComics = sortedAndFiltered.slice(startIndex, endIndex);
+
 
     return (
         <>
