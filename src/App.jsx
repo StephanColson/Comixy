@@ -20,9 +20,6 @@ function App() {
                     <Tab>
                         Comic shelf
                     </Tab>
-                    <Tab>
-                        Comic Database Test
-                    </Tab>
                 </TabList>
 
                 <TabPanel>
