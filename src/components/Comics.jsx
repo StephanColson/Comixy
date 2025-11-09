@@ -3,7 +3,7 @@ import {Section} from "./Section.jsx";
 import {SectionCard} from "./SectionCard.jsx";
 import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
-import {updateComic} from "../api/comicInfo.js";
+import {deleteComic, updateComic} from "../api/comicInfo.js";
 
 function ComicDetails(props){
     const {comic, show, onHide} = props;
@@ -109,7 +109,9 @@ function ComicDetails(props){
                         </div>
                     )}
 
-                    <div className="d-flex justify-content-center mt-3">
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className="d-flex mt-3">
                         {isEditing ? (
                             <>
                                 <Button
@@ -123,9 +125,19 @@ function ComicDetails(props){
                                 <Button className="mx-2" variant="danger"
                                         onClick={() => setIsEditing(false)}>Cancel</Button>
                             </>
-                        ) : (<Button onClick={() => setIsEditing(true)}>Edit</Button>)}
+                        ) : (
+                            <>
+                                <Button onClick={() => setIsEditing(true)}>Edit</Button>
+                                <Button className="mx-2" variant="danger"
+                                        onClick={async () => {
+                                            await deleteComic(comic);
+                                            onHide();
+                                        }}
+                                >Delete</Button>
+                            </>
+                        )}
                     </div>
-                </Modal.Body>
+                </Modal.Footer>
             </Modal>
         </>
     )
