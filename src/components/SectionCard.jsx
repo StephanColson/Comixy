@@ -14,7 +14,7 @@ export function SectionCard(props) {
                 {genres}
             </Card.Body>
             <Card.Footer className="text-center">
-                {price} €
+                {price && `${price} €`}
             </Card.Footer>
         </Card>
     </>

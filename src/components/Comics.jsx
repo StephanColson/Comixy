@@ -25,7 +25,7 @@ function ComicDetails(props){
                         {isEditing ? (
                             <Form>
                                 <Row>
-                                    <Col xl={4} lg={4}>
+                                    <Col xl={4} lg={4} md={12} className="mb-2">
                                         <Form.Label>Title:</Form.Label>
                                         <Form.Control
                                             type="text"
@@ -33,7 +33,7 @@ function ComicDetails(props){
                                             onChange={e => setEditedComic({...editedComic, title: e.target.value})}/>
                                     </Col>
 
-                                    <Col xl={4} lg={4}>
+                                    <Col xl={4} lg={4} md={6} sm={6} xs={6}>
                                         <Form.Label>Display #:</Form.Label>
                                         <Form.Control
                                             type="text"
@@ -41,7 +41,7 @@ function ComicDetails(props){
                                             onChange={e => setEditedComic({...editedComic, numberName: e.target.value})}/>
                                     </Col>
 
-                                    <Col xl={4} lg={4}>
+                                    <Col xl={4} lg={4} md={6} sm={6} xs={6}>
                                         <Form.Label>Book #:</Form.Label>
                                         <Form.Control
                                             type="text"
@@ -56,45 +56,64 @@ function ComicDetails(props){
                 <Modal.Body>
                     {isEditing ? (
                         <Form>
-                            <Form.Label>Cover Img:</Form.Label>
-                            <Form.Control type="link"
-                                          value={editedComic.cover}
-                                          onChange={e => setEditedComic({...editedComic, cover: e.target.value})}/>
+                            <Row>
+                                <Col className="mt-1" xl={12} lg={12}>
+                                    <Form.Label>Cover Img:</Form.Label>
+                                    <Form.Control type="text"
+                                                  value={editedComic.cover}
+                                                  onChange={e => setEditedComic({...editedComic, cover: e.target.value})}/>
+                                </Col>
 
-                            <Form.Label>Serie:</Form.Label>
-                            <Form.Control type="text"
-                                          value={editedComic.serie}
-                                          onChange={e => setEditedComic({...editedComic, serie: e.target.value})}/>
+                                <Col className="my-2" xl={12} lg={12}>
+                                    <Form.Label>Serie:</Form.Label>
+                                    <Form.Control type="text"
+                                                  value={editedComic.serie}
+                                                  onChange={e => setEditedComic({...editedComic, serie: e.target.value})}/>
+                                </Col>
 
-                            <Form.Label>Author:</Form.Label>
-                            <Form.Control type="text"
-                                          value={editedComic.author}
-                                          onChange={e => setEditedComic({...editedComic, author: e.target.value})}/>
+                                <Col xl={6} lg={6}>
+                                    <Form.Label>Author:</Form.Label>
+                                    <Form.Control type="text"
+                                                  value={editedComic.author}
+                                                  onChange={e => setEditedComic({...editedComic, author: e.target.value})}/>
+                                </Col>
 
-                            <Form.Label>Artist:</Form.Label>
-                            <Form.Control type="text"
-                                          value={editedComic.artist}
-                                          onChange={e => setEditedComic({...editedComic, artist: e.target.value})}/>
+                                <Col xl={6} lg={6}>
+                                    <Form.Label>Artist:</Form.Label>
+                                    <Form.Control type="text"
+                                                  value={editedComic.artist}
+                                                  onChange={e => setEditedComic({...editedComic, artist: e.target.value})}/>
+                                </Col>
 
-                            <Form.Label>Publisher</Form.Label>
-                            <Form.Control type="text"
-                                          value={editedComic.publisher}
-                                          onChange={e => setEditedComic({...editedComic, publisher: e.target.value})}/>
+                                <Col className="my-2" xl={12} lg={12}>
+                                    <Form.Label>Publisher</Form.Label>
+                                    <Form.Control type="text"
+                                                  value={editedComic.publisher}
+                                                  onChange={e => setEditedComic({...editedComic, publisher: e.target.value})}/>
+                                </Col>
 
-                            <Form.Label>Year Published:</Form.Label>
-                            <Form.Control type="text"
-                                          value={editedComic.released}
-                                          onChange={e => setEditedComic({...editedComic, released: e.target.value})}/>
+                                <Col xl={12} lg={12}>
+                                    <Form.Label>Year Published:</Form.Label>
+                                    <Form.Control type="text"
+                                                  value={editedComic.released}
+                                                  onChange={e => setEditedComic({...editedComic, released: e.target.value})}/>
+                                </Col>
 
-                            <Form.Label>Genres:</Form.Label>
-                            <Form.Control type="text"
-                                          value={editedComic.genres}
-                                          onChange={e => setEditedComic({...editedComic, genres: e.target.value.split(/\s*,\s*/).map(g => g.trim())})}/>
+                                <Col className="my-2" xl={12} lg={12}>
+                                    <Form.Label>Genres:</Form.Label>
+                                    <Form.Control type="text"
+                                                  value={editedComic.genres}
+                                                  onChange={e => setEditedComic({...editedComic, genres: e.target.value.split(/\s*,\s*/).map(g => g.trim())})}/>
 
-                            <Form.Label>Price:</Form.Label>
-                            <Form.Control type="number"
-                                          value={editedComic.price}
-                                          onChange={e => setEditedComic({...editedComic, price: e.target.value})}/>
+                                </Col>
+
+                                <Col xl={12} lg={12}>
+                                    <Form.Label>Price:</Form.Label>
+                                    <Form.Control type="number"
+                                                  value={editedComic.price}
+                                                  onChange={e => setEditedComic({...editedComic, price: e.target.value})}/>
+                                </Col>
+                            </Row>
                         </Form>
                     ) : (
                         <div className="d-flex">
