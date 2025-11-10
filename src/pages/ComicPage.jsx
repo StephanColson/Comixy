@@ -13,8 +13,8 @@ const SORT_PRICE_DESC = "PRICE_DESC";
 const SORT_YEAR_ASC = "YEAR_ASC";
 const SORT_YEAR_DESC = "YEAR_DESC";
 
-export function ComicPage() {
-    const {comics} = useComicCollectionData();
+export function ComicPage(props) {
+    const {comics} = props;
     const [showModal, setShowModal] = useState(false);
 
     /*Search Filters*/

@@ -7,9 +7,10 @@ import './api/firebase.js';
 import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import {ComicPage} from "./pages/ComicPage.jsx";
 import {HomePage} from "./pages/HomePage.jsx";
-import {COMIC_DATA} from "./data/data.js";
+import {useComicCollectionData} from "./api/comicInfo.js";
 
 function App() {
+    const {comics, loading, error} = useComicCollectionData();
     return (
         <>
             <Tabs>
@@ -23,10 +24,10 @@ function App() {
                 </TabList>
 
                 <TabPanel>
-                    <HomePage comics={COMIC_DATA}/>
+                    <HomePage comics={comics || []}/>
                 </TabPanel>
                 <TabPanel>
-                    <ComicPage/>
+                    <ComicPage comics={comics || []}/>
                 </TabPanel>
             </Tabs>
         </>

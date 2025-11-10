@@ -176,9 +176,29 @@ function Comic(props) {
 }
 
 export function Comics(props) {
-    const {comics} = props;
+    const {comics, carouselMode = false} = props;
     const [selectedComic, setSelectedComic] = useState(null);
     const [showDetails, setShowDetails] = useState(false);
+
+    if (carouselMode) {
+        return (
+            <>
+                <div className="d-flex justify-content-center">
+                    {comics.map((c) => (
+                        <div key={c.id} className="w-25 mb-5">
+                            <Comic comic={c} onClick={() => { setSelectedComic(c); setShowDetails(true); }} />
+                        </div>
+                    ))}
+                </div>
+
+                <ComicDetails
+                    comic={selectedComic}
+                    show={showDetails}
+                    onHide={() => { setSelectedComic(null); setShowDetails(false); }}
+                />
+            </>
+        );
+    }
 
     return (
         <Section>
