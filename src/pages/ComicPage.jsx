@@ -3,7 +3,8 @@ import {Comics} from "../components/Comics.jsx";
 import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import Pagination from "rc-pagination";
-import {addComics, useComicCollectionData} from "../api/comicInfo.js";
+import {useComicCollectionData} from "../api/comicInfo.js";
+import {AddComicModal} from "../components/AddComicModal.jsx";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
 const SORT_TITLE_DESC = "TITLE_DESC";
@@ -14,6 +15,7 @@ const SORT_YEAR_DESC = "YEAR_DESC";
 
 export function ComicPage() {
     const {comics} = useComicCollectionData();
+    const [showModal, setShowModal] = useState(false);
 
     /*Search Filters*/
     const [querySearch, setQuerySearch] = useState("");
@@ -90,9 +92,11 @@ export function ComicPage() {
         undefined: "Default"
     }
 
+    /*
     async function handleAddComic(comicsToAdd){
         await addComics(comicsToAdd);
     }
+     */
 
     /*Combine Filter and Sorting to work together*/
     const filteredComic = filterComics(comics);
@@ -153,7 +157,7 @@ export function ComicPage() {
 
             <Section title="Catalog">
                 <div className="text-center mb-3">
-                    <Button className="mb-2 btn-warning" onClick={() => handleAddComic(comics)}>New Comic</Button>
+                    <Button className="mb-2 btn-warning" onClick={() => setShowModal(true)}>New Comic</Button>
                     <Dropdown>
                         <Dropdown.Toggle variant="warning">Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
                         <Dropdown.Menu>
@@ -169,6 +173,7 @@ export function ComicPage() {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
+                <AddComicModal show={showModal} onHide={() => setShowModal(false)}/>
                 <Pagination className="mb-3 mt-2" align="center" current={currentPage} pageSize={displayComic} total={sortedAndFiltered.length} onChange={setCurrentPage}/>
                 <Comics comics={paginatedComics}/>
             </Section>

@@ -13,7 +13,6 @@ const comicConverter = {
         price: dataInApp.price,
         released: dataInApp.released,
         cover: dataInApp.cover,
-        synopsis: dataInApp.synopsis,
         genres: dataInApp.genres,
         author: dataInApp.author,
         artist: dataInApp.artist,
