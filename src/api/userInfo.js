@@ -1,4 +1,4 @@
-import {collection, query} from "firebase/firestore";
+import {collection, query, updateDoc, arrayUnion, arrayRemove} from "firebase/firestore";
 import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
@@ -21,4 +21,18 @@ export function useUserCollectionData(){
     const queryRef = query(collectionRef);
     const [users, loading, error] = useCollectionData(queryRef);
     return {users, loading, error}
+}
+
+export async function addOwnedComic(user, comic){
+    if(!user?.ref)return;
+    await updateDoc(user.ref, {
+        ownedComics: arrayUnion(comic.id)
+    });
+}
+
+export async function removeOwnedComic(user, comic){
+    if (!user?.ref)return;
+    await updateDoc(user.ref, {
+        ownedComics: arrayRemove(comic.id)
+    });
 }

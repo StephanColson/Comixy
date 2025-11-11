@@ -41,11 +41,11 @@ export function ComicPage(props) {
         setCurrentPage(1)
     }, [querySearch, numberSearch, releasedYear, minPrice, maxPrice, genreList, sortFilter]);
 
-    if(!comics){
+    if (!comics) {
         return <div>Loading Comics....</div>;
     }
 
-    function filterComics (comics){
+    function filterComics(comics) {
         return comics.filter(c => c.title.toLowerCase().includes(querySearch.toLowerCase())
             || c.author.toLowerCase().includes(querySearch.toLowerCase())
             || c.artist.toLowerCase().includes(querySearch.toLowerCase()))
@@ -60,11 +60,11 @@ export function ComicPage(props) {
             })
     }
 
-    function sorting(comics){
-        if (sortFilter === SORT_TITLE_ASC){
+    function sorting(comics) {
+        if (sortFilter === SORT_TITLE_ASC) {
             return [...comics].sort((a, b) => a.title.localeCompare(b.title))
         }
-        if (sortFilter === SORT_TITLE_DESC){
+        if (sortFilter === SORT_TITLE_DESC) {
             return [...comics].sort((a, b) => b.title.localeCompare(a.title))
         }
         if (sortFilter === SORT_PRICE_ASC) {
@@ -110,10 +110,9 @@ export function ComicPage(props) {
 
     return (
         <>
-            <div>
-                <h2 className="text-center">
-                    {selectedUser ? <h2>You can check your own comics or all comics here, {selectedUser.name}</h2> : <h2>You can check out all comics here</h2>}
-                </h2>
+            <div className="text-center">
+                {selectedUser ? <h2>You can check your own comics or all comics here, {selectedUser.name}</h2> :
+                    <h2>You can check out all comics here</h2>}
             </div>
             <Form className="my-4 mx-5">
                 <Row>
@@ -149,7 +148,7 @@ export function ComicPage(props) {
                                       placeholder="Genres"/>
                         <datalist id="genre-options">
                             {allGenres.map(g => (
-                                <option key={g} value={g} />
+                                <option key={g} value={g}/>
                             ))}
                         </datalist>
                         <Form.Control type="number"
@@ -179,10 +178,12 @@ export function ComicPage(props) {
                     </Dropdown>
                 </div>
                 <AddComicModal show={showModal} onHide={() => setShowModal(false)}/>
-                <Pagination className="mb-3 mt-2" align="center" current={currentPage} pageSize={displayComic} total={sortedAndFiltered.length} onChange={setCurrentPage}/>
-                <Comics comics={paginatedComics}/>
+                <Pagination className="mb-3 mt-2" align="center" current={currentPage} pageSize={displayComic}
+                            total={sortedAndFiltered.length} onChange={setCurrentPage}/>
+                <Comics comics={paginatedComics} selectedUser={selectedUser}/>
             </Section>
-            <Pagination className="my-3" align="center" current={currentPage} pageSize={displayComic} total={sortedAndFiltered.length} onChange={setCurrentPage}/>
+            <Pagination className="my-3" align="center" current={currentPage} pageSize={displayComic}
+                        total={sortedAndFiltered.length} onChange={setCurrentPage}/>
         </>
     )
 }

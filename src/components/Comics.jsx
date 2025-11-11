@@ -4,22 +4,37 @@ import {SectionCard} from "./SectionCard.jsx";
 import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {deleteComic, updateComic} from "../api/comicInfo.js";
+import {addOwnedComic, removeOwnedComic} from "../api/userInfo.js";
 
 function ComicDetails(props){
-    const {comic, show, onHide} = props;
+    const {comic, show, onHide, selectedUser} = props;
     const [isEditing, setIsEditing] = useState(false);
     const [editedComic, setEditedComic] = useState(comic);
+    const [owned, setOwned] = useState(false);
 
     useEffect(() => {
         setEditedComic(comic);
         setIsEditing(false);
-    }, [comic]);
+        setOwned(selectedUser?.ownedComics?.includes(comic?.id) || false);
+    }, [comic, selectedUser]);
+
+    const handleToggleOwned = async () => {
+        if (!selectedUser) return;
+
+        if (owned) {
+            await removeOwnedComic(selectedUser, comic);
+            setOwned(false);
+        } else {
+            await addOwnedComic(selectedUser, comic);
+            setOwned(true);
+        }
+    }
 
     if (!comic) return null;
 
     return(
         <>
-            <Modal show={show} onHide={onHide} centered>
+            <Modal key={selectedUser ? selectedUser.id : "no-user detected"} show={show} onHide={onHide} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>
                         {isEditing ? (
@@ -129,7 +144,13 @@ function ComicDetails(props){
                     )}
 
                 </Modal.Body>
-                <Modal.Footer>
+                <Modal.Footer className="d-flex justify-content-between align-items-center">
+                    <div>
+                        {selectedUser && !isEditing && (<Button variant={owned ? "outline-warning" : "outline-success"} onClick={handleToggleOwned}>
+                            {owned ? "remove from my library" : "Add to my library"}
+                        </Button>)}
+                    </div>
+
                     <div className="d-flex mt-3">
                         {isEditing ? (
                             <>
@@ -146,13 +167,15 @@ function ComicDetails(props){
                             </>
                         ) : (
                             <>
-                                <Button onClick={() => setIsEditing(true)}>Edit</Button>
-                                <Button className="mx-2" variant="danger"
-                                        onClick={async () => {
-                                            await deleteComic(comic);
-                                            onHide();
-                                        }}
-                                >Delete</Button>
+                                <div>
+                                    <Button onClick={() => setIsEditing(true)}>Edit</Button>
+                                    <Button className="mx-2" variant="danger"
+                                            onClick={async () => {
+                                                await deleteComic(comic);
+                                                onHide();
+                                            }}
+                                    >Delete</Button>
+                                </div>
                             </>
                         )}
                     </div>
@@ -176,7 +199,7 @@ function Comic(props) {
 }
 
 export function Comics(props) {
-    const {comics, carouselMode = false} = props;
+    const {comics, carouselMode = false, selectedUser} = props;
     const [selectedComic, setSelectedComic] = useState(null);
     const [showDetails, setShowDetails] = useState(false);
 
@@ -195,6 +218,7 @@ export function Comics(props) {
                     comic={selectedComic}
                     show={showDetails}
                     onHide={() => { setSelectedComic(null); setShowDetails(false); }}
+                    selectedUser={selectedUser}
                 />
             </>
         );
@@ -212,9 +236,11 @@ export function Comics(props) {
                 ))}
             </FlipMove>
 
-            <ComicDetails comic={selectedComic} show={showDetails} onHide={() => {
-                setSelectedComic(null), setShowDetails(false)
-            }}/>
+            <ComicDetails
+                comic={selectedComic}
+                show={showDetails}
+                onHide={() => {setSelectedComic(null), setShowDetails(false)}}
+                selectedUser={selectedUser}/>
         </Section>
     )
 }
