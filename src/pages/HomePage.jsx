@@ -3,7 +3,7 @@ import {Carousel, Badge} from "react-bootstrap";
 import {Comics} from "../components/Comics.jsx";
 
 export function HomePage(props) {
-    const {comics} = props;
+    const {comics, selectedUser} = props;
     const latestComics = comics.slice(-5)
 
     const allGenres = [...new Set(
@@ -13,7 +13,7 @@ export function HomePage(props) {
     return (
         <>
             <div className="text-center">
-                <h1>Welcome to the comic library!</h1>
+                 {selectedUser ? <h2>Welcome {selectedUser.name} to the comic library!</h2> : <h2>Welcome to the comic library!</h2>}
             </div>
 
             <div className="text-center">

@@ -14,7 +14,7 @@ const SORT_YEAR_ASC = "YEAR_ASC";
 const SORT_YEAR_DESC = "YEAR_DESC";
 
 export function ComicPage(props) {
-    const {comics} = props;
+    const {comics, selectedUser} = props;
     const [showModal, setShowModal] = useState(false);
 
     /*Search Filters*/
@@ -110,6 +110,11 @@ export function ComicPage(props) {
 
     return (
         <>
+            <div>
+                <h2 className="text-center">
+                    {selectedUser ? <h2>You can check your own comics or all comics here, {selectedUser.name}</h2> : <h2>You can check out all comics here</h2>}
+                </h2>
+            </div>
             <Form className="my-4 mx-5">
                 <Row>
                     <Col lg={12} xl={12} className="mb-3">

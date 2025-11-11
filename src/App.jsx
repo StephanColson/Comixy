@@ -9,13 +9,14 @@ import {HomePage} from "./pages/HomePage.jsx";
 import {useComicCollectionData} from "./api/comicInfo.js";
 import {Dropdown, Nav, Navbar, Container} from "react-bootstrap";
 import {useState} from "react";
+import {useUserCollectionData} from "./api/userInfo.js";
 
 const NAV_HOME = "NAV_HOME";
 const NAV_COMIC_SHELF = "NAV_COMIC_SHELF";
 const NAV_USERS = "NAV_USERS";
 
 function NavigationBar(props){
-    const {activeNavBarItem, onSelectNavBarItem} = props;
+    const {activeNavBarItem, onSelectNavBarItem, users, selectedUser, onSelectedUser} = props;
 
     return (
         <>
@@ -34,9 +35,17 @@ function NavigationBar(props){
                             </Nav.Item>
 
                             <Dropdown>
-                                <Dropdown.Toggle variant="dark">UserList</Dropdown.Toggle>
+                                <Dropdown.Toggle variant="dark">
+                                    {selectedUser ? selectedUser.name : "select user"}
+                                </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item eventKey={NAV_USERS}>User1</Dropdown.Item>
+                                    {users?.map((user) => (
+                                        <Dropdown.Item
+                                            key={user.id}
+                                            onClick={() => onSelectedUser(user)}>
+                                            {user.name}
+                                        </Dropdown.Item>
+                                    ))}
                                 </Dropdown.Menu>
                             </Dropdown>
                         </Nav>
@@ -48,14 +57,14 @@ function NavigationBar(props){
 }
 
 function ActivePage(props){
-    const {activeNavBarItem} = props;
+    const {activeNavBarItem, selectedUser} = props;
     const {comics, loading, error} = useComicCollectionData();
 
     switch (activeNavBarItem) {
         case NAV_HOME:
-            return <HomePage comics={comics || []}/>;
+            return <HomePage comics={comics || []} selectedUser={selectedUser}/>;
         case NAV_COMIC_SHELF:
-            return <ComicPage comics={comics}/>;
+            return <ComicPage comics={comics} selectedUser={selectedUser}/>;
         default:
             return;
     }
@@ -63,13 +72,22 @@ function ActivePage(props){
 
 function App() {
     const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_HOME);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const {users, loading, error} = useUserCollectionData();
+
+
+    if (loading) return <div>Loading users...</div>;
+    if (error) return <div>Error loading users</div>;
 
     return (
         <>
             <NavigationBar activeNavBarItem={activeNavBarItem}
-                      onSelectNavBarItem={setActiveNavBarItem}/>
+                      onSelectNavBarItem={setActiveNavBarItem}
+                           selectedUser={selectedUser}
+                           onSelectedUser={setSelectedUser}
+                           users={users}/>
             <div style={{marginTop: "70px"}}>
-                <ActivePage activeNavBarItem={activeNavBarItem}/>
+                <ActivePage activeNavBarItem={activeNavBarItem} selectedUser={selectedUser}/>
             </div>
         </>
     )
