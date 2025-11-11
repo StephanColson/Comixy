@@ -173,9 +173,11 @@ export function ComicPage(props) {
                 <div className="text-center mb-3">
                     <div className="mb-2">
                         <Button className="mx-2 btn-warning" onClick={() => setShowModal(true)}>New Comic</Button>
-                        <Button className="mx-2 btn-warning" onClick={() => setShowMyComics(smc => !smc)}>
-                            {showMyComics ? "All Comics" : "My Comics"}
-                        </Button>
+                        {selectedUser && (
+                            <Button className="mx-2 btn-warning" onClick={() => setShowMyComics(smc => !smc)}>
+                                {showMyComics ? "All Comics" : "My Comics"}
+                            </Button>
+                        )}
                     </div>
                     <Dropdown>
                         <Dropdown.Toggle variant="warning">Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
