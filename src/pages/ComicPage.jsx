@@ -16,6 +16,7 @@ const SORT_YEAR_DESC = "YEAR_DESC";
 export function ComicPage(props) {
     const {comics, selectedUser} = props;
     const [showModal, setShowModal] = useState(false);
+    const [showMyComics, setShowMyComics] = useState(false);
 
     /*Search Filters*/
     const [querySearch, setQuerySearch] = useState("");
@@ -98,8 +99,12 @@ export function ComicPage(props) {
     }
      */
 
+    const listComics = showMyComics && selectedUser
+        ? comics.filter(c => selectedUser.ownedComics?.includes(c.id))
+        : comics;
+
     /*Combine Filter and Sorting to work together*/
-    const filteredComic = filterComics(comics);
+    const filteredComic = filterComics(listComics);
     const sortedAndFiltered = sorting(filteredComic);
 
     /*Pagination*/
@@ -161,7 +166,12 @@ export function ComicPage(props) {
 
             <Section title="Catalog">
                 <div className="text-center mb-3">
-                    <Button className="mb-2 btn-warning" onClick={() => setShowModal(true)}>New Comic</Button>
+                    <div className="mb-2">
+                        <Button className="mx-2 btn-warning" onClick={() => setShowModal(true)}>New Comic</Button>
+                        <Button className="mx-2 btn-warning" onClick={() => setShowMyComics(smc => !smc)}>
+                            {showMyComics ? "All Comics" : "My Comics"}
+                        </Button>
+                    </div>
                     <Dropdown>
                         <Dropdown.Toggle variant="warning">Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
                         <Dropdown.Menu>

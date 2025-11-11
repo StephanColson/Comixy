@@ -12,6 +12,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@uidotdev/usehooks": "^2.4.1",
     "bootstrap": "^5.3.8",
     "firebase": "^12.4.0",
     "normalize.css": "^8.0.1",

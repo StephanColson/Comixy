@@ -8,7 +8,7 @@ import {ComicPage} from "./pages/ComicPage.jsx";
 import {HomePage} from "./pages/HomePage.jsx";
 import {useComicCollectionData} from "./api/comicInfo.js";
 import {Dropdown, Nav, Navbar, Container} from "react-bootstrap";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useUserCollectionData} from "./api/userInfo.js";
 
 const NAV_HOME = "NAV_HOME";
@@ -16,6 +16,11 @@ const NAV_COMIC_SHELF = "NAV_COMIC_SHELF";
 
 function NavigationBar(props){
     const {activeNavBarItem, onSelectNavBarItem, users, selectedUser, onSelectedUser} = props;
+
+    const handleLogout = () => {
+        localStorage.removeItem("selectedUser");
+        onSelectedUser(null);
+    };
 
     return (
         <>
@@ -35,7 +40,7 @@ function NavigationBar(props){
 
                             <Dropdown>
                                 <Dropdown.Toggle variant="dark">
-                                    {selectedUser ? selectedUser.name : "select user"}
+                                    {selectedUser ? selectedUser.name : "Log in"}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     {users?.map((user) => (
@@ -47,6 +52,15 @@ function NavigationBar(props){
                                     ))}
                                 </Dropdown.Menu>
                             </Dropdown>
+
+                            {selectedUser && (
+                                <button
+                                    className="btn btn-outline-light ms-3"
+                                    onClick={handleLogout}
+                                >
+                                    Log out
+                                </button>
+                            )}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -73,6 +87,21 @@ function App() {
     const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_HOME);
     const [selectedUser, setSelectedUser] = useState(null);
     const {users, loading, error} = useUserCollectionData();
+
+    useEffect(() => {
+        const savedUser = localStorage.getItem("selectedUser");
+        if (savedUser) {
+            setSelectedUser(JSON.parse(savedUser));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (selectedUser) {
+            localStorage.setItem("selectedUser", JSON.stringify(selectedUser));
+        } else {
+            localStorage.removeItem("selectedUser");
+        }
+    }, [selectedUser]);
 
 
     if (loading) return <div>Loading users...</div>;
