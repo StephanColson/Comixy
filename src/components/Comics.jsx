@@ -188,12 +188,15 @@ function ComicDetails(props){
 function Comic(props) {
     const {comic, onClick} = props;
     return (
-        <SectionCard
-            coverImg={comic.cover}
-            title={comic.title}
-            price={comic.price}
-            genres={comic.genres.join(", ")}
-            onClick={onClick}>
+        <SectionCard coverImg={comic.cover} onClick={onClick}>
+            <div className="fw-bold">{comic.title} {comic.numberName}</div>
+            <hr />
+            <div className="text-muted">{(comic.genres || []).join(", ")}</div>
+            {comic.price && (
+                <div className="mt-3 text-info fw-bold fs-5 bg-secondary-subtle rounded">
+                    {comic.price} €
+                </div>
+            )}
         </SectionCard>
     )
 }

@@ -1,7 +1,7 @@
 import {Card} from "react-bootstrap";
 
 export function SectionCard(props) {
-    const {coverImg, title, price, genres, onClick} = props;
+    const {coverImg, children, onClick} = props;
 
     return <>
         <Card className="mb-2" onClick={onClick}>
@@ -9,13 +9,8 @@ export function SectionCard(props) {
                 <Card.Img src={coverImg} className="object-fit-cover"/>
             )}
             <Card.Body className={"text-center"}>
-                {title}
-                <hr/>
-                {genres}
+                {children}
             </Card.Body>
-            <Card.Footer className="text-center">
-                {price && `${price} €`}
-            </Card.Footer>
         </Card>
     </>
 }
