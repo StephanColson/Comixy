@@ -3,7 +3,6 @@ import {Comics} from "../components/Comics.jsx";
 import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import Pagination from "rc-pagination";
-import {useComicCollectionData} from "../api/comicInfo.js";
 import {AddComicModal} from "../components/AddComicModal.jsx";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
@@ -14,7 +13,7 @@ const SORT_YEAR_ASC = "YEAR_ASC";
 const SORT_YEAR_DESC = "YEAR_DESC";
 
 export function ComicPage(props) {
-    const {comics, selectedUser} = props;
+    const {comics, selectedUser, initialGenre} = props;
     const [showModal, setShowModal] = useState(false);
     const [showMyComics, setShowMyComics] = useState(false);
 
@@ -45,6 +44,12 @@ export function ComicPage(props) {
     if (!comics) {
         return <div>Loading Comics....</div>;
     }
+
+    useEffect(() => {
+        if (initialGenre) {
+            setGenreList(initialGenre);
+        }
+    }, [initialGenre]);
 
     function filterComics(comics) {
         return comics.filter(c => c.title.toLowerCase().includes(querySearch.toLowerCase())

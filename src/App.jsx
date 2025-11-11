@@ -70,14 +70,19 @@ function NavigationBar(props){
 }
 
 function ActivePage(props){
-    const {activeNavBarItem, selectedUser} = props;
+    const {activeNavBarItem, selectedUser, initialGenre, setInitialGenre, setActiveNavBarItem} = props;
     const {comics, loading, error} = useComicCollectionData();
 
     switch (activeNavBarItem) {
         case NAV_HOME:
-            return <HomePage comics={comics || []} selectedUser={selectedUser}/>;
+            return <HomePage comics={comics || []}
+                             selectedUser={selectedUser}
+                             setInitialGenre={setInitialGenre}
+                             setActiveNavBarItem={setActiveNavBarItem}/>;
         case NAV_COMIC_SHELF:
-            return <ComicPage comics={comics} selectedUser={selectedUser}/>;
+            return <ComicPage comics={comics}
+                              selectedUser={selectedUser}
+                              initialGenre={initialGenre}/>;
         default:
             return;
     }
@@ -85,7 +90,10 @@ function ActivePage(props){
 
 function App() {
     const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_HOME);
+
     const [selectedUser, setSelectedUser] = useState(null);
+    const [initialGenre, setInitialGenre] = useState("");
+
     const {users, loading, error} = useUserCollectionData();
 
     useEffect(() => {
@@ -131,7 +139,12 @@ function App() {
                            onSelectedUser={setSelectedUser}
                            users={users}/>
             <div style={{marginTop: "70px"}}>
-                <ActivePage activeNavBarItem={activeNavBarItem} selectedUser={selectedUser}/>
+                <ActivePage
+                    activeNavBarItem={activeNavBarItem}
+                    selectedUser={selectedUser}
+                    initialGenre={initialGenre}
+                    setInitialGenre={setInitialGenre}
+                    setActiveNavBarItem={setActiveNavBarItem}/>
             </div>
         </>
     )

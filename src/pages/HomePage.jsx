@@ -4,7 +4,7 @@ import {Comics} from "../components/Comics.jsx";
 import {useLatestComics} from "../api/comicInfo.js";
 
 export function HomePage(props) {
-    const {comics, selectedUser} = props;
+    const {comics, selectedUser, setInitialGenre, setActiveNavBarItem} = props;
     const {latest = [], loading} = useLatestComics(5);
 
     const allGenres = [...new Set(
@@ -24,7 +24,10 @@ export function HomePage(props) {
                 {allGenres.map((g, i) => (
                     <Carousel.Item key={i}>
                         <div className="d-flex justify-content-center align-items-center flex-wrap py-3">
-                            <Badge bg="info" className="mx-2 mb-4 p-2 fs-5">
+                            <Badge bg="info" className="mx-2 mb-4 p-2 fs-5" onClick={() => {
+                                setInitialGenre(g);
+                                setActiveNavBarItem("NAV_COMIC_SHELF");
+                            }}>
                                 {g}
                             </Badge>
                         </div>
