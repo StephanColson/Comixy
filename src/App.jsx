@@ -13,7 +13,6 @@ import {useUserCollectionData} from "./api/userInfo.js";
 
 const NAV_HOME = "NAV_HOME";
 const NAV_COMIC_SHELF = "NAV_COMIC_SHELF";
-const NAV_USERS = "NAV_USERS";
 
 function NavigationBar(props){
     const {activeNavBarItem, onSelectNavBarItem, users, selectedUser, onSelectedUser} = props;
