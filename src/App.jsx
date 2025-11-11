@@ -103,6 +103,22 @@ function App() {
         }
     }, [selectedUser]);
 
+    useEffect(() => {
+        if (selectedUser) {
+            localStorage.setItem("selectedUser", JSON.stringify(selectedUser));
+        } else {
+            localStorage.removeItem("selectedUser");
+        }
+    }, [selectedUser]);
+
+    useEffect(() => {
+        if (!selectedUser || !users) return;
+        const liveUser = users.find(u => u.id === selectedUser.id);
+        if (liveUser && JSON.stringify(liveUser) !== JSON.stringify(selectedUser)) {
+            setSelectedUser(liveUser);
+        }
+    }, [users, selectedUser]);
+
 
     if (loading) return <div>Loading users...</div>;
     if (error) return <div>Error loading users</div>;
