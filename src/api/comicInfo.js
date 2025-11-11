@@ -1,4 +1,4 @@
-import {deleteDoc, updateDoc, addDoc, collection, query} from "firebase/firestore";
+import {deleteDoc, updateDoc, addDoc, collection, query, orderBy, limit, serverTimestamp} from "firebase/firestore";
 import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
@@ -17,6 +17,7 @@ const comicConverter = {
         author: dataInApp.author,
         artist: dataInApp.artist,
         publisher: dataInApp.publisher,
+        createdAt: dataInApp.createdAt,
     }),
     fromFirestore: (snapshot, option) => {
         const data = snapshot.data(option);
@@ -33,7 +34,7 @@ export function useComicCollectionData(){
 
 export async function addComic(newComic){
     const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME).withConverter(comicConverter);
-    await addDoc(collectionRef, newComic);
+    await addDoc(collectionRef, {...newComic, createdAt: serverTimestamp()});
 }
 
 export async function updateComic(comic){
@@ -42,6 +43,13 @@ export async function updateComic(comic){
 
 export async function deleteComic(removeComic){
     await deleteDoc(removeComic.ref);
+}
+
+export function useLatestComics(limitCount = 5) {
+    const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME).withConverter(comicConverter);
+    const q = query(collectionRef, orderBy('createdAt', 'desc'), limit(limitCount));
+    const [latest, loading, error] = useCollectionData(q);
+    return { latest, loading, error };
 }
 
 export async function addComics(comicsToAdd){

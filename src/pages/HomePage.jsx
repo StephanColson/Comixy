@@ -1,10 +1,11 @@
 import {Section} from "../components/Section.jsx";
 import {Carousel, Badge} from "react-bootstrap";
 import {Comics} from "../components/Comics.jsx";
+import {useLatestComics} from "../api/comicInfo.js";
 
 export function HomePage(props) {
     const {comics, selectedUser} = props;
-    const latestComics = comics.slice(-5)
+    const {latest = [], loading} = useLatestComics(5);
 
     const allGenres = [...new Set(
         comics.flatMap(c => Array.isArray(c.genres) ? c.genres : [])
@@ -36,7 +37,7 @@ export function HomePage(props) {
                     <h3>Recently added</h3>
                 </div>
                 <Carousel interval={3000} pause="hover">
-                    {latestComics.map(c => (
+                    {latest.map(c => (
                         <Carousel.Item key={c.id}>
                             <Comics comics={[c]} carouselMode={true}/>
                         </Carousel.Item>
