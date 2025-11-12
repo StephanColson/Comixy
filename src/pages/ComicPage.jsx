@@ -81,11 +81,14 @@ export function ComicPage(props) {
             .filter(c => !minPrice || Number(minPrice) <= c.price)
             .filter(c => !maxPrice || c.price <= Number(maxPrice))
             .filter(c => !numberSearch || c.bookNumber === Number(numberSearch))
-            .filter(c => !releasedYear || c.released === Number(releasedYear))
+            .filter(c => {
+                if (!releasedYear) return true;
+                return c.released.toString().includes(releasedYear.toString());
+            })
             .filter(c => {
                 if (!genreList) return true;
                 const inputGenres = genreList.split(",").map(g => g.trim().toLowerCase()).filter(g => g);
-                return inputGenres.every(ig => c.genres.some(g => g.toLowerCase() === ig));
+                return inputGenres.every(ig => c.genres.some(g => g.toLowerCase().includes(ig)));
             })
     }
 

@@ -196,7 +196,7 @@ function ComicDetails(props) {
                                     <p>Author: {comic.author?.trim() || "unknown"}</p>
                                     <p>Artist: {comic.artist?.trim() || "unknown"}</p>
                                     <p>Publisher: {comic.publisher?.trim() || "unknown"}</p>
-                                    <p>Year Published: {comic.released?.trim() || "unknown"}</p>
+                                    <p>Year Published: {comic.released || "unknown"}</p>
                                     <p>Genres: {comic.genres?.length ? comic.genres.join(", ") : "unknown"}</p>
                                 </div>
                             </div>
