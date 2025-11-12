@@ -62,7 +62,7 @@ export function ComicPage(props) {
             .filter(c => {
                 if (!genreList) return true;
                 const inputGenres = genreList.split(",").map(g => g.trim().toLowerCase()).filter(g => g);
-                return c.genres.some(genre => inputGenres.includes(genre.toLowerCase()));
+                return inputGenres.every(ig => c.genres.some(g => g.toLowerCase() === ig));
             })
     }
 
