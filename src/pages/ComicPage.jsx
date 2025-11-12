@@ -4,6 +4,7 @@ import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import Pagination from "rc-pagination";
 import {AddComicModal} from "../components/AddComicModal.jsx";
+import {addComic, updateComic} from "../api/comicInfo.js";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
 const SORT_TITLE_DESC = "TITLE_DESC";
@@ -16,6 +17,28 @@ export function ComicPage(props) {
     const {comics, selectedUser, initialGenre} = props;
     const [showModal, setShowModal] = useState(false);
     const [showMyComics, setShowMyComics] = useState(false);
+
+    const [validated, setValidated] = useState(false);
+
+    const handleSave = async (comicData, form) => {
+        if (!form.checkValidity()) {
+            setValidated(true);
+            return false;
+        }
+
+        //Edit button anders New Comic
+        if (comicData.id) {
+            await updateComic(comicData);
+        } else {
+            await addComic({
+                ...comicData,
+                genres: comicData.genres.map(g => g.trim()).filter(g => g),
+            });
+        }
+
+        setValidated(false);
+        return true;
+    };
 
     /*Search Filters*/
     const [querySearch, setQuerySearch] = useState("");
@@ -171,14 +194,14 @@ export function ComicPage(props) {
 
             <Section title="Catalog">
                 <div className="text-center mb-3">
-                    <div className="mb-2">
-                        <Button className="mx-2 btn-warning" onClick={() => setShowModal(true)}>New Comic</Button>
-                        {selectedUser && (
+                    {selectedUser && (
+                        <div className="mb-2">
+                            <Button className="mx-2 btn-warning" onClick={() => setShowModal(true)}>New Comic</Button>
                             <Button className="mx-2 btn-warning" onClick={() => setShowMyComics(smc => !smc)}>
                                 {showMyComics ? "All Comics" : "My Comics"}
                             </Button>
-                        )}
-                    </div>
+                        </div>
+                    )}
                     <Dropdown>
                         <Dropdown.Toggle variant="warning">Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
                         <Dropdown.Menu>
@@ -194,10 +217,17 @@ export function ComicPage(props) {
                         </Dropdown.Menu>
                     </Dropdown>
                 </div>
-                <AddComicModal show={showModal} onHide={() => setShowModal(false)}/>
+                <AddComicModal show={showModal}
+                               onHide={() => setShowModal(false)}
+                               validated={validated}
+                               handleSave={handleSave}/>
                 <Pagination className="mb-3 mt-2" align="center" current={currentPage} pageSize={displayComic}
                             total={sortedAndFiltered.length} onChange={setCurrentPage}/>
-                <Comics comics={paginatedComics} selectedUser={selectedUser}/>
+                <Comics comics={paginatedComics}
+                        selectedUser={selectedUser}
+                        validated={validated}
+                        setValidated={setValidated}
+                        handleSave={handleSave}/>
             </Section>
             <Pagination className="my-3" align="center" current={currentPage} pageSize={displayComic}
                         total={sortedAndFiltered.length} onChange={setCurrentPage}/>

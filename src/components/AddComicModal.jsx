@@ -1,10 +1,8 @@
 import {useState} from "react";
-import {addComic} from "../api/comicInfo.js";
 import {Button, Form, Modal, Row, Col} from "react-bootstrap";
 
 export function AddComicModal(props) {
-    const {show, onHide, onAdd} = props;
-    const [validated, setValidated] = useState(false);
+    const {show, onHide, validated, handleSave} = props;
     const [newComic, setNewComic] = useState({
         title: "",
         serie: "",
@@ -19,56 +17,48 @@ export function AddComicModal(props) {
         publisher: ""
     });
 
-    const handleSave = async (event) => {
+    const handleSubmit = async (event) => {
         const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
+        const success = await handleSave(newComic, form);
 
-        if (!form.checkValidity()) {
-            setValidated(true);
-            return;
+        if (success) {
+            setNewComic({
+                title: "",
+                serie: "",
+                bookNumber: null,
+                numberName: "",
+                price: "",
+                released: "",
+                cover: "",
+                synopsis: "",
+                genres: [],
+                author: "",
+                artist: "",
+                publisher: "",
+            });
+            onHide();
         }
-
-        await addComic({
-            ...newComic,
-            genres: newComic.genres.map(g => g.trim()).filter(g => g),
-        });
-
-        setNewComic({
-            title: "",
-            serie: "",
-            bookNumber: null,
-            numberName: "",
-            price: "",
-            released: "",
-            cover: "",
-            synopsis: "",
-            genres: [],
-            author: "",
-            artist: "",
-            publisher: "",
-        });
-
-        setValidated(false);
-        onHide();
     };
 
     const required = <span className="text-danger">(Required)</span>
 
     return (
         <Modal show={show} onHide={onHide} centered>
-            <Form noValidate validated={validated} onSubmit={handleSave}>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Modal.Header closeButton>
                     <Modal.Title>New Comic</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Row>
                         <Col className="my-2" xl={12} lg={12}>
-                            <Form.Label>Cover Img:</Form.Label>
-                            <Form.Control
+                            <Form.Label>Cover Img: {required}</Form.Label>
+                            <Form.Control required
                                 type="text"
                                 value={newComic.cover}
                                 onChange={e => setNewComic({...newComic, cover: e.target.value})}/>
+                            <Form.Control.Feedback type="invalid">Image link required!</Form.Control.Feedback>
                         </Col>
 
                         <Col xl={12}>
