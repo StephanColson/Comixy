@@ -3,7 +3,7 @@ import {Section} from "./Section.jsx";
 import {SectionCard} from "./SectionCard.jsx";
 import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import {useEffect, useState} from "react";
-import {deleteComic, updateComic} from "../api/comicInfo.js";
+import {deleteComic, updateComic, uploadFile} from "../api/comicInfo.js";
 import {addOwnedComic, removeOwnedComic} from "../api/userInfo.js";
 
 function ComicDetails(props) {
@@ -17,7 +17,16 @@ function ComicDetails(props) {
         event.stopPropagation();
         const form = event.currentTarget;
 
-        const success = await handleSave(editedComic, form);
+        const comicToSave = editedComic.coverFile
+            ? {
+                ...editedComic,
+                cover: await uploadFile(editedComic.coverFile),
+            }
+            : { ...editedComic };
+
+        const { coverFile, ...comicData } = comicToSave;
+
+        const success = await handleSave(comicData, form);
 
         if (success) {
             setIsEditing(false);
@@ -97,11 +106,10 @@ function ComicDetails(props) {
                                 <Col className="mt-1" xl={12} lg={12}>
                                     <Form.Label>Cover Img:</Form.Label>
                                     <Form.Control required
-                                                  type="text"
-                                                  value={editedComic.cover}
+                                                  type="file"
                                                   onChange={e => setEditedComic({
                                                       ...editedComic,
-                                                      cover: e.target.value
+                                                      coverFile: e.target.files[0]
                                                   })}/>
                                     <Form.Control.Feedback type="invalid">Image link required!</Form.Control.Feedback>
                                 </Col>

@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {Button, Form, Modal, Row, Col} from "react-bootstrap";
-
+import {uploadFile} from "../api/comicInfo.js";
 export function AddComicModal(props) {
     const {show, onHide, validated, handleSave} = props;
     const [newComic, setNewComic] = useState({
@@ -21,7 +21,17 @@ export function AddComicModal(props) {
         const form = event.currentTarget;
         event.preventDefault();
         event.stopPropagation();
-        const success = await handleSave(newComic, form);
+
+        const coverUrl = newComic.coverFile ? await uploadFile(newComic.coverFile) : "";
+
+        const comicToSave = {
+            ...newComic,
+            cover: coverUrl,
+        };
+
+        delete comicToSave.coverFile;
+
+        const success = await handleSave(comicToSave, form);
 
         if (success) {
             setNewComic({
@@ -55,9 +65,8 @@ export function AddComicModal(props) {
                         <Col className="my-2" xl={12} lg={12}>
                             <Form.Label>Cover Img: {required}</Form.Label>
                             <Form.Control required
-                                type="text"
-                                value={newComic.cover}
-                                onChange={e => setNewComic({...newComic, cover: e.target.value})}/>
+                                type="file"
+                                onChange={e => setNewComic({...newComic, coverFile: e.target.files[0]})}/>
                             <Form.Control.Feedback type="invalid">Image link required!</Form.Control.Feedback>
                         </Col>
 

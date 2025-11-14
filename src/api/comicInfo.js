@@ -3,7 +3,7 @@ import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {supabase} from "./supabase.js";
 
-async function uploadFile(file) {
+export async function uploadFile(file) {
     if(!file) throw new Error("No files selected");
 
     const filePath = `covers/${Date.now()}-${file.name}`;
