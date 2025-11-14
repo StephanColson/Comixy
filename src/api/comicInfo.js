@@ -1,6 +1,24 @@
 import {deleteDoc, updateDoc, addDoc, collection, query, orderBy, limit, serverTimestamp} from "firebase/firestore";
 import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
+import {supabase} from "./supabase.js";
+
+async function uploadFile(file) {
+    if(!file) throw new Error("No files selected");
+
+    const filePath = `covers/${Date.now()}-${file.name}`;
+    const { data, error } = await supabase.storage.from('comic-covers').upload(filePath, file)
+    if (error) {
+        console.log("Upload error:", error);
+        throw error;
+    }
+
+    const { data: publicData } = supabase
+        .storage
+        .from("comic-covers")
+        .getPublicUrl(filePath);
+    return publicData.publicUrl;
+}
 
 const COMIC_COLLECTION_NAME = 'comics';
 
