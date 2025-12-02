@@ -36,7 +36,7 @@ function NavigationBar(props){
                             </Nav.Item>
 
                             <Nav.Item>
-                                <Nav.Link eventKey={NAV_COMIC_SHELF}>Shelf</Nav.Link>
+                                <Nav.Link eventKey={NAV_COMIC_SHELF}>Catalog</Nav.Link>
                             </Nav.Item>
 
                             <Dropdown>

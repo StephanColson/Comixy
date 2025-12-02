@@ -1,7 +1,8 @@
 import {Section} from "../components/Section.jsx";
-import {Carousel, Badge} from "react-bootstrap";
+import {Carousel, Badge, Form, Row, Col} from "react-bootstrap";
 import {Comics} from "../components/Comics.jsx";
 import {useLatestComics} from "../api/comicInfo.js";
+import {useState} from "react";
 
 export function HomePage(props) {
     const {comics, selectedUser, setInitialGenre, setActiveNavBarItem} = props;
@@ -11,10 +12,18 @@ export function HomePage(props) {
         comics.flatMap(c => Array.isArray(c.genres) ? c.genres : [])
     )];
 
+    const [searchItem, setSearchItem] = useState("");
+    //const [serieSearch, setSerieSearch] = useState("");
+    //const [searchVolume, setSearchVolume] = useState("");
+
+    const [publishedYear, setPublishedYear] = useState("");
+
+    const [genreList, setGenreList] = useState("");
+
     return (
         <>
             <div className="text-center">
-                 {selectedUser ? <h2>Welcome {selectedUser.name} to the comic library!</h2> : <h2>Welcome to the comic library!</h2>}
+                 {selectedUser ? <h2>Welcome {selectedUser.name} to Comyxius!</h2> : <h2>Welcome to Comyxius!</h2>}
             </div>
 
             <div className="text-center">
@@ -47,6 +56,26 @@ export function HomePage(props) {
                     ))}
                 </Carousel>
             </Section>
+
+            <div>
+                <Form className="my-4 mx-5">
+                    <Row>
+                        <Col lg={4} xl={4} md={12} className="mb-3">
+                            <Form.Control value={searchItem} onChange={e => setSearchItem(e.target.value)} placeholder="Zoek..."/>
+                        </Col>
+
+                        <Col lg={4} xl={4} md={6} className="mb-3">
+                            <Form.Control type="number" value={publishedYear} onChange={e => setPublishedYear(e.target.value)} placeholder="Uitgave jaar..."/>
+                        </Col>
+
+                        <Col lg={4} xl={4} md={6} className="mb-3">
+                            <Form.Control type="text" list="genre-tags" placeholder="Genres..."
+                                          value={genreList}
+                                          onChange={e => setGenreList(e.target.value)}/>
+                        </Col>
+                    </Row>
+                </Form>
+            </div>
         </>
     )
 }

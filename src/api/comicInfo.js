@@ -25,16 +25,15 @@ const COMIC_COLLECTION_NAME = 'comics';
 const comicConverter = {
     toFirestore: dataInApp => ({
         title: dataInApp.title,
-        serie: dataInApp.serie,
         bookNumber: dataInApp.bookNumber,
-        numberName: dataInApp.numberName,
         price: dataInApp.price,
-        released: dataInApp.released,
-        cover: dataInApp.cover,
+        year: dataInApp.year,
+        imageURL: dataInApp.imageURL,
         genres: dataInApp.genres,
-        author: dataInApp.author,
-        artist: dataInApp.artist,
-        publisher: dataInApp.publisher,
+        authorID: dataInApp.authorID,
+        artistID: dataInApp.artistID,
+        publisherID: dataInApp.publisherID,
+        serieID: dataInApp.serieID,
         createdAt: dataInApp.createdAt,
     }),
     fromFirestore: (snapshot, option) => {
