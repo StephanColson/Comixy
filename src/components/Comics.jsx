@@ -20,7 +20,7 @@ function ComicDetails(props) {
         const comicToSave = editedComic.coverFile
             ? {
                 ...editedComic,
-                cover: await uploadFile(editedComic.coverFile),
+                imageURL: await uploadFile(editedComic.coverFile),
             }
             : { ...editedComic };
 
@@ -75,19 +75,6 @@ function ComicDetails(props) {
                                     </Col>
 
                                     <Col xl={4} lg={4} md={6} sm={6} xs={6}>
-                                        <Form.Label>Display #:</Form.Label>
-                                        <Form.Control required
-                                                      type="text"
-                                                      value={editedComic.numberName}
-                                                      onChange={e => setEditedComic({
-                                                          ...editedComic,
-                                                          numberName: e.target.value
-                                                      })}/>
-                                        <Form.Control.Feedback type="invalid">Display #
-                                            required!</Form.Control.Feedback>
-                                    </Col>
-
-                                    <Col xl={4} lg={4} md={6} sm={6} xs={6}>
                                         <Form.Label>Book #:</Form.Label>
                                         <Form.Control required
                                                       type="text"
@@ -111,56 +98,56 @@ function ComicDetails(props) {
                                                       ...editedComic,
                                                       coverFile: e.target.files[0]
                                                   })}/>
-                                    <Form.Control.Feedback type="invalid">Image link required!</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">Accepted files: (.png, .webp, . jpeg, .jpg)</Form.Control.Feedback>
                                 </Col>
 
                                 <Col className="my-2" xl={12} lg={12}>
                                     <Form.Label>Serie:</Form.Label>
                                     <Form.Control type="text"
-                                                  value={editedComic.serie}
+                                                  value={editedComic.serieID}
                                                   onChange={e => setEditedComic({
                                                       ...editedComic,
-                                                      serie: e.target.value
+                                                      serieID: e.target.value
                                                   })}/>
                                 </Col>
 
                                 <Col xl={6} lg={6}>
                                     <Form.Label>Author:</Form.Label>
                                     <Form.Control type="text"
-                                                  value={editedComic.author}
+                                                  value={editedComic.authorID}
                                                   onChange={e => setEditedComic({
                                                       ...editedComic,
-                                                      author: e.target.value
+                                                      authorID: e.target.value
                                                   })}/>
                                 </Col>
 
                                 <Col xl={6} lg={6}>
                                     <Form.Label>Artist:</Form.Label>
                                     <Form.Control type="text"
-                                                  value={editedComic.artist}
+                                                  value={editedComic.artistID}
                                                   onChange={e => setEditedComic({
                                                       ...editedComic,
-                                                      artist: e.target.value
+                                                      artistID: e.target.value
                                                   })}/>
                                 </Col>
 
                                 <Col className="my-2" xl={12} lg={12}>
                                     <Form.Label>Publisher</Form.Label>
                                     <Form.Control type="text"
-                                                  value={editedComic.publisher}
+                                                  value={editedComic.publisherID}
                                                   onChange={e => setEditedComic({
                                                       ...editedComic,
-                                                      publisher: e.target.value
+                                                      publisherID: e.target.value
                                                   })}/>
                                 </Col>
 
                                 <Col xl={12} lg={12}>
                                     <Form.Label>Year Published:</Form.Label>
                                     <Form.Control type="text"
-                                                  value={editedComic.released}
+                                                  value={editedComic.year}
                                                   onChange={e => setEditedComic({
                                                       ...editedComic,
-                                                      released: e.target.value
+                                                      year: e.target.value
                                                   })}/>
                                 </Col>
 
@@ -195,16 +182,16 @@ function ComicDetails(props) {
                     </Form>) : (
                     <>
                         <Modal.Header>
-                            <Modal.Title>{`${comic.title} ${comic.numberName}`}</Modal.Title>
+                            <Modal.Title>{`${comic.title} ${comic.bookNumber}`}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
                             <div className="d-flex">
-                                <img src={comic.cover || "No cover image"} className="img-fluid w-50"/>
+                                <img src={comic.imageURL || "No cover image"} className="img-fluid w-50"/>
                                 <div className="mx-3">
-                                    <p>Author: {comic.author?.trim() || "unknown"}</p>
-                                    <p>Artist: {comic.artist?.trim() || "unknown"}</p>
-                                    <p>Publisher: {comic.publisher?.trim() || "unknown"}</p>
-                                    <p>Year Published: {comic.released || "unknown"}</p>
+                                    <p>Author: {comic.authorID?.trim() || "unknown"}</p>
+                                    <p>Artist: {comic.artistID?.trim() || "unknown"}</p>
+                                    <p>Publisher: {comic.publisherID?.trim() || "unknown"}</p>
+                                    <p>Year Published: {comic.year || "unknown"}</p>
                                     <p>Genres: {comic.genres?.length ? comic.genres.join(", ") : "unknown"}</p>
                                 </div>
                             </div>
@@ -242,8 +229,8 @@ function ComicDetails(props) {
 function Comic(props) {
     const {comic, onClick} = props;
     return (
-        <SectionCard coverImg={comic.cover} onClick={onClick}>
-            <div className="fw-bold">{comic.title} {comic.numberName}</div>
+        <SectionCard coverImg={comic.imageURL} onClick={onClick}>
+            <div className="fw-bold">{comic.title} {comic.bookNumber}</div>
             <hr/>
             <div className="text-muted">{(comic.genres || []).join(", ")}</div>
             {comic.price && (

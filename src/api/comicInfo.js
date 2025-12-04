@@ -20,7 +20,7 @@ export async function uploadFile(file) {
     return publicData.publicUrl;
 }
 
-const COMIC_COLLECTION_NAME = 'comics';
+const COMIC_COLLECTION_NAME = 'Comics';
 
 const comicConverter = {
     toFirestore: dataInApp => ({

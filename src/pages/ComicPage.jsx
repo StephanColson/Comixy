@@ -76,14 +76,14 @@ export function ComicPage(props) {
 
     function filterComics(comics) {
         return comics.filter(c => c.title.toLowerCase().includes(querySearch.toLowerCase())
-            || c.author.toLowerCase().includes(querySearch.toLowerCase())
-            || c.artist.toLowerCase().includes(querySearch.toLowerCase()))
+            || c.authorID?.toLowerCase().includes(querySearch.toLowerCase())
+            || c.artistID?.toLowerCase().includes(querySearch.toLowerCase()))
             .filter(c => !minPrice || Number(minPrice) <= c.price)
             .filter(c => !maxPrice || c.price <= Number(maxPrice))
             .filter(c => !numberSearch || c.bookNumber === Number(numberSearch))
             .filter(c => {
                 if (!releasedYear) return true;
-                return c.released.toString().includes(releasedYear.toString());
+                return c.year.toString().includes(releasedYear.toString());
             })
             .filter(c => {
                 if (!genreList) return true;
@@ -106,10 +106,10 @@ export function ComicPage(props) {
             return [...comics].sort((a, b) => b.price - a.price);
         }
         if (sortFilter === SORT_YEAR_ASC) {
-            return [...comics].sort((a, b) => a.released - b.released);
+            return [...comics].sort((a, b) => a.year - b.year);
         }
         if (sortFilter === SORT_YEAR_DESC) {
-            return [...comics].sort((a, b) => b.released - a.released);
+            return [...comics].sort((a, b) => b.year - a.year);
         }
         return comics
     }
@@ -158,18 +158,7 @@ export function ComicPage(props) {
                                       placeholder="Search..."/>
                     </Col>
 
-                    <Col lg={12} className="d-flex gap-4 mb-3">
-                        <Form.Control type="number"
-                                      value={minPrice}
-                                      onChange={e => setMinPrice(e.target.value)}
-                                      placeholder="Min price"/>
-
-                        <Form.Control type="number"
-                                      value={maxPrice}
-                                      onChange={e => setMaxPrice(e.target.value)}
-                                      placeholder="Max price"/>
-
-
+                    <Col lg={12} className="d-flex gap-4 mb-3">=
                         <Form.Control type="number"
                                       value={numberSearch}
                                       onChange={e => setNumberSearch(e.target.value)}
