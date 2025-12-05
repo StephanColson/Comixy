@@ -9,7 +9,7 @@ function Serie(props){
         <div>
             <ul>
                 <li>
-                    <p>{serie.title}</p>
+                    <h3 className="fs-4">{serie.title}</h3>
                 </li>
             </ul>
         </div>
@@ -21,7 +21,7 @@ export function Series(props){
 
     return <>
         <Section>
-            <FlipMove typeName={Row}>
+            <FlipMove typeName={Row} className="mt-2">
                 {series.map(s => <div key={s.id}>
                     <Serie serie={s}/>
                 </div>)}

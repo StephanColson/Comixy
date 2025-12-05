@@ -34,6 +34,7 @@ const comicConverter = {
         artistID: dataInApp.artistID,
         publisherID: dataInApp.publisherID,
         serieID: dataInApp.serieID,
+        collectionGroupID: dataInApp.collectionGroupID,
         createdAt: dataInApp.createdAt,
     }),
     fromFirestore: (snapshot, option) => {

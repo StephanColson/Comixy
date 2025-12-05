@@ -9,6 +9,7 @@ const serieConverter = {
     toFirestore: dataInApp => ({
         title: dataInApp.title,
         description: dataInApp.description,
+        franchiseID: dataInApp.franchiseID,
     }),
     fromFirestore: (snapshot, option) => {
         const data = snapshot.data(option);

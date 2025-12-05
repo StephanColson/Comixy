@@ -16,7 +16,7 @@ import {useSerieCollectionData} from "./api/serieInfo.js";
 
 const NAV_HOME = "NAV_HOME";
 const NAV_COMIC_SHELF = "NAV_COMIC_SHELF";
-const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG"
+const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
 
 function NavigationBar(props){
     const {activeNavBarItem, onSelectNavBarItem, users, selectedUser, onSelectedUser} = props;

@@ -23,7 +23,18 @@ export function HomePage(props) {
     return (
         <>
             <div className="text-center">
-                 {selectedUser ? <h2>Welcome {selectedUser.name} to Comyxius!</h2> : <h2>Welcome to Comyxius!</h2>}
+                {selectedUser ? <h2>Welcome {selectedUser.name} to Comyxius!</h2> : <h2>Welcome to Comyxius!</h2>}
+            </div>
+
+            <div>
+                <Form className="my-4 mx-5">
+                    <Row className="justify-content-center">
+                        <Col lg={6} xl={6} md={8} className="mb-3">
+                            <Form.Control value={searchItem} onChange={e => setSearchItem(e.target.value)}
+                                          placeholder="Search..."/>
+                        </Col>
+                    </Row>
+                </Form>
             </div>
 
             <div className="text-center">
@@ -56,26 +67,6 @@ export function HomePage(props) {
                     ))}
                 </Carousel>
             </Section>
-
-            <div>
-                <Form className="my-4 mx-5">
-                    <Row>
-                        <Col lg={4} xl={4} md={12} className="mb-3">
-                            <Form.Control value={searchItem} onChange={e => setSearchItem(e.target.value)} placeholder="Zoek..."/>
-                        </Col>
-
-                        <Col lg={4} xl={4} md={6} className="mb-3">
-                            <Form.Control type="number" value={publishedYear} onChange={e => setPublishedYear(e.target.value)} placeholder="Uitgave jaar..."/>
-                        </Col>
-
-                        <Col lg={4} xl={4} md={6} className="mb-3">
-                            <Form.Control type="text" list="genre-tags" placeholder="Genres..."
-                                          value={genreList}
-                                          onChange={e => setGenreList(e.target.value)}/>
-                        </Col>
-                    </Row>
-                </Form>
-            </div>
         </>
     )
 }
