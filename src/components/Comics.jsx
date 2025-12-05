@@ -226,13 +226,12 @@ function ComicDetails(props) {
     )
 }
 
-function Comic(props) {
+function ComicGallery(props) {
     const {comic, onClick} = props;
     return (
         <SectionCard coverImg={comic.imageURL} onClick={onClick}>
             <div className="fw-bold">{comic.title} {comic.bookNumber}</div>
             <hr/>
-            <div className="text-muted">{(comic.genres || []).join(", ")}</div>
             {comic.price && (
                 <div className="mt-3 text-info fw-bold fs-5 bg-secondary-subtle rounded">
                     {comic.price} €
@@ -240,6 +239,15 @@ function Comic(props) {
             )}
         </SectionCard>
     )
+}
+
+function ComicList(props){
+    const {comic} = props;
+    return <>
+        <div>
+            <h3 className="fs-4">{comic.title}</h3>
+        </div>
+    </>
 }
 
 export function Comics(props) {
@@ -253,7 +261,7 @@ export function Comics(props) {
                 <div className="d-flex justify-content-center">
                     {comics.map((c) => (
                         <div key={c.id} className="w-25 mb-5">
-                            <Comic comic={c} onClick={() => {
+                            <ComicGallery comic={c} onClick={() => {
                                 setSelectedComic(c);
                                 setShowDetails(true);
                             }}/>
@@ -277,13 +285,31 @@ export function Comics(props) {
     return (
         <Section>
             <FlipMove typeName={Row}>
-                {comics?.map(c => (
-                    <Col md={6} lg={3} xl={3} key={c.id}>
-                        <Comic comic={c} onClick={() => {
-                            setSelectedComic(c), setShowDetails(true)
-                        }}/>
-                    </Col>
-                ))}
+                <Col className="mt-4">
+                    <div>
+                        <ul>
+                            {comics.map(cl =>
+                                <li key={cl.id}>
+                                    <ComicList comic={cl}/>
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                </Col>
+
+                <Col className="mt-4">
+                    <div className="border border-dark">
+                        <Row className="m-2">
+                            {comics?.map(c => (
+                                <Col xl={4} lg={4} md={4} key={c.id}>
+                                    <ComicGallery comic={c} onClick={() => {
+                                        setSelectedComic(c), setShowDetails(true)
+                                    }}/>
+                                </Col>
+                            ))}
+                        </Row>
+                    </div>
+                </Col>
             </FlipMove>
 
             <ComicDetails

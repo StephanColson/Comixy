@@ -147,74 +147,19 @@ export function ComicPage(props) {
     return (
         <>
             <div className="text-center">
-                {selectedUser ? <h2>You can check your own comics or all comics here, {selectedUser.name}</h2> :
-                    <h2>You can check out all comics here</h2>}
+                <h2>Comics of {comics.serieID}</h2>
             </div>
             <Form className="my-4 mx-5">
-                <Row>
-                    <Col lg={12} xl={12} className="mb-3">
+                <Row className="justify-content-center">
+                    <Col lg={8} xl={8} className="mb-3">
                         <Form.Control value={querySearch}
                                       onChange={e => setQuerySearch(e.target.value)}
                                       placeholder="Search..."/>
                     </Col>
-
-                    <Col lg={12} className="d-flex gap-4 mb-3">=
-                        <Form.Control type="number"
-                                      value={numberSearch}
-                                      onChange={e => setNumberSearch(e.target.value)}
-                                      placeholder="Book number"/>
-                    </Col>
-
-                    <Col lg={12} className="d-flex gap-4">
-                        <Form.Control type="text"
-                                      list="genre-options"
-                                      value={genreList}
-                                      onChange={e => setGenreList(e.target.value)}
-                                      placeholder="Genres"/>
-                        <datalist id="genre-options">
-                            {allGenres.map(g => (
-                                <option key={g} value={g}/>
-                            ))}
-                        </datalist>
-                        <Form.Control type="number"
-                                      value={releasedYear}
-                                      onChange={e => setReleasedYear(e.target.value)}
-                                      placeholder="Year"/>
-                    </Col>
                 </Row>
             </Form>
 
-            <Section title="Catalog">
-                <div className="text-center mb-3">
-                    {selectedUser && (
-                        <div className="mb-2">
-                            <Button className="mx-2 btn-warning" onClick={() => setShowModal(true)}>New Comic</Button>
-                            <Button className="mx-2 btn-warning" onClick={() => setShowMyComics(smc => !smc)}>
-                                {showMyComics ? "All Comics" : "My Comics"}
-                            </Button>
-                        </div>
-                    )}
-                    <Dropdown>
-                        <Dropdown.Toggle variant="warning">Sort by: {sortLables[sortFilter]}</Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => setSortFilter(SORT_TITLE_ASC)}>A-Z</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSortFilter(SORT_TITLE_DESC)}>Z-A</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSortFilter(SORT_PRICE_ASC)}>Lowest -
-                                Highest</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSortFilter(SORT_PRICE_DESC)}>Highest -
-                                Lowest</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSortFilter(SORT_YEAR_ASC)}>Oldest - Recent</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSortFilter(SORT_YEAR_DESC)}>Recent - Oldest</Dropdown.Item>
-                            <Dropdown.Item onClick={() => setSortFilter(undefined)}>Default</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </div>
-                <AddComicModal show={showModal}
-                               onHide={() => setShowModal(false)}
-                               validated={validated}
-                               handleSave={handleSave}/>
-                <Pagination className="mb-3 mt-2" align="center" current={currentPage} pageSize={displayComic}
-                            total={sortedAndFiltered.length} onChange={setCurrentPage}/>
+            <Section>
                 <Comics comics={paginatedComics}
                         selectedUser={selectedUser}
                         validated={validated}
