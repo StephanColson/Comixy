@@ -39,10 +39,6 @@ function NavigationBar(props){
                             </Nav.Item>
 
                             <Nav.Item>
-                                <Nav.Link eventKey={NAV_COMIC_SHELF}>Collection Catalog</Nav.Link>
-                            </Nav.Item>
-
-                            <Nav.Item>
                                 <Nav.Link eventKey={NAV_SERIE_CATALOG}>Serie Catalog</Nav.Link>
                             </Nav.Item>
 
@@ -78,7 +74,9 @@ function NavigationBar(props){
 }
 
 function ActivePage(props){
-    const {activeNavBarItem, selectedUser, initialGenre, setInitialGenre, setActiveNavBarItem} = props;
+    const {activeNavBarItem, selectedUser, initialGenre, setInitialGenre,
+        setActiveNavBarItem, selectedSerieID, setSelectedSerieID} = props;
+
     const {comics, loading: comicsLoading, error: comicsError} = useComicCollectionData();
     const {series, loading: seriesLoading, error: seriesError} = useSerieCollectionData();
 
@@ -90,10 +88,15 @@ function ActivePage(props){
                              setActiveNavBarItem={setActiveNavBarItem}/>;
         case NAV_COMIC_SHELF:
             return <ComicPage comics={comics}
+                              selectedSerieID={selectedSerieID}
                               selectedUser={selectedUser}
                               initialGenre={initialGenre}/>;
         case NAV_SERIE_CATALOG:
-            return <SeriePage series={series}/>
+            return <SeriePage series={series}
+                              onSelectSerie={(serie) => {
+                                  setSelectedSerieID(serie.id);
+                                  setActiveNavBarItem(NAV_COMIC_SHELF);
+                              }}/>
         default:
             return;
     }
@@ -103,6 +106,7 @@ function App() {
     const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_HOME);
 
     const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedSerieID, setSelectedSerieID] = useState(null);
     const [initialGenre, setInitialGenre] = useState("");
 
     const {users, loading, error} = useUserCollectionData();
@@ -144,6 +148,8 @@ function App() {
             <div style={{marginTop: "70px"}}>
                 <ActivePage
                     activeNavBarItem={activeNavBarItem}
+                    selectedSerieID={selectedSerieID}
+                    setSelectedSerieID={setSelectedSerieID}
                     selectedUser={selectedUser}
                     initialGenre={initialGenre}
                     setInitialGenre={setInitialGenre}

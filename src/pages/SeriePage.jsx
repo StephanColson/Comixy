@@ -3,8 +3,10 @@ import {Col, Form, Row} from "react-bootstrap";
 import {useState} from "react";
 
 export function SeriePage(props){
-    const {series} = props;
+    const {series, onSelectSerie} = props;
     const [searchItem, setSearchItem] = useState("");
+
+    //const filteredSeries = series?.filter(s => s.title.toLowerCase().includes(searchItem.toLowerCase()) || [])
 
     return <>
         <h2 className="text-center">Catalog of series!</h2>
@@ -21,7 +23,7 @@ export function SeriePage(props){
         </div>
 
         <div>
-            <Series series={series}/>
+            <Series series={series} onSelectSerie={onSelectSerie}/>
         </div>
     </>
 }

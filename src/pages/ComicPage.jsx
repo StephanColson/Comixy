@@ -14,7 +14,7 @@ const SORT_YEAR_ASC = "YEAR_ASC";
 const SORT_YEAR_DESC = "YEAR_DESC";
 
 export function ComicPage(props) {
-    const {comics, selectedUser, initialGenre} = props;
+    const {comics, selectedUser, initialGenre, selectedSerieID} = props;
     const [showModal, setShowModal] = useState(false);
     const [showMyComics, setShowMyComics] = useState(false);
 
@@ -39,6 +39,7 @@ export function ComicPage(props) {
         setValidated(false);
         return true;
     };
+
 
     /*Search Filters*/
     const [querySearch, setQuerySearch] = useState("");
@@ -130,9 +131,13 @@ export function ComicPage(props) {
     }
      */
 
-    const listComics = showMyComics && selectedUser
-        ? comics.filter(c => selectedUser.ownedComics?.includes(c.id))
+    const baseComics = selectedSerieID
+        ? comics.filter(c => c.serieID === selectedSerieID)
         : comics;
+
+    const listComics = showMyComics && selectedUser
+        ? baseComics.filter(c => selectedUser.ownedComics?.includes(c.id))
+        : baseComics;
 
     /*Combine Filter and Sorting to work together*/
     const filteredComic = filterComics(listComics);
@@ -161,6 +166,7 @@ export function ComicPage(props) {
 
             <Section>
                 <Comics comics={paginatedComics}
+                        selectedSerieID={selectedSerieID}
                         selectedUser={selectedUser}
                         validated={validated}
                         setValidated={setValidated}

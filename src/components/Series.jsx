@@ -3,12 +3,12 @@ import FlipMove from "react-flip-move";
 import {Row} from "react-bootstrap";
 
 function Serie(props){
-    const {serie} = props;
+    const {serie, onSelect} = props;
 
     return <>
         <div>
             <ul>
-                <li>
+                <li onClick={() => onSelect(serie)}>
                     <h3 className="fs-4">{serie.title}</h3>
                 </li>
             </ul>
@@ -17,13 +17,13 @@ function Serie(props){
 }
 
 export function Series(props){
-    const {series} = props;
+    const {series, onSelectSerie} = props;
 
     return <>
         <Section>
             <FlipMove typeName={Row} className="mt-2">
-                {series.map(s => <div key={s.id}>
-                    <Serie serie={s}/>
+                {series?.map(s => <div key={s.id}>
+                    <Serie serie={s} onSelect={onSelectSerie}/>
                 </div>)}
             </FlipMove>
         </Section>
