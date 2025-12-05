@@ -11,9 +11,12 @@ import {useComicCollectionData} from "./api/comicInfo.js";
 import {Dropdown, Nav, Navbar, Container} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import {useUserCollectionData} from "./api/userInfo.js";
+import {SeriePage} from "./pages/SeriePage.jsx";
+import {useSerieCollectionData} from "./api/serieInfo.js";
 
 const NAV_HOME = "NAV_HOME";
 const NAV_COMIC_SHELF = "NAV_COMIC_SHELF";
+const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG"
 
 function NavigationBar(props){
     const {activeNavBarItem, onSelectNavBarItem, users, selectedUser, onSelectedUser} = props;
@@ -36,11 +39,11 @@ function NavigationBar(props){
                             </Nav.Item>
 
                             <Nav.Item>
-                                <Nav.Link eventKey={NAV_COMIC_SHELF}>Comic Catalog</Nav.Link>
+                                <Nav.Link eventKey={NAV_COMIC_SHELF}>Collection Catalog</Nav.Link>
                             </Nav.Item>
 
                             <Nav.Item>
-                                <Nav.Link eventKey={NAV_COMIC_SHELF}>Serie Catalog</Nav.Link>
+                                <Nav.Link eventKey={NAV_SERIE_CATALOG}>Serie Catalog</Nav.Link>
                             </Nav.Item>
 
                             <Dropdown>
@@ -76,7 +79,8 @@ function NavigationBar(props){
 
 function ActivePage(props){
     const {activeNavBarItem, selectedUser, initialGenre, setInitialGenre, setActiveNavBarItem} = props;
-    const {comics, loading, error} = useComicCollectionData();
+    const {comics, loading: comicsLoading, error: comicsError} = useComicCollectionData();
+    const {series, loading: seriesLoading, error: seriesError} = useSerieCollectionData();
 
     switch (activeNavBarItem) {
         case NAV_HOME:
@@ -88,6 +92,8 @@ function ActivePage(props){
             return <ComicPage comics={comics}
                               selectedUser={selectedUser}
                               initialGenre={initialGenre}/>;
+        case NAV_SERIE_CATALOG:
+            return <SeriePage series={series}/>
         default:
             return;
     }
@@ -131,7 +137,7 @@ function App() {
     return (
         <>
             <NavigationBar activeNavBarItem={activeNavBarItem}
-                      onSelectNavBarItem={setActiveNavBarItem}
+                           onSelectNavBarItem={setActiveNavBarItem}
                            selectedUser={selectedUser}
                            onSelectedUser={setSelectedUser}
                            users={users}/>
