@@ -5,7 +5,7 @@ import {useLatestComics} from "../api/comicInfo.js";
 import {useState} from "react";
 
 export function HomePage(props) {
-    const {comics, selectedUser, setInitialGenre, setActiveNavBarItem} = props;
+    const {comics, setInitialGenre, setActiveNavBarItem} = props;
     const {latest = [], loading} = useLatestComics(5);
 
     const allGenres = [...new Set(
@@ -23,7 +23,7 @@ export function HomePage(props) {
     return (
         <>
             <div className="text-center">
-                {selectedUser ? <h2>Welcome {selectedUser.name} to Comyxius!</h2> : <h2>Welcome to Comyxius!</h2>}
+                <h2>Welcome to Comyxius!</h2>
             </div>
 
             <div>

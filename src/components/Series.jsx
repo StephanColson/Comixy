@@ -1,6 +1,6 @@
 import {Section} from "./Section.jsx";
 import FlipMove from "react-flip-move";
-import {Row} from "react-bootstrap";
+import {Button, Row} from "react-bootstrap";
 
 function Serie(props){
     const {serie, onSelect} = props;
@@ -9,7 +9,7 @@ function Serie(props){
         <div>
             <ul>
                 <li onClick={() => onSelect(serie)}>
-                    <h3 className="fs-4">{serie.title}</h3>
+                    <span className="fs-4 link-danger serie-pop" role="button">{serie.title}</span>
                 </li>
             </ul>
         </div>

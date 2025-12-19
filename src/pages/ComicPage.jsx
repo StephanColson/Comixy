@@ -14,7 +14,7 @@ const SORT_YEAR_ASC = "YEAR_ASC";
 const SORT_YEAR_DESC = "YEAR_DESC";
 
 export function ComicPage(props) {
-    const {comics, selectedUser, initialGenre, selectedSerieID} = props;
+    const {comics, initialGenre, selectedSerieID} = props;
     const [showModal, setShowModal] = useState(false);
     const [showMyComics, setShowMyComics] = useState(false);
 
@@ -167,7 +167,6 @@ export function ComicPage(props) {
             <Section>
                 <Comics comics={paginatedComics}
                         selectedSerieID={selectedSerieID}
-                        selectedUser={selectedUser}
                         validated={validated}
                         setValidated={setValidated}
                         handleSave={handleSave}/>

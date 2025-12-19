@@ -1,0 +1,8 @@
+.serie-pop{
+    transition: transform 0.15s ease, color 0.15s ease;
+    display: inline-block;
+}
+
+.serie-pop:hover{
+    transform: scale(1.1);
+}
