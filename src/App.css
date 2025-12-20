@@ -1,8 +1,17 @@
-.serie-pop{
+.pop-effect{
     transition: transform 0.15s ease, color 0.15s ease;
     display: inline-block;
 }
 
-.serie-pop:hover{
+.pop-effect:hover{
     transform: scale(1.1);
+}
+
+.card-pop{
+    transition: transform 0.15s ease;
+    will-change: transform;
+}
+
+.card-pop:hover{
+    transform: scale(1.05);
 }

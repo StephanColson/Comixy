@@ -1,9 +1,8 @@
 import {Section} from "../components/Section.jsx";
 import {Comics} from "../components/Comics.jsx";
-import {Col, Row, Form, Dropdown, Button} from "react-bootstrap";
+import {Col, Row, Form} from "react-bootstrap";
 import {useEffect, useState} from "react";
 import Pagination from "rc-pagination";
-import {AddComicModal} from "../components/AddComicModal.jsx";
 import {addComic, updateComic} from "../api/comicInfo.js";
 
 const SORT_TITLE_ASC = "TITLE_ASC";
@@ -14,7 +13,7 @@ const SORT_YEAR_ASC = "YEAR_ASC";
 const SORT_YEAR_DESC = "YEAR_DESC";
 
 export function ComicPage(props) {
-    const {comics, initialGenre, selectedSerieID} = props;
+    const {comics, initialGenre, selectedSerieID, onSelectComic} = props;
     const [showModal, setShowModal] = useState(false);
     const [showMyComics, setShowMyComics] = useState(false);
 
@@ -125,12 +124,6 @@ export function ComicPage(props) {
         undefined: "Default"
     }
 
-    /*
-    async function handleAddComic(comicsToAdd){
-        await addComics(comicsToAdd);
-    }
-     */
-
     const baseComics = selectedSerieID
         ? comics.filter(c => c.serieID === selectedSerieID)
         : comics;
@@ -167,6 +160,7 @@ export function ComicPage(props) {
             <Section>
                 <Comics comics={paginatedComics}
                         selectedSerieID={selectedSerieID}
+                        onSelectComic={onSelectComic}
                         validated={validated}
                         setValidated={setValidated}
                         handleSave={handleSave}/>

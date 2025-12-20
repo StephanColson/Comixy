@@ -6,8 +6,6 @@ export function SeriePage(props){
     const {series, onSelectSerie} = props;
     const [searchItem, setSearchItem] = useState("");
 
-    //const filteredSeries = series?.filter(s => s.title.toLowerCase().includes(searchItem.toLowerCase()) || [])
-
     return <>
         <h2 className="text-center">Catalog of series!</h2>
 

@@ -1,53 +1,13 @@
 import FlipMove from "react-flip-move";
 import {Section} from "./Section.jsx";
 import {SectionCard} from "./SectionCard.jsx";
-import {Button, Col, Form, Modal, Row} from "react-bootstrap";
-import {useEffect, useState} from "react";
-import {deleteComic, updateComic, uploadFile} from "../api/comicInfo.js";
-import {addOwnedComic, removeOwnedComic} from "../api/userInfo.js";
-
-function ComicDetails(props) {
-    const {comic, show, onHide, setValidated, validated, handleSave} = props;
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedComic, setEditedComic] = useState(comic);
-    const [owned, setOwned] = useState(false);
-
-    const handleEditSubmit = async (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        const form = event.currentTarget;
-
-        const comicToSave = editedComic.coverFile
-            ? {
-                ...editedComic,
-                imageURL: await uploadFile(editedComic.coverFile),
-            }
-            : { ...editedComic };
-
-        const { coverFile, ...comicData } = comicToSave;
-
-        const success = await handleSave(comicData, form);
-
-        if (success) {
-            setIsEditing(false);
-            setValidated(false);
-        }
-    };
-
-
-    if (!comic) return null;
-
-    return (
-        <>
-
-        </>
-    )
-}
+import {Col, Row} from "react-bootstrap";
+import {useState} from "react";
 
 function ComicGallery(props) {
-    const {comic, onClick} = props;
+    const {comic, onSelect} = props;
     return (
-        <SectionCard coverImg={comic.imageURL} onClick={onClick}>
+        <SectionCard className="card-pop" coverImg={comic.imageURL} onClick={() => onSelect(comic)} role="button">
             <div className="fw-bold">{comic.title} {comic.bookNumber}</div>
             <hr/>
             {comic.price && (
@@ -60,16 +20,16 @@ function ComicGallery(props) {
 }
 
 function ComicList(props){
-    const {comic} = props;
+    const {comic, onSelect} = props;
     return <>
         <div>
-            <h3 className="fs-4">{comic.title}</h3>
+            <span className="fs-4 link-info pop-effect" role="button" onClick={() => onSelect(comic)}>{comic.title}</span>
         </div>
     </>
 }
 
 export function Comics(props) {
-    const {comics, carouselMode = false, selectedUser, setValidated, validated, handleSave} = props;
+    const {comics, carouselMode = false, onSelectComic} = props;
     const [selectedComic, setSelectedComic] = useState(null);
     const [showDetails, setShowDetails] = useState(false);
 
@@ -79,22 +39,10 @@ export function Comics(props) {
                 <div className="d-flex justify-content-center">
                     {comics.map((c) => (
                         <div key={c.id} className="w-25 mb-5">
-                            <ComicGallery comic={c} onClick={() => {
-                                setSelectedComic(c);
-                                setShowDetails(true);
-                            }}/>
+                            <ComicGallery comic={c} onSelect={onSelectComic}/>
                         </div>
                     ))}
                 </div>
-
-                <ComicDetails
-                    comic={selectedComic}
-                    show={showDetails}
-                    onHide={() => {
-                        setSelectedComic(null);
-                        setShowDetails(false);
-                    }}
-                />
             </>
         );
     }
@@ -107,7 +55,7 @@ export function Comics(props) {
                         <ul>
                             {comics.map(cl =>
                                 <li key={cl.id}>
-                                    <ComicList comic={cl}/>
+                                    <ComicList comic={cl} onSelect={onSelectComic}/>
                                 </li>
                             )}
                         </ul>
@@ -119,25 +67,13 @@ export function Comics(props) {
                         <Row className="m-2">
                             {comics?.map(c => (
                                 <Col xl={4} lg={4} md={4} key={c.id}>
-                                    <ComicGallery comic={c} onClick={() => {
-                                        setSelectedComic(c), setShowDetails(true)
-                                    }}/>
+                                    <ComicGallery comic={c} onSelect={onSelectComic}/>
                                 </Col>
                             ))}
                         </Row>
                     </div>
                 </Col>
             </FlipMove>
-
-            <ComicDetails
-                comic={selectedComic}
-                show={showDetails}
-                onHide={() => {
-                    setSelectedComic(null), setShowDetails(false)
-                }}
-                validated={validated}
-                setValidated={setValidated}
-                handleSave={handleSave}/>
         </Section>
     )
 }
