@@ -13,12 +13,13 @@ import {Nav, Navbar, Container} from "react-bootstrap";
 import {useState} from "react";
 import {SeriePage} from "./pages/SeriePage.jsx";
 import {ComicDetailsPage} from "./pages/ComicDetailsPage.jsx";
-import {useEditionCollectionData} from "./api/editionInfo.js";
+import {AddComicPage} from "./pages/AddComicPage.jsx";
 
 const NAV_HOME = "NAV_HOME";
-const NAV_COMIC_SHELF = "NAV_COMIC_SHELF";
+const COMIC_CATALOG = "COMIC_CATALOG";
 const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
 const COMIC_EDITIONS = "COMIC_EDITIONS";
+const NAV_ADD_FORM = "NAV_ADD_FORM";
 
 function NavigationBar(props){
     const {activeNavBarItem, onSelectNavBarItem} = props;
@@ -37,6 +38,9 @@ function NavigationBar(props){
 
                             <Nav.Item>
                                 <Nav.Link eventKey={NAV_SERIE_CATALOG}>Serie Catalog</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey={NAV_ADD_FORM}>Add Objects</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
@@ -62,7 +66,7 @@ function ActivePage(props){
                                  setActiveNavBarItem(COMIC_EDITIONS);
                              }}
                              setActiveNavBarItem={setActiveNavBarItem}/>;
-        case NAV_COMIC_SHELF:
+        case COMIC_CATALOG:
             return <ComicPage comics={comics}
                               onSelectComic={(comic) => {
                                   setSelectedComicID(comic.id);
@@ -74,13 +78,15 @@ function ActivePage(props){
             return <SeriePage series={series}
                               onSelectSerie={(serie) => {
                                   setSelectedSerieID(serie.id);
-                                  setActiveNavBarItem(NAV_COMIC_SHELF);
+                                  setActiveNavBarItem(COMIC_CATALOG);
                               }}/>
+
+        case NAV_ADD_FORM:
+            return <AddComicPage/>
+
         case COMIC_EDITIONS: {
             const selectedComic = comics?.find(c => c.id === selectedComicID);
-
             return <ComicDetailsPage comic={selectedComic}/>
-
         }
         default:
             return;
@@ -92,7 +98,6 @@ function App() {
 
     const [selectedComicID, setSelectedComicID] = useState(null);
     const [selectedSerieID, setSelectedSerieID] = useState(null);
-    const [initialGenre, setInitialGenre] = useState("");
 
     return (
         <>
@@ -106,8 +111,6 @@ function App() {
                     setSelectedComicID={setSelectedComicID}
                     selectedSerieID={selectedSerieID}
                     setSelectedSerieID={setSelectedSerieID}
-                    initialGenre={initialGenre}
-                    setInitialGenre={setInitialGenre}
                     setActiveNavBarItem={setActiveNavBarItem}/>
             </div>
         </>
