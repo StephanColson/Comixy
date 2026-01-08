@@ -3,6 +3,7 @@ import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {supabase} from "./supabase.js";
 
+/*
 export async function uploadFile(file) {
     if(!file) throw new Error("No files selected");
 
@@ -19,6 +20,7 @@ export async function uploadFile(file) {
         .getPublicUrl(filePath);
     return publicData.publicUrl;
 }
+ */
 
 const COMIC_COLLECTION_NAME = 'Comics';
 
@@ -62,9 +64,4 @@ export function useLatestComics(limitCount = 5) {
     const q = query(collectionRef, orderBy('createdAt', 'desc'), limit(limitCount));
     const [latest, loading, error] = useCollectionData(q);
     return { latest, loading, error };
-}
-
-export async function addComics(comicsToAdd){
-    const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME).withConverter(comicConverter);
-    await Promise.all(comicsToAdd.map(comic => addDoc(collectionRef, comic)));
 }

@@ -10,8 +10,10 @@ const editionConverter = {
         imgURL: dataInApp.imgURL,
         printYear: dataInApp.printYear,
         comicID: dataInApp.comicID,
+        printType: dataInApp.printType,
         numberInCollection: dataInApp.numberInCollection,
         organizationID: dataInApp.organizationID,
+        selfPublished: dataInApp.selfPublished,
     }),
     fromFirestore: (snapshot, option) => {
         const data = snapshot.data(option);

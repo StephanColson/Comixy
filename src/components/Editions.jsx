@@ -6,9 +6,10 @@ function Edition(props){
     return<>
         <div>
             <img src={edition.imgURL}/>
-            <div>Format: {edition.format}</div>
+            <div>Cover type: {edition.format}</div>
             <div>Print Year: {edition.printYear}</div>
             <div>Number in collection: {edition.numberInCollection}</div>
+            <div>Print type: {edition.printType}</div>
         </div>
     </>
 }

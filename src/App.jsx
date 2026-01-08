@@ -26,7 +26,7 @@ function NavigationBar(props){
 
     return (
         <>
-            <Navbar expand="md" bg="dark" className="fixed-top" data-bs-theme="dark">
+            <Navbar expand="md" className="fixed-top nav-bg text-green-shaded">
                 <Container className="m-0">
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
@@ -40,7 +40,7 @@ function NavigationBar(props){
                                 <Nav.Link eventKey={NAV_SERIE_CATALOG}>Serie Catalog</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link eventKey={NAV_ADD_FORM}>Add Objects</Nav.Link>
+                                <Nav.Link eventKey={NAV_ADD_FORM}>Add Comics</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
@@ -82,7 +82,7 @@ function ActivePage(props){
                               }}/>
 
         case NAV_ADD_FORM:
-            return <AddComicPage/>
+            return <AddComicPage selectedComicID={selectedComicID} setSelectedComicID={setSelectedComicID}/>
 
         case COMIC_EDITIONS: {
             const selectedComic = comics?.find(c => c.id === selectedComicID);

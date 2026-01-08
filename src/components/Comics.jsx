@@ -11,7 +11,7 @@ function ComicGallery(props) {
             <div className="fw-bold">{comic.title} {comic.bookNumber}</div>
             <hr/>
             {comic.price && (
-                <div className="mt-3 text-info fw-bold fs-5 bg-secondary-subtle rounded">
+                <div className="badge coloured-badge px-4 py-2">
                     {comic.price} €
                 </div>
             )}
@@ -23,7 +23,7 @@ function ComicList(props){
     const {comic, onSelect} = props;
     return <>
         <div>
-            <span className="fs-4 link-info pop-effect" role="button" onClick={() => onSelect(comic)}>{comic.title}</span>
+            <span className="fs-4 text-green-shaded pop-effect" role="button" onClick={() => onSelect(comic)}>{comic.title}</span>
         </div>
     </>
 }
