@@ -1,5 +1,5 @@
 import {firestoreDB} from "./firebase.js";
-import {collection, query} from "firebase/firestore";
+import {addDoc, collection, query} from "firebase/firestore";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
 const ROLE_COLLECTION = "Roles";
@@ -13,6 +13,12 @@ const roleConverter = {
         return {...data, id: snapshot.id, ref: snapshot.ref}
     }
 };
+
+export async function addRole(newRole) {
+    const collectionRef = collection(firestoreDB, "Roles");
+    const docRef = await addDoc(collectionRef, newRole);
+    return docRef.id;
+}
 
 export function useRoleCollectionData() {
     const collectionRef = collection(firestoreDB, ROLE_COLLECTION).withConverter(roleConverter);

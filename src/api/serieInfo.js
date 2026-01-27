@@ -1,6 +1,6 @@
 import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
-import {collection, query} from "firebase/firestore";
+import {addDoc, collection, query} from "firebase/firestore";
 
 const SERIE_COLLECTION_NAME = "Series";
 
@@ -15,6 +15,12 @@ const serieConverter = {
         return {...data, id: snapshot.id, ref: snapshot.ref}
     }
 };
+
+export async function addSerie(newSerie){
+    const collectionRef = collection(firestoreDB, "Series");
+    const docRef = await addDoc(collectionRef, newSerie);
+    return docRef.id;
+}
 
 export function useSerieCollectionData(){
     const collectionRef = collection(firestoreDB, SERIE_COLLECTION_NAME).withConverter(serieConverter);
