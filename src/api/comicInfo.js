@@ -29,7 +29,7 @@ const comicConverter = {
         title: dataInApp.title,
         bookNumber: dataInApp.bookNumber,
         price: dataInApp.price,
-        genres: dataInApp.genres,
+        genres: [],
         serieID: dataInApp.serieID,
         createdAt: dataInApp.createdAt,
     }),
@@ -48,7 +48,8 @@ export function useComicCollectionData(){
 
 export async function addComic(newComic){
     const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME).withConverter(comicConverter);
-    await addDoc(collectionRef, {...newComic, createdAt: serverTimestamp()});
+    const docRef = await addDoc(collectionRef, {...newComic, createdAt: serverTimestamp()});
+    return docRef.id;
 }
 
 export async function updateComic(comic){

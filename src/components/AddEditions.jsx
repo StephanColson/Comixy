@@ -116,7 +116,7 @@ export function AddEditions(props) {
     })
 
     const selectedComic =
-        comics?.find(c => c.id === selectedComicID) ?? null;
+        selectedComicID ? comics?.find(c => c.id === selectedComicID) ?? null : null;
 
     const [contributors, setContributors] = useState([]);
 
@@ -145,7 +145,7 @@ export function AddEditions(props) {
                 isNewComic
                     ? await addComic({
                         title: comicForm.title,
-                        bookNumber: comicForm.bookNumber,
+                        bookNumber: Number(comicForm.bookNumber),
                         genres: comicForm.genres,
                         serieID: serieID,
                         price: null,
@@ -723,11 +723,11 @@ export function AddEditions(props) {
                     <Col lg={12} key={idx}>
                         <Row className="align-items-center py-1 border-bottom">
                             <Col lg={5}>
-                                {peoples.find(p => p.id === c.peopleID)?.name}
+                                {peoples.find(p => p.id === c.peopleID)?.name || c.peopleName}
                             </Col>
 
                             <Col lg={5}>
-                                {roles.find(r => r.id === c.roleID)?.type}
+                                {roles.find(r => r.id === c.roleID)?.type || c.roleName}
                             </Col>
 
                             <Col lg={2} className="text-end">
