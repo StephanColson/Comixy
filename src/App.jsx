@@ -105,6 +105,7 @@ function ActivePage(props){
             return (
                 <ComicDetailsPage
                     comic={selectedComic}
+                    editions={editions}
                     organizations={organizations}
                     roles={roles}
                     peoples={peoples}

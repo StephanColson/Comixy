@@ -2,9 +2,7 @@ import {Editions} from "../components/Editions.jsx";
 import {useEditionCollectionData} from "../api/editionInfo.js";
 
 export function ComicDetailsPage(props){
-    const {comic, organizations, peoples, roles, comicContributors} = props;
-
-    const {editions} = useEditionCollectionData();
+    const {comic, organizations, peoples, roles, comicContributors, editions} = props;
 
     if (!comic) return <div>No Comic Selected</div>;
 
