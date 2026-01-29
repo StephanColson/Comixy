@@ -2,7 +2,7 @@ import {Section} from "./Section.jsx";
 import {Col, Row} from "react-bootstrap";
 
 function Edition(props){
-    const {edition} = props;
+    const {edition, onEdit} = props;
 
     return<>
         <Row className="mb-4 align-items-start">
@@ -54,6 +54,12 @@ function Edition(props){
                             </ul>
                         </Col>
                     )}
+
+                    <Col xs={12} className="mt-2">
+                        <button className="btn btn-success btn-sm" onClick={() => onEdit(edition)}>
+                            Edit Edition
+                        </button>
+                    </Col>
                 </Row>
             </Col>
         </Row>
@@ -61,7 +67,7 @@ function Edition(props){
 }
 
 export function Editions(props){
-    const {editions} = props;
+    const {editions, onEditEdition} = props;
 
     if(!editions || editions.length === 0){
        return <div>No editions found</div>;
@@ -70,7 +76,7 @@ export function Editions(props){
     return<>
         <Section>
             {editions?.map(ed => <Col xs={12} lg={12} key={ed.id}>
-                <Edition edition={ed}/>
+                <Edition edition={ed} onEdit={onEditEdition}/>
             </Col>)}
         </Section>
     </>

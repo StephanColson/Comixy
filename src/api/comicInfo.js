@@ -32,14 +32,6 @@ export async function addComic(newComic){
     return docRef.id;
 }
 
-export async function updateComic(comic){
-    await updateDoc(comic.ref, comic);
-}
-
-export async function deleteComic(removeComic){
-    await deleteDoc(removeComic.ref);
-}
-
 export function useLatestComics(limitCount = 5) {
     const collectionRef = collection(firestoreDB, COMIC_COLLECTION_NAME).withConverter(comicConverter);
     const q = query(collectionRef, orderBy('createdAt', 'desc'), limit(limitCount));

@@ -1,7 +1,7 @@
 import {firestoreDB} from "./firebase.js";
 import {supabase} from "./supabase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
-import {addDoc, collection, query} from "firebase/firestore";
+import {addDoc, collection, query, updateDoc} from "firebase/firestore";
 
 const EDITION_COLLECTION_NAME = 'Editions';
 
@@ -40,15 +40,19 @@ const editionConverter = {
     }
 };
 
-export async function addEdition(newEdition) {
-    const collectionRef = collection(firestoreDB, "Editions");
-    const docRef = await addDoc(collectionRef, newEdition);
-    return docRef.id;
-}
-
 export function useEditionCollectionData() {
     const collectionRef = collection(firestoreDB, EDITION_COLLECTION_NAME).withConverter(editionConverter);
     const queryRef = query(collectionRef);
     const [editions, loading, error] = useCollectionData(queryRef);
     return {editions, loading, error}
+}
+
+export async function addEdition(newEdition) {
+    const collectionRef = collection(firestoreDB, EDITION_COLLECTION_NAME).withConverter(editionConverter);
+    const docRef = await addDoc(collectionRef, newEdition);
+    return docRef.id;
+}
+
+export async function updateEdition(edition) {
+    await updateDoc(edition.ref, edition);
 }

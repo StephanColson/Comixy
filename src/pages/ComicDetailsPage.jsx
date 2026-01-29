@@ -1,10 +1,20 @@
 import {Editions} from "../components/Editions.jsx";
-import {useEditionCollectionData} from "../api/editionInfo.js";
+import {useState} from "react";
+import {EditEditionModal} from "../components/EditEditionModal.jsx";
 
 export function ComicDetailsPage(props){
     const {comic, organizations, peoples, roles, comicContributors, editions} = props;
 
     if (!comic) return <div>No Comic Selected</div>;
+
+    const [editingEdition, setEditingEdition] = useState(null);
+    const [showEditModal, setShowEditModal] = useState(false);
+
+    function handleEditEdition(edition) {
+        setEditingEdition(edition);
+        setShowEditModal(true);
+    }
+
 
     const comicEditions = editions
         ?.filter(ed => ed.comicID === comic.id)
@@ -35,7 +45,11 @@ export function ComicDetailsPage(props){
     return (
         <>
             <h2 className="text-center">Detailed Info: {comic.title}</h2>
-            <Editions editions={comicEditions} />
+            <Editions editions={comicEditions} onEditEdition={handleEditEdition}/>
+
+            {showEditModal && (
+                <EditEditionModal edition={editingEdition} onClose={() => setShowEditModal(false)
+                }/> )}
         </>
     );
 }
