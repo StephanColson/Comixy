@@ -1,8 +1,27 @@
 import {firestoreDB} from "./firebase.js";
+import {supabase} from "./supabase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 import {addDoc, collection, query} from "firebase/firestore";
 
 const EDITION_COLLECTION_NAME = 'Editions';
+
+
+export async function uploadFile(file) {
+    if(!file) throw new Error("No files selected");
+
+    const filePath = `covers/${Date.now()}-${file.name}`;
+    const { data, error } = await supabase.storage.from('comic-covers').upload(filePath, file)
+    if (error) {
+        console.log("Upload error:", error);
+        throw error;
+    }
+
+    const { data: publicData } = supabase
+        .storage
+        .from("comic-covers")
+        .getPublicUrl(filePath);
+    return publicData.publicUrl;
+}
 
 const editionConverter = {
     toFirestore: dataInApp => ({

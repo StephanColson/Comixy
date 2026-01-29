@@ -7,6 +7,28 @@ export function EditionSection(props) {
 
     return (
         <Row className="m-4">
+            <Col lg={6}>
+                <label className="form-label">Cover Image:</label>
+                <input
+                    type="file"
+                    accept="image/*"
+                    className="form-control"
+                    onChange={e => {
+                        const file = e.target.files[0];
+                        setEditionForm(prev => ({ ...prev, imageFile: file }));
+                    }}
+                />
+
+                {editionForm.imageFile && (
+                    <img
+                        src={URL.createObjectURL(editionForm.imageFile)}
+                        alt="preview"
+                        className="img-fluid mt-2"
+                        style={{maxHeight: "200px", objectFit: "contain"}}
+                    />
+                )}
+            </Col>
+
             <Col lg={3}>
                 <label className="form-label">Published:</label>
                 <input

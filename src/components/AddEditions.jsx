@@ -1,5 +1,5 @@
 import {addComic, useComicCollectionData} from "../api/comicInfo.js";
-import {addEdition, useEditionCollectionData} from "../api/editionInfo.js";
+import {addEdition, uploadFile, useEditionCollectionData} from "../api/editionInfo.js";
 import {addOrganization, useOrganizationCollectionData} from "../api/organizationInfo.js";
 import {addPerson, usePeopleCollectionData} from "../api/personInfo.js";
 import {addRole, useRoleCollectionData} from "../api/roleInfo.js";
@@ -47,6 +47,7 @@ export function AddEditions(props) {
         organizationID: null,
         organizationName: "",
         selfPublished: false,
+        imageFile: null,
     });
 
     const formats = editions.map(e => e.format);
@@ -174,10 +175,16 @@ export function AddEditions(props) {
                 })
             );
 
+            const imgURL =
+                editionForm.imageFile
+                    ? await uploadFile(editionForm.imageFile)
+                    : null;
+
+
             const editionID = await addEdition({
                 comicID,
                 format: editionForm.format ?? editionForm.formatName,
-                imgURL: null,
+                imgURL: imgURL,
                 printYear: editionForm.printYear || null,
                 printType: editionForm.printType ?? editionForm.printTypeName,
                 numberInCollection: editionForm.numberInCollection || null,
@@ -197,6 +204,7 @@ export function AddEditions(props) {
             );
 
             console.log("Submit complete!");
+            setEditionForm(prev => ({...prev, imageFile: null}));
         } catch (err) {
             console.error("Submit error:", err);
         }
