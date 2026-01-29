@@ -14,7 +14,7 @@ export function ComicPage(props) {
 
     /* Pagination */
     const [currentPage, setCurrentPage] = useState(1);
-    const displayComic = 12;
+    const displayComic = 6;
 
     const startIndex = (currentPage - 1) * displayComic;
     const endIndex = startIndex + displayComic;

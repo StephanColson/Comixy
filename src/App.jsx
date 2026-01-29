@@ -44,6 +44,11 @@ function NavigationBar(props){
                             <Nav.Item>
                                 <Nav.Link eventKey={NAV_SERIE_CATALOG}>Serie Catalog</Nav.Link>
                             </Nav.Item>
+
+                            <Nav.Item>
+                                <Nav.Link eventKey={COMIC_CATALOG}>Comic Catalog</Nav.Link>
+                            </Nav.Item>
+
                             <Nav.Item>
                                 <Nav.Link eventKey={NAV_ADD_FORM}>Add Comics</Nav.Link>
                             </Nav.Item>
