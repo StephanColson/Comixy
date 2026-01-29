@@ -5,7 +5,7 @@ import {useLatestComics} from "../api/comicInfo.js";
 import {useState} from "react";
 
 export function HomePage(props) {
-    const {comics, setInitialGenre, setActiveNavBarItem, onSelectComic} = props;
+    const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic} = props;
     const {latest = [], loading} = useLatestComics(5);
 
     const allGenres = [...new Set(
@@ -60,7 +60,9 @@ export function HomePage(props) {
                 <Carousel interval={3000} pause="hover">
                     {latest.map(c => (
                         <Carousel.Item key={c.id}>
-                            <Comics comics={[c]} carouselMode={true} onSelectComic={onSelectComic}/>
+                            <Comics comics={[comics.find(x => x.id === c.id)]}
+                                    carouselMode={true}
+                                    onSelectComic={onSelectComic}/>
                         </Carousel.Item>
                     ))}
                 </Carousel>

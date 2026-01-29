@@ -5,15 +5,7 @@ import Pagination from "rc-pagination";
 
 export function ComicPage(props) {
     const {comics, editions, selectedSerieID, onSelectComic} = props;
-
-    /* Attach edition images to comics */
-    const comicsWithImages = comics.map(comic => {
-        const firstEdition = editions?.find(ed => ed.comicID === comic.id);
-        return {
-            ...comic,
-            imageURL: firstEdition?.imgURL || null
-        };
-    });
+    const comicsWithImages = comics;
 
     /* Serie filtering */
     const baseComics = selectedSerieID

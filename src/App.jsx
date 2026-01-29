@@ -67,10 +67,18 @@ function ActivePage(props){
     const {peoples} = usePeopleCollectionData();
     const {comicContributors} = useComicContributorCollectionData();
 
+    const comicsWithImages = comics?.map(comic => {
+        const firstEdition = editions?.find(ed => ed.comicID === comic.id);
+        return {
+            ...comic,
+            imageURL: firstEdition?.imgURL || null
+        };
+    });
 
     switch (activeNavBarItem) {
         case NAV_HOME:
-            return <HomePage comics={comics || []}
+            return <HomePage comics={comicsWithImages || []}
+                             editions={editions}
                              setInitialGenre={setInitialGenre}
                              onSelectComic={(comic) => {
                                  setSelectedComicID(comic.id);
@@ -79,7 +87,7 @@ function ActivePage(props){
                              setActiveNavBarItem={setActiveNavBarItem}/>;
         case COMIC_CATALOG:
             return <ComicPage
-                comics={comics}
+                comics={comicsWithImages}
                 editions={editions}
                 onSelectComic={(comic) => {
                     setSelectedComicID(comic.id);
