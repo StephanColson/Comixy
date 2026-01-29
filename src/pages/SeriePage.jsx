@@ -1,27 +1,33 @@
 import {Series} from "../components/Series.jsx";
-import {Col, Form, Row} from "react-bootstrap";
 import {useState} from "react";
+import Pagination from "rc-pagination";
 
 export function SeriePage(props){
     const {series, onSelectSerie} = props;
-    const [searchItem, setSearchItem] = useState("");
 
-    return <>
-        <h2 className="text-center">Catalog of series!</h2>
+    const [currentPage, setCurrentPage] = useState(1);
+    const displaySerie = 8;
 
-        <div>
-            <Form className="my-4 mx-5">
-                <Row className="justify-content-center">
-                    <Col lg={6} xl={6} md={8} className="mb-3">
-                        <Form.Control value={searchItem} onChange={e => setSearchItem(e.target.value)}
-                                      placeholder="Search..."/>
-                    </Col>
-                </Row>
-            </Form>
-        </div>
+    const startIndex = (currentPage - 1) * displaySerie;
+    const endIndex = startIndex + displaySerie;
+    const paginatedSeries = series.slice(startIndex, endIndex);
 
-        <div>
-            <Series series={series} onSelectSerie={onSelectSerie}/>
-        </div>
-    </>
+    return (
+        <>
+            <h2 className="text-center">Catalog of series!</h2>
+
+            <div>
+                <Series series={paginatedSeries} onSelectSerie={onSelectSerie}/>
+            </div>
+
+            <Pagination
+                className="my-3"
+                align="center"
+                current={currentPage}
+                pageSize={displaySerie}
+                total={series.length}
+                onChange={setCurrentPage}
+            />
+        </>
+    );
 }

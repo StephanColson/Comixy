@@ -7,12 +7,10 @@ export function ComicPage(props) {
     const {comics, editions, selectedSerieID, onSelectComic} = props;
     const comicsWithImages = comics;
 
-    /* Serie filtering */
     const baseComics = selectedSerieID
         ? comicsWithImages.filter(c => c.serieID === selectedSerieID)
         : comicsWithImages;
 
-    /* Pagination */
     const [currentPage, setCurrentPage] = useState(1);
     const displayComic = 6;
 

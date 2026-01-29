@@ -139,8 +139,14 @@ function App() {
 
     return (
         <>
-            <NavigationBar activeNavBarItem={activeNavBarItem}
-                           onSelectNavBarItem={setActiveNavBarItem}
+            <NavigationBar
+                activeNavBarItem={activeNavBarItem}
+                onSelectNavBarItem={(key) => {
+                    setActiveNavBarItem(key);
+                    if (key === COMIC_CATALOG) {
+                        setSelectedSerieID(null);
+                    }
+                }}
             />
             <div style={{marginTop: "70px"}}>
                 <ActivePage
