@@ -72,49 +72,56 @@ export function AddEditions(props) {
         publisher: "",
         person: "",
         role: "",
+        personSelfPub: "",
     });
 
     const filteredComics = filterList({
         list: comics,
         search: searchQuery.comic,
         selector: c => `${c.title} ${c.bookNumber}`,
-    })
+    });
 
     const filteredSerie = filterList({
         list: series,
         search: searchQuery.serie,
         selector: s => s.title,
-    })
+    });
 
     const filteredPrintType = filterList({
         list: dataPrintType,
         search: editionForm.printTypeName,
         selector: pt => pt.label,
-    })
+    });
 
     const filteredFormat = filterList({
         list: dataFormat,
         search: editionForm.formatName,
         selector: f => f.label,
-    })
+    });
 
     const filteredPublishers = filterList({
         list: organizations,
         search: searchQuery.publisher,
         selector: p => p.name,
-    })
+    });
 
     const filteredPersons = filterList({
         list: peoples,
         search: searchQuery.person,
         selector: p => p.name,
-    })
+    });
 
     const filteredRoles = filterList({
         list: roles,
         search: searchQuery.role,
         selector: r => r.type,
-    })
+    });
+
+    const filteredPersonsSelfPub = filterList({
+        list: peoples,
+        search: searchQuery.personSelfPub,
+        selector: p => p.name,
+    });
 
     const selectedComic =
         selectedComicID ? comics?.find(c => c.id === selectedComicID) ?? null : null;
@@ -190,6 +197,8 @@ export function AddEditions(props) {
                 numberInCollection: editionForm.numberInCollection || null,
                 organizationID: publisherID,
                 selfPublished: editionForm.selfPublished,
+                selfPublisherID: editionForm.selfPublisherID || null,
+                selfPublisherName: editionForm.selfPublisherName || "",
             });
 
             await Promise.all(
@@ -237,6 +246,8 @@ export function AddEditions(props) {
                 setSearchQuery={setSearchQuery}
                 currentYear={currentYear}
                 organizations={organizations}
+                peoples={peoples}
+                filteredPersonsSelfPub={filteredPersonsSelfPub}
             />
 
             <ContributorSection

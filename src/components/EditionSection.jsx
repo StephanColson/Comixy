@@ -2,8 +2,8 @@ import {Combobox} from "@headlessui/react";
 import {Row, Col} from "react-bootstrap";
 
 export function EditionSection(props) {
-    const {editionForm, setEditionForm, filteredFormat, filteredPrintType, filteredPublishers,
-        searchQuery, setSearchQuery, currentYear, organizations} = props;
+    const {editionForm, setEditionForm, filteredFormat, filteredPrintType, filteredPublishers, searchQuery,
+        setSearchQuery, currentYear, organizations, peoples, filteredPersonsSelfPub} = props;
 
     return (
         <Row className="m-4">
@@ -99,10 +99,8 @@ export function EditionSection(props) {
                 </Combobox>
             </Col>
 
-            {/* PRINT TYPE */}
             <Col lg={6}>
                 <label className="form-label">Print:</label>
-
                 <Combobox
                     value={
                         filteredPrintType.find(p => p.id === editionForm.printType)
@@ -156,6 +154,9 @@ export function EditionSection(props) {
                                 ...prev,
                                 selfPublished: checked,
                                 organizationID: checked ? null : prev.organizationID,
+                                organizationName: checked ? "" : prev.organizationName,
+                                selfPublisherID: checked ? prev.selfPublisherID : null,
+                                selfPublisherName: checked ? prev.selfPublisherName : "",
                             }));
                         }}
                     />
@@ -224,13 +225,87 @@ export function EditionSection(props) {
 
                                 {searchQuery.publisher !== "" &&
                                     !filteredPublishers.some(
-                                        p => p.name.toLowerCase() === searchQuery.publisher.toLowerCase()
+                                        p => p.name?.toLowerCase() === searchQuery.publisher.toLowerCase()
                                     ) && (
                                         <Combobox.Option
                                             value={{name: searchQuery.publisher}}
                                             className="list-group-item list-group-item-action text-primary"
                                         >
                                             Create “{searchQuery.publisher}”
+                                        </Combobox.Option>
+                                    )}
+                            </Combobox.Options>
+                        </Combobox>
+                    </Col>
+                )}
+
+                {editionForm.selfPublished && (
+                    <Col className="mt-3">
+                        <label className="form-label">Published by (Person):</label>
+
+                        <Combobox
+                            value={
+                                peoples.find(p => p.id === editionForm.selfPublisherID)
+                                ?? (editionForm.selfPublisherName ? {name: editionForm.selfPublisherName} : null)
+                            }
+                            onChange={opt => {
+                                if (!opt) {
+                                    setEditionForm(prev => ({
+                                        ...prev,
+                                        selfPublisherID: null,
+                                        selfPublisherName: "",
+                                    }));
+                                } else if (opt.id) {
+                                    setEditionForm(prev => ({
+                                        ...prev,
+                                        selfPublisherID: opt.id,
+                                        selfPublisherName: opt.name,
+                                    }));
+                                } else {
+                                    setEditionForm(prev => ({
+                                        ...prev,
+                                        selfPublisherID: null,
+                                        selfPublisherName: opt.name,
+                                    }));
+                                }
+                            }}
+                        >
+                            <Combobox.Input
+                                className="form-control"
+                                displayValue={opt => opt?.name ?? ""}
+                                placeholder="Select or type a person..."
+                                onChange={e => {
+                                    const value = e.target.value;
+                                    setSearchQuery(prev => ({...prev, personSelfPub: value}));
+
+                                    setEditionForm(prev => ({
+                                        ...prev,
+                                        selfPublisherID: null,
+                                        selfPublisherName: value,
+                                    }));
+                                }}
+                            />
+
+                            <Combobox.Options className="list-group position-absolute z-3">
+                                {filteredPersonsSelfPub.slice(0, 5).map(opt => (
+                                    <Combobox.Option
+                                        key={opt.id}
+                                        value={opt}
+                                        className="list-group-item list-group-item-action"
+                                    >
+                                        {opt.name}
+                                    </Combobox.Option>
+                                ))}
+
+                                {searchQuery.personSelfPub !== "" &&
+                                    !filteredPersonsSelfPub.some(
+                                        p => p.name.toLowerCase() === searchQuery.personSelfPub.toLowerCase()
+                                    ) && (
+                                        <Combobox.Option
+                                            value={{name: searchQuery.personSelfPub}}
+                                            className="list-group-item list-group-item-action text-primary"
+                                        >
+                                            Create “{searchQuery.personSelfPub}”
                                         </Combobox.Option>
                                     )}
                             </Combobox.Options>

@@ -35,8 +35,10 @@ export function ComicDetailsPage(props){
 
             return {
                 ...ed,
-                organizationName: ed.selfPublished
-                    ? "Self-published"
+                publisherDisplay: ed.selfPublished
+                    ? (ed.selfPublisherName
+                        ? `Self-published by ${ed.selfPublisherName}`
+                        : "Self-published")
                     : publisher?.name || "Unknown",
                 contributors: contributors || []
             };

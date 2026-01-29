@@ -4,7 +4,12 @@ import {updateEdition, uploadFile} from "../api/editionInfo.js";
 
 export function EditEditionModal(props) {
     const {edition, onClose, organizations} = props;
-    const [formData, setFormData] = useState({...edition});
+    const [formData, setFormData] = useState({
+        ...edition,
+        organizationName: edition.organizationName || "",
+        selfPublisherName: edition.selfPublisherName || "",
+    });
+
     const [uploading, setUploading] = useState(false);
 
     function handleChange(e) {
@@ -89,25 +94,6 @@ export function EditEditionModal(props) {
                         />
                     </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>Publisher</Form.Label>
-
-                        <Form.Control
-                            list="publisher-options"
-                            name="organizationName"
-                            value={formData.organizationName || ""}
-                            onChange={handleChange}
-                            disabled={formData.selfPublished}
-                            placeholder="Select or type a publisher"
-                        />
-
-                        <datalist id="publisher-options">
-                            {organizations?.map(org => (
-                                <option key={org.id} value={org.name} />
-                            ))}
-                        </datalist>
-                    </Form.Group>
-
                     <Form.Check
                         className="mb-3"
                         type="checkbox"
@@ -117,10 +103,43 @@ export function EditEditionModal(props) {
                             setFormData({
                                 ...formData,
                                 selfPublished: e.target.checked,
-                                organizationID: e.target.checked ? null : formData.organizationID
+                                organizationID: e.target.checked ? null : formData.organizationID,
+                                organizationName: e.target.checked ? "" : formData.organizationName,
                             })
                         }
                     />
+
+                    {!formData.selfPublished && (
+                        <Form.Group className="mb-3">
+                            <Form.Label>Publisher</Form.Label>
+
+                            <Form.Control
+                                list="publisher-options"
+                                name="organizationName"
+                                value={formData.organizationName || ""}
+                                onChange={handleChange}
+                                placeholder="Select or type a publisher"
+                            />
+
+                            <datalist id="publisher-options">
+                                {organizations?.map(org => (
+                                    <option key={org.id} value={org.name} />
+                                ))}
+                            </datalist>
+                        </Form.Group>
+                    )}
+
+                    {formData.selfPublished && (
+                        <Form.Group className="mb-3">
+                            <Form.Label>Published by (Person)</Form.Label>
+                            <Form.Control
+                                name="selfPublisherName"
+                                value={formData.selfPublisherName || ""}
+                                onChange={handleChange}
+                                placeholder="Enter the person's name"
+                            />
+                        </Form.Group>
+                    )}
 
                 </Form>
             </Modal.Body>
@@ -129,8 +148,8 @@ export function EditEditionModal(props) {
                 <Button variant="secondary" onClick={onClose}>
                     Cancel
                 </Button>
-                <Button variant="primary" onClick={handleSave}>
-                    Save Changes
+                <Button variant="primary" onClick={handleSave} disabled={uploading}>
+                    {uploading ? "Uploading..." : "Save Changes"}
                 </Button>
             </Modal.Footer>
         </Modal>

@@ -35,11 +35,14 @@ function Edition(props){
                         </Col>
                     )}
 
+                    {edition.price && (
+                        <Col xs={6}>
+                            <strong>Price:</strong> €{edition.price}
+                        </Col>
+                    )}
+
                     <Col xs={6}>
-                        <strong>Publisher:</strong>{" "}
-                        {edition.selfPublished
-                            ? "Self-published"
-                            : edition.organizationName || "Unknown"}
+                        <strong>Publisher:</strong> {edition.publisherDisplay}
                     </Col>
 
                     {edition.contributors?.length > 0 && (

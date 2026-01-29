@@ -8,7 +8,6 @@ const comicConverter = {
     toFirestore: dataInApp => ({
         title: dataInApp.title,
         bookNumber: dataInApp.bookNumber,
-        price: dataInApp.price,
         genres: [],
         serieID: dataInApp.serieID,
         createdAt: dataInApp.createdAt,
