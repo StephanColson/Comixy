@@ -15,7 +15,6 @@ export function ComicDetailsPage(props){
         setShowEditModal(true);
     }
 
-
     const comicEditions = editions
         ?.filter(ed => ed.comicID === comic.id)
         .map(ed => {
@@ -40,7 +39,7 @@ export function ComicDetailsPage(props){
                         ? `Self-published by ${ed.selfPublisherName}`
                         : "Self-published")
                     : publisher?.name || "Unknown",
-                contributors: contributors || []
+                displayContributors: contributors || []
             };
         });
 
@@ -51,6 +50,8 @@ export function ComicDetailsPage(props){
 
             {showEditModal && (
                 <EditEditionModal edition={editingEdition} organizations={organizations}
+                                  peoples={peoples} roles={roles}
+                                  comicContributors={comicContributors}
                                   onClose={() => setShowEditModal(false)
                 }/> )}
         </>

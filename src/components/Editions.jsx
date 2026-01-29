@@ -45,11 +45,11 @@ function Edition(props){
                         <strong>Publisher:</strong> {edition.publisherDisplay}
                     </Col>
 
-                    {edition.contributors?.length > 0 && (
+                    {edition.displayContributors?.length > 0 && (
                         <Col xs={12}>
                             <strong>Contributors:</strong>
                             <ul className="mb-0">
-                                {edition.contributors.map((c, i) => (
+                                {edition.displayContributors.map((c, i) => (
                                     <li key={i}>
                                         {c.peopleName} — {c.roleName}
                                     </li>

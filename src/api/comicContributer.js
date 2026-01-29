@@ -1,5 +1,5 @@
 import {firestoreDB} from "./firebase.js";
-import {addDoc, collection, query} from "firebase/firestore";
+import {addDoc, collection, deleteDoc, query} from "firebase/firestore";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
 const COMIC_CONTRIBUTOR_COLLECTION = "ComicContributors";
@@ -21,6 +21,10 @@ export async function addComicContributor(newContributor) {
     const collectionRef = collection(firestoreDB, "ComicContributors");
     const docRef = await addDoc(collectionRef, newContributor);
     return docRef.id;
+}
+
+export async function deleteComicContributor(contributor) {
+    await deleteDoc(contributor.ref);
 }
 
 export function useComicContributorCollectionData() {

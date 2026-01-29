@@ -1,14 +1,40 @@
 import {Modal, Button, Form} from "react-bootstrap";
 import {useState} from "react";
 import {updateEdition, uploadFile} from "../api/editionInfo.js";
+import {ContributorSection} from "./ContributorSection.jsx";
+import {addComicContributor, deleteComicContributor} from "../api/comicContributer.js";
+import {addPerson} from "../api/personInfo.js";
+import {addRole} from "../api/roleInfo.js";
 
 export function EditEditionModal(props) {
-    const {edition, onClose, organizations} = props;
+    const {edition, onClose, organizations, peoples, roles, comicContributors} = props;
     const [formData, setFormData] = useState({
         ...edition,
         organizationName: edition.organizationName || "",
         selfPublisherName: edition.selfPublisherName || "",
     });
+
+    const [contributors, setContributors] = useState(edition.displayContributors || []);
+    const [contributorDraft, setContributorDraft] = useState({
+        peopleID: null,
+        peopleName: "",
+        roleID: null,
+        roleName: "",
+    });
+
+    const [searchQuery, setSearchQuery] = useState({
+        person: "",
+        role: "",
+    });
+
+    const filteredPersons = peoples.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.person.toLowerCase())
+    );
+
+    const filteredRoles = roles.filter(r =>
+        r.type.toLowerCase().includes(searchQuery.role.toLowerCase())
+    );
+
 
     const [uploading, setUploading] = useState(false);
 
@@ -18,6 +44,28 @@ export function EditEditionModal(props) {
 
     async function handleSave() {
         await updateEdition(formData);
+
+        const old = comicContributors.filter(cc => cc.editionID === formData.id);
+        await Promise.all(old.map(cc => deleteComicContributor(cc)));
+
+        await Promise.all(
+            contributors.map(async c => {
+                const peopleID =
+                    c.peopleID ||
+                    (c.peopleName ? await addPerson({name: c.peopleName}) : null);
+
+                const roleID =
+                    c.roleID ||
+                    (c.roleName ? await addRole({type: c.roleName}) : null);
+
+                return addComicContributor({
+                    comicID: formData.comicID,
+                    editionID: formData.id,
+                    peopleID,
+                    roleID,
+                });
+            })
+        );
         onClose();
     }
 
@@ -110,24 +158,38 @@ export function EditEditionModal(props) {
                     />
 
                     {!formData.selfPublished && (
-                        <Form.Group className="mb-3">
-                            <Form.Label>Publisher</Form.Label>
+                        <>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Publisher</Form.Label>
+                                <Form.Control
+                                    list="publisher-options"
+                                    name="organizationName"
+                                    value={formData.organizationName || ""}
+                                    onChange={handleChange}
+                                    placeholder="Select or type a publisher"
+                                />
+                                <datalist id="publisher-options">
+                                    {organizations?.map(org => (
+                                        <option key={org.id} value={org.name} />
+                                    ))}
+                                </datalist>
+                            </Form.Group>
 
-                            <Form.Control
-                                list="publisher-options"
-                                name="organizationName"
-                                value={formData.organizationName || ""}
-                                onChange={handleChange}
-                                placeholder="Select or type a publisher"
+                            <ContributorSection
+                                contributorDraft={contributorDraft}
+                                setContributorDraft={setContributorDraft}
+                                contributors={contributors}
+                                setContributors={setContributors}
+                                filteredPersons={filteredPersons}
+                                filteredRoles={filteredRoles}
+                                peoples={peoples}
+                                roles={roles}
+                                searchQuery={searchQuery}
+                                setSearchQuery={setSearchQuery}
                             />
-
-                            <datalist id="publisher-options">
-                                {organizations?.map(org => (
-                                    <option key={org.id} value={org.name} />
-                                ))}
-                            </datalist>
-                        </Form.Group>
+                        </>
                     )}
+
 
                     {formData.selfPublished && (
                         <Form.Group className="mb-3">
