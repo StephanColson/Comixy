@@ -1,10 +1,11 @@
 import {Modal, Button, Form} from "react-bootstrap";
 import {useState} from "react";
-import {updateEdition} from "../api/editionInfo.js";
+import {updateEdition, uploadFile} from "../api/editionInfo.js";
 
 export function EditEditionModal(props) {
-    const {edition, onClose} = props;
+    const {edition, onClose, organizations} = props;
     const [formData, setFormData] = useState({...edition});
+    const [uploading, setUploading] = useState(false);
 
     function handleChange(e) {
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -23,6 +24,33 @@ export function EditEditionModal(props) {
 
             <Modal.Body>
                 <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Cover Image</Form.Label>
+                        <Form.Control
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                                const file = e.target.files[0];
+                                if (!file) return;
+
+                                setUploading(true);
+                                try {
+                                    const url = await uploadFile(file);
+                                    setFormData({ ...formData, imgURL: url });
+                                } finally {
+                                    setUploading(false);
+                                }
+                            }}
+                        />
+                    </Form.Group>
+
+                    {formData.imgURL && (
+                        <img
+                            src={formData.imgURL}
+                            alt="Preview"
+                            className="img-fluid rounded mb-3"
+                        />
+                    )}
 
                     <Form.Group className="mb-3">
                         <Form.Label>Format</Form.Label>
@@ -51,7 +79,48 @@ export function EditEditionModal(props) {
                         />
                     </Form.Group>
 
-                    {/* Add more fields as needed */}
+                    <Form.Group className="mb-3">
+                        <Form.Label>Price (€)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            name="price"
+                            value={formData.price || ""}
+                            onChange={handleChange}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Publisher</Form.Label>
+
+                        <Form.Control
+                            list="publisher-options"
+                            name="organizationName"
+                            value={formData.organizationName || ""}
+                            onChange={handleChange}
+                            disabled={formData.selfPublished}
+                            placeholder="Select or type a publisher"
+                        />
+
+                        <datalist id="publisher-options">
+                            {organizations?.map(org => (
+                                <option key={org.id} value={org.name} />
+                            ))}
+                        </datalist>
+                    </Form.Group>
+
+                    <Form.Check
+                        className="mb-3"
+                        type="checkbox"
+                        label="Self-published"
+                        checked={formData.selfPublished || false}
+                        onChange={e =>
+                            setFormData({
+                                ...formData,
+                                selfPublished: e.target.checked,
+                                organizationID: e.target.checked ? null : formData.organizationID
+                            })
+                        }
+                    />
 
                 </Form>
             </Modal.Body>

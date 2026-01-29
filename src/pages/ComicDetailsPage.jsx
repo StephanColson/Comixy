@@ -48,7 +48,8 @@ export function ComicDetailsPage(props){
             <Editions editions={comicEditions} onEditEdition={handleEditEdition}/>
 
             {showEditModal && (
-                <EditEditionModal edition={editingEdition} onClose={() => setShowEditModal(false)
+                <EditEditionModal edition={editingEdition} organizations={organizations}
+                                  onClose={() => setShowEditModal(false)
                 }/> )}
         </>
     );
