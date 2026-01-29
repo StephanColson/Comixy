@@ -1,0 +1,221 @@
+import {Combobox} from "@headlessui/react";
+import {Row, Col} from "react-bootstrap";
+
+export function EditionSection(props) {
+    const {editionForm, setEditionForm, filteredFormat, filteredPrintType, filteredPublishers,
+        searchQuery, setSearchQuery, currentYear, organizations} = props;
+
+    return (
+        <Row className="m-4">
+            <Col lg={3}>
+                <label className="form-label">Published:</label>
+                <input
+                    type="number"
+                    className="form-control"
+                    value={editionForm.printYear}
+                    min={1837}
+                    max={currentYear}
+                    onChange={e => {
+                        const inputYear = e.target.value;
+
+                        if (inputYear === "") {
+                            setEditionForm(prev => ({...prev, printYear: ""}));
+                            return;
+                        }
+
+                        if (!/^\d{0,4}$/.test(inputYear)) return;
+
+                        setEditionForm(prev => ({
+                            ...prev,
+                            printYear: inputYear,
+                        }));
+                    }}
+                    placeholder="year published"
+                />
+            </Col>
+
+            <Col lg={6}>
+                <label className="form-label">Format:</label>
+
+                <Combobox
+                    value={
+                        filteredFormat.find(f => f.id === editionForm.format)
+                        ?? (editionForm.formatName ? {id: null, label: editionForm.formatName} : null)
+                    }
+                    onChange={opt => {
+                        setEditionForm(prev => ({
+                            ...prev,
+                            format: opt ? opt.id : null,
+                            formatName: opt?.id ? "" : prev.formatName,
+                        }));
+                    }}
+                >
+                    <Combobox.Input
+                        className="form-control"
+                        displayValue={opt => opt?.label ?? editionForm.formatName}
+                        placeholder="Select or type format…"
+                        onChange={e =>
+                            setEditionForm(prev => ({
+                                ...prev,
+                                format: null,
+                                formatName: e.target.value,
+                            }))
+                        }
+                    />
+
+                    <Combobox.Options className="list-group position-absolute z-3">
+                        {filteredFormat.slice(0, 5).map(opt => (
+                            <Combobox.Option
+                                key={opt.id}
+                                value={opt}
+                                className="list-group-item list-group-item-action"
+                            >
+                                {opt.label}
+                            </Combobox.Option>
+                        ))}
+                    </Combobox.Options>
+                </Combobox>
+            </Col>
+
+            {/* PRINT TYPE */}
+            <Col lg={6}>
+                <label className="form-label">Print:</label>
+
+                <Combobox
+                    value={
+                        filteredPrintType.find(p => p.id === editionForm.printType)
+                        ?? (editionForm.printTypeName ? {id: null, label: editionForm.printTypeName} : null)
+                    }
+                    onChange={opt => {
+                        setEditionForm(prev => ({
+                            ...prev,
+                            printType: opt ? opt.id : null,
+                            printTypeName: opt?.id ? "" : prev.printTypeName,
+                        }));
+                    }}
+                >
+                    <Combobox.Input
+                        className="form-control"
+                        displayValue={opt => opt?.label ?? editionForm.printTypeName}
+                        placeholder="Type or Select print type…"
+                        onChange={e =>
+                            setEditionForm(prev => ({
+                                ...prev,
+                                printType: null,
+                                printTypeName: e.target.value,
+                            }))
+                        }
+                    />
+
+                    <Combobox.Options className="list-group position-absolute z-3">
+                        {filteredPrintType.slice(0, 5).map(opt => (
+                            <Combobox.Option
+                                key={opt.id}
+                                value={opt}
+                                className="list-group-item list-group-item-action"
+                            >
+                                {opt.label}
+                            </Combobox.Option>
+                        ))}
+                    </Combobox.Options>
+                </Combobox>
+            </Col>
+
+            <Col lg={2} className="mt-4">
+                <div>
+                    <input
+                        type="checkbox"
+                        className="form-check-input me-3"
+                        checked={editionForm.selfPublished}
+                        onChange={e => {
+                            const checked = e.target.checked;
+
+                            setEditionForm(prev => ({
+                                ...prev,
+                                selfPublished: checked,
+                                organizationID: checked ? null : prev.organizationID,
+                            }));
+                        }}
+                    />
+                    <label className="form-check-label">Self-published</label>
+                </div>
+            </Col>
+
+            <Col lg={10} className="mt-4">
+                {!editionForm.selfPublished && (
+                    <Col>
+                        <label className="form-label">Publisher:</label>
+
+                        <Combobox
+                            value={
+                                organizations.find(p => p.id === editionForm.organizationID)
+                                ?? (editionForm.organizationName ? {name: editionForm.organizationName} : null)
+                            }
+                            onChange={opt => {
+                                if (!opt) {
+                                    setEditionForm(prev => ({
+                                        ...prev,
+                                        organizationID: null,
+                                        organizationName: "",
+                                    }));
+                                } else if (opt.id) {
+                                    setEditionForm(prev => ({
+                                        ...prev,
+                                        organizationID: opt.id,
+                                        organizationName: "",
+                                    }));
+                                } else {
+                                    setEditionForm(prev => ({
+                                        ...prev,
+                                        organizationID: null,
+                                        organizationName: opt.name,
+                                    }));
+                                }
+                            }}
+                        >
+                            <Combobox.Input
+                                className="form-control"
+                                displayValue={opt => opt?.name ?? ""}
+                                placeholder="Select or type a publisher..."
+                                onChange={e => {
+                                    const value = e.target.value;
+                                    setSearchQuery(prev => ({...prev, publisher: value}));
+
+                                    setEditionForm(prev => ({
+                                        ...prev,
+                                        organizationID: null,
+                                        organizationName: value,
+                                    }));
+                                }}
+                            />
+
+                            <Combobox.Options className="list-group position-absolute z-3">
+                                {filteredPublishers.slice(0, 5).map(opt => (
+                                    <Combobox.Option
+                                        key={opt.id}
+                                        value={opt}
+                                        className="list-group-item list-group-item-action"
+                                    >
+                                        {opt.name}
+                                    </Combobox.Option>
+                                ))}
+
+                                {searchQuery.publisher !== "" &&
+                                    !filteredPublishers.some(
+                                        p => p.name.toLowerCase() === searchQuery.publisher.toLowerCase()
+                                    ) && (
+                                        <Combobox.Option
+                                            value={{name: searchQuery.publisher}}
+                                            className="list-group-item list-group-item-action text-primary"
+                                        >
+                                            Create “{searchQuery.publisher}”
+                                        </Combobox.Option>
+                                    )}
+                            </Combobox.Options>
+                        </Combobox>
+                    </Col>
+                )}
+            </Col>
+        </Row>
+    );
+}
