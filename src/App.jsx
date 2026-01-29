@@ -18,6 +18,7 @@ import {useOrganizationCollectionData} from "./api/organizationInfo.js";
 import {useRoleCollectionData} from "./api/roleInfo.js";
 import {useComicContributorCollectionData} from "./api/comicContributer.js";
 import {usePeopleCollectionData} from "./api/personInfo.js";
+import {useEditionCollectionData} from "./api/editionInfo.js";
 
 const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
@@ -59,6 +60,7 @@ function ActivePage(props){
            setActiveNavBarItem, selectedSerieID, setSelectedSerieID, setSelectedComicID, selectedComicID} = props;
 
     const {comics} = useComicCollectionData();
+    const {editions} = useEditionCollectionData();
     const {series} = useSerieCollectionData();
     const {organizations} = useOrganizationCollectionData();
     const {roles} = useRoleCollectionData();
@@ -76,13 +78,17 @@ function ActivePage(props){
                              }}
                              setActiveNavBarItem={setActiveNavBarItem}/>;
         case COMIC_CATALOG:
-            return <ComicPage comics={comics}
-                              onSelectComic={(comic) => {
-                                  setSelectedComicID(comic.id);
-                                  setActiveNavBarItem(COMIC_EDITIONS);
-                              }}
-                              selectedSerieID={selectedSerieID}
-                              initialGenre={initialGenre}/>;
+            return <ComicPage
+                comics={comics}
+                editions={editions}
+                onSelectComic={(comic) => {
+                    setSelectedComicID(comic.id);
+                    setActiveNavBarItem(COMIC_EDITIONS);
+                }}
+                selectedSerieID={selectedSerieID}
+                initialGenre={initialGenre}
+            />;
+
         case NAV_SERIE_CATALOG:
             return <SeriePage series={series}
                               onSelectSerie={(serie) => {
