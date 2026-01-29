@@ -2,7 +2,7 @@ import {firestoreDB} from "./firebase.js";
 import {addDoc, collection, query} from "firebase/firestore";
 import {useCollectionData} from "react-firebase-hooks/firestore";
 
-const COMIC_CONTRIBUTOR_COLLECTION = "comicContributors";
+const COMIC_CONTRIBUTOR_COLLECTION = "ComicContributors";
 
 const comicContributorConverter = {
     toFirestore: dataInApp => ({
@@ -18,7 +18,7 @@ const comicContributorConverter = {
 };
 
 export async function addComicContributor(newContributor) {
-    const collectionRef = collection(firestoreDB, "comicContributors");
+    const collectionRef = collection(firestoreDB, "ComicContributors");
     const docRef = await addDoc(collectionRef, newContributor);
     return docRef.id;
 }

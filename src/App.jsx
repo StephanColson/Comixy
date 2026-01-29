@@ -14,6 +14,10 @@ import {useState} from "react";
 import {SeriePage} from "./pages/SeriePage.jsx";
 import {ComicDetailsPage} from "./pages/ComicDetailsPage.jsx";
 import {AddComicPage} from "./pages/AddComicPage.jsx";
+import {useOrganizationCollectionData} from "./api/organizationInfo.js";
+import {useRoleCollectionData} from "./api/roleInfo.js";
+import {useComicContributorCollectionData} from "./api/comicContributer.js";
+import {usePeopleCollectionData} from "./api/personInfo.js";
 
 const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
@@ -54,8 +58,13 @@ function ActivePage(props){
     const {activeNavBarItem, selectedUser, initialGenre, setInitialGenre,
            setActiveNavBarItem, selectedSerieID, setSelectedSerieID, setSelectedComicID, selectedComicID} = props;
 
-    const {comics, loading: comicsLoading, error: comicsError} = useComicCollectionData();
-    const {series, loading: seriesLoading, error: seriesError} = useSerieCollectionData();
+    const {comics} = useComicCollectionData();
+    const {series} = useSerieCollectionData();
+    const {organizations} = useOrganizationCollectionData();
+    const {roles} = useRoleCollectionData();
+    const {peoples} = usePeopleCollectionData();
+    const {comicContributors} = useComicContributorCollectionData();
+
 
     switch (activeNavBarItem) {
         case NAV_HOME:
@@ -86,7 +95,16 @@ function ActivePage(props){
 
         case COMIC_EDITIONS: {
             const selectedComic = comics?.find(c => c.id === selectedComicID);
-            return <ComicDetailsPage comic={selectedComic}/>
+
+            return (
+                <ComicDetailsPage
+                    comic={selectedComic}
+                    organizations={organizations}
+                    roles={roles}
+                    peoples={peoples}
+                    comicContributors={comicContributors}
+                />
+            );
         }
         default:
             return;
