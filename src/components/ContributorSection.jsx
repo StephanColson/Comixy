@@ -27,7 +27,7 @@ export function ContributorSection(props) {
                                 setContributorDraft(prev => ({
                                     ...prev,
                                     peopleID: opt.id,
-                                    peopleName: "",
+                                    peopleName: opt.name,
                                 }));
                             } else {
                                 setContributorDraft(prev => ({
@@ -99,7 +99,7 @@ export function ContributorSection(props) {
                                 setContributorDraft(prev => ({
                                     ...prev,
                                     roleID: opt.id,
-                                    roleName: "",
+                                    roleName: opt.type,
                                 }));
                             } else {
                                 setContributorDraft(prev => ({
