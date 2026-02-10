@@ -74,7 +74,7 @@ export function ComicSection(props) {
                                         setComicForm(prev => ({
                                             ...prev,
                                             serieID: opt.id,
-                                            serieTitle: "",
+                                            serieTitle: opt.title,
                                         }));
                                     } else {
                                         setComicForm(prev => ({

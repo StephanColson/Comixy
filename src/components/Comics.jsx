@@ -8,7 +8,7 @@ function ComicGallery(props) {
     const {comic, onSelect} = props;
     return (
         <SectionCard className="card-pop" coverImg={comic.imageURL} onClick={() => onSelect(comic)} role="button">
-            <div className="fw-bold">{comic.title} {comic.bookNumber}</div>
+            <div className="fw-bold">{comic.bookNumber} - {comic.title}</div>
             <hr/>
             {comic.price && (
                 <div className="badge coloured-badge px-4 py-2">
@@ -23,7 +23,9 @@ function ComicList(props){
     const {comic, onSelect} = props;
     return <>
         <div>
-            <span className="fs-4 text-green-shaded pop-effect" role="button" onClick={() => onSelect(comic)}>{comic.title}</span>
+            <span className="fs-4 pop-effect" role="button" onClick={() => onSelect(comic)}>
+                {comic.title}
+            </span>
         </div>
     </>
 }
@@ -52,18 +54,20 @@ export function Comics(props) {
             <FlipMove typeName={Row}>
                 <Col className="mt-4">
                     <div>
-                        <ul>
-                            {comics.map(cl =>
-                                <li key={cl.id}>
-                                    <ComicList comic={cl} onSelect={onSelectComic}/>
-                                </li>
-                            )}
-                        </ul>
+                        {comics.map(cl => (
+                            <div key={cl.id} className="d-flex align-items-baseline">
+                                <div className="me-3 fw-bold">
+                                    {cl.bookNumber}.
+                                </div>
+
+                                <ComicList comic={cl} onSelect={onSelectComic}/>
+                            </div>
+                            ))}
                     </div>
                 </Col>
 
                 <Col className="mt-4">
-                    <div className="border border-dark">
+                    <div className="border border-2 border-dark rounded">
                         <Row className="m-2">
                             {comics?.map(c => (
                                 <Col xl={4} lg={4} md={4} key={c.id}>

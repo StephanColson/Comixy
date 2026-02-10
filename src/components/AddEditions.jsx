@@ -263,7 +263,7 @@ export function AddEditions(props) {
                 setSearchQuery={setSearchQuery}
             />
 
-            <button type="button" className="btn btn-success mt-4" onClick={handleSubmit}>
+            <button type="button" className="btn-submit rounded mt-4" onClick={handleSubmit}>
                 Submit
             </button>
         </>

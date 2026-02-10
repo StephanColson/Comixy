@@ -31,26 +31,26 @@ function NavigationBar(props){
 
     return (
         <>
-            <Navbar expand="md" className="fixed-top nav-bg text-green-shaded">
+            <Navbar expand="md" className="fixed-top nav-bg">
                 <Container className="m-0">
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav activeKey={activeNavBarItem}
                              onSelect={selectedEventKey => onSelectNavBarItem(selectedEventKey)}>
                             <Nav.Item>
-                                <Nav.Link eventKey={NAV_HOME}>Home</Nav.Link>
+                                <Nav.Link className="nav-text" eventKey={NAV_HOME}>Home</Nav.Link>
                             </Nav.Item>
 
                             <Nav.Item>
-                                <Nav.Link eventKey={NAV_SERIE_CATALOG}>Serie Catalog</Nav.Link>
+                                <Nav.Link className="nav-text" eventKey={NAV_SERIE_CATALOG}>Serie Catalog</Nav.Link>
                             </Nav.Item>
 
                             <Nav.Item>
-                                <Nav.Link eventKey={COMIC_CATALOG}>Comic Catalog</Nav.Link>
+                                <Nav.Link className="nav-text" eventKey={COMIC_CATALOG}>Comic Catalog</Nav.Link>
                             </Nav.Item>
 
                             <Nav.Item>
-                                <Nav.Link eventKey={NAV_ADD_FORM}>Add Comics</Nav.Link>
+                                <Nav.Link className="nav-text" eventKey={NAV_ADD_FORM}>Add Comics</Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>

@@ -9,7 +9,7 @@ function Serie(props){
         <div>
             <ul>
                 <li onClick={() => onSelect(serie)}>
-                    <span className="fs-4 text-green-shaded pop-effect" role="button">{serie.title}</span>
+                    <span className="fs-4 pop-effect" role="button">{serie.title}</span>
                 </li>
             </ul>
         </div>
