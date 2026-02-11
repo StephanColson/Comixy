@@ -12,7 +12,7 @@ export function ComicPage(props) {
         : comicsWithImages;
 
     const [currentPage, setCurrentPage] = useState(1);
-    const displayComic = 6;
+    const displayComic = 15;
 
     const startIndex = (currentPage - 1) * displayComic;
     const endIndex = startIndex + displayComic;

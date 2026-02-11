@@ -32,6 +32,8 @@ function ComicList(props){
 
 export function Comics(props) {
     const {comics, carouselMode = false, onSelectComic} = props;
+
+    const sortedComics = [...comics].sort((a, b) => Number(a.bookNumber) - Number(b.bookNumber));
     const [selectedComic, setSelectedComic] = useState(null);
     const [showDetails, setShowDetails] = useState(false);
 
@@ -54,7 +56,7 @@ export function Comics(props) {
             <FlipMove typeName={Row}>
                 <Col className="mt-4">
                     <div>
-                        {comics.map(cl => (
+                        {sortedComics.map(cl => (
                             <div key={cl.id} className="d-flex align-items-baseline">
                                 <div className="me-3 fw-bold">
                                     {cl.bookNumber}.
@@ -69,7 +71,7 @@ export function Comics(props) {
                 <Col className="mt-4">
                     <div className="border border-2 border-dark rounded">
                         <Row className="m-2">
-                            {comics?.map(c => (
+                            {sortedComics?.map(c => (
                                 <Col xl={4} lg={4} md={4} key={c.id}>
                                     <ComicGallery comic={c} onSelect={onSelectComic}/>
                                 </Col>

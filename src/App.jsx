@@ -10,7 +10,7 @@ import {HomePage} from "./pages/HomePage.jsx";
 import {useComicCollectionData} from "./api/comicInfo.js";
 import {useSerieCollectionData} from "./api/serieInfo.js";
 import {Nav, Navbar, Container} from "react-bootstrap";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {SeriePage} from "./pages/SeriePage.jsx";
 import {ComicDetailsPage} from "./pages/ComicDetailsPage.jsx";
 import {AddComicPage} from "./pages/AddComicPage.jsx";
@@ -133,15 +133,25 @@ function ActivePage(props){
 
 function App() {
     const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_HOME);
-
     const [selectedComicID, setSelectedComicID] = useState(null);
     const [selectedSerieID, setSelectedSerieID] = useState(null);
+
+    useEffect(() => {
+        const handleHashChange = () => {
+            const key = window.location.hash.replace("#", "");
+            if (key) setActiveNavBarItem(key);
+        };
+
+        window.addEventListener("hashchange", handleHashChange);
+        return () => window.removeEventListener("hashchange", handleHashChange);
+    }, []);
 
     return (
         <>
             <NavigationBar
                 activeNavBarItem={activeNavBarItem}
                 onSelectNavBarItem={(key) => {
+                    window.location.hash = key;
                     setActiveNavBarItem(key);
                     if (key === COMIC_CATALOG) {
                         setSelectedSerieID(null);
