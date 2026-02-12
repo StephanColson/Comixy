@@ -10,12 +10,16 @@ import {ComicSection} from "./ComicSection.jsx";
 import {EditionSection} from "./EditionSection.jsx";
 import {ContributorSection} from "./ContributorSection.jsx";
 
-function filterList (props){
-    const {list, search, selector} = props;
-    if(!search) return list;
+function filterList({ list, search, selector }) {
+    if (!search) return list;
     const lower = search.toLowerCase();
-    return list.filter(item => selector(item).toLowerCase().includes(lower));
+    return list.filter(item => {
+        const value = selector(item);
+        if (typeof value !== "string") return false;
+        return value.toLowerCase().includes(lower);
+    });
 }
+
 
 export function AddEditions(props) {
     const {selectedComicID, setSelectedComicID} = props;
@@ -137,67 +141,127 @@ export function AddEditions(props) {
 
     async function handleSubmit() {
         try {
-            console.log("Submitting...");
+            const normalize = str => (str || "").trim().toLowerCase();
 
-            const serieID =
-                comicForm.serieID ||
-                (comicForm.serieTitle
+            const typedSerie = normalize(comicForm.serieTitle);
+            const existingSerie = series.find(
+                s => normalize(s.title) === typedSerie
+            );
+
+            const serieID = existingSerie
+                ? existingSerie.id
+                : (typedSerie
                     ? await addSerie({
-                        title: comicForm.serieTitle,
+                        title: comicForm.serieTitle.trim(),
                         description: "",
                         franchiseID: null,
                     })
                     : null);
 
-            const comicID =
-                isNewComic
-                    ? await addComic({
-                        title: comicForm.title,
-                        bookNumber: Number(comicForm.bookNumber),
-                        genres: comicForm.genres,
-                        serieID: serieID,
-                        price: null,
-                    })
-                    : selectedComicID;
+            const comicID = isNewComic
+                ? await addComic({
+                    title: comicForm.title.trim(),
+                    bookNumber: Number(comicForm.bookNumber),
+                    genres: comicForm.genres,
+                    serieID: serieID,
+                    price: null,
+                })
+                : selectedComicID;
 
-            const publisherID =
-                editionForm.selfPublished
-                    ? null
-                    : editionForm.organizationID ||
-                    (editionForm.organizationName
-                        ? await addOrganization({name: editionForm.organizationName})
-                        : null);
+            const typedPublisher = normalize(editionForm.organizationName);
+            const existingPublisher = organizations.find(
+                o => normalize(o.name) === typedPublisher
+            );
+
+            const publisherID = editionForm.selfPublished
+                ? null
+                : (
+                    editionForm.organizationID ||
+                    (existingPublisher
+                        ? existingPublisher.id
+                        : (typedPublisher
+                            ? await addOrganization({ name: editionForm.organizationName.trim() })
+                            : null))
+                );
+
+            const typedSelfPub = normalize(editionForm.selfPublisherName);
+            const existingSelfPub = peoples.find(
+                p => normalize(p.name) === typedSelfPub
+            );
+
+            const selfPublisherID = editionForm.selfPublished
+                ? (
+                    editionForm.selfPublisherID ||
+                    (existingSelfPub
+                        ? existingSelfPub.id
+                        : (typedSelfPub
+                            ? await addPerson({ name: editionForm.selfPublisherName.trim() })
+                            : null))
+                )
+                : null;
+
+            const typedFormat = normalize(editionForm.formatName);
+            const existingFormat = editions
+                .map(e => e.format)
+                .filter(Boolean)
+                .find(f => normalize(f) === typedFormat);
+
+            const finalFormat = existingFormat || editionForm.format || editionForm.formatName || null;
+
+            const typedPrintType = normalize(editionForm.printTypeName);
+            const existingPrintType = editions
+                .map(e => e.printType)
+                .filter(Boolean)
+                .find(pt => normalize(pt) === typedPrintType);
+
+            const finalPrintType = existingPrintType || editionForm.printType || editionForm.printTypeName || null;
 
             const contributorList = await Promise.all(
                 contributors.map(async c => {
+                    const typedPerson = normalize(c.peopleName);
+                    const existingPerson = peoples.find(
+                        p => normalize(p.name) === typedPerson
+                    );
+
                     const peopleID =
                         c.peopleID ||
-                        (c.peopleName ? await addPerson({name: c.peopleName}) : null);
+                        (existingPerson
+                            ? existingPerson.id
+                            : (typedPerson
+                                ? await addPerson({ name: c.peopleName.trim() })
+                                : null));
+
+                    const typedRole = normalize(c.roleName);
+                    const existingRole = roles.find(
+                        r => normalize(r.type) === typedRole
+                    );
 
                     const roleID =
                         c.roleID ||
-                        (c.roleName ? await addRole({type: c.roleName}) : null);
+                        (existingRole
+                            ? existingRole.id
+                            : (typedRole
+                                ? await addRole({ type: c.roleName.trim() })
+                                : null));
 
-                    return {peopleID, roleID};
+                    return { peopleID, roleID };
                 })
             );
 
-            const imgURL =
-                editionForm.imageFile
-                    ? await uploadFile(editionForm.imageFile)
-                    : null;
-
+            const imgURL = editionForm.imageFile
+                ? await uploadFile(editionForm.imageFile)
+                : null;
 
             const editionID = await addEdition({
                 comicID,
-                format: editionForm.format ?? editionForm.formatName,
+                format: finalFormat,
                 imgURL: imgURL,
                 printYear: editionForm.printYear || null,
-                printType: editionForm.printType ?? editionForm.printTypeName,
+                printType: finalPrintType,
                 numberInCollection: editionForm.numberInCollection || null,
                 organizationID: publisherID,
                 selfPublished: editionForm.selfPublished,
-                selfPublisherID: editionForm.selfPublisherID || null,
+                selfPublisherID: selfPublisherID,
                 selfPublisherName: editionForm.selfPublisherName || "",
             });
 
@@ -213,7 +277,8 @@ export function AddEditions(props) {
             );
 
             console.log("Submit complete!");
-            setEditionForm(prev => ({...prev, imageFile: null}));
+            setEditionForm(prev => ({ ...prev, imageFile: null }));
+
         } catch (err) {
             console.error("Submit error:", err);
         }

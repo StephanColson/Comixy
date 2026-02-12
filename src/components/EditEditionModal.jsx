@@ -5,16 +5,38 @@ import {ContributorSection} from "./ContributorSection.jsx";
 import {addComicContributor, deleteComicContributor} from "../api/comicContributer.js";
 import {addPerson} from "../api/personInfo.js";
 import {addRole} from "../api/roleInfo.js";
+import {useEditionFiltering} from "./EditionFiltering.jsx";
+import {EditionSection} from "./EditionSection.jsx";
 
 export function EditEditionModal(props) {
-    const {edition, onClose, organizations, peoples, roles, comicContributors} = props;
-    const [formData, setFormData] = useState({
-        ...edition,
-        organizationName: edition.organizationName || "",
-        selfPublisherName: edition.selfPublisherName || "",
+    const {edition, onClose, organizations, peoples, roles, comicContributors, editions} = props;
+
+    const [editionForm, setEditionForm] = useState({
+        comicID: edition.comicID,
+        printYear: edition.printYear || "",
+        format: edition.format || null,
+        formatName: "",
+        printType: edition.printType || null,
+        printTypeName: "",
+        organizationID: edition.organizationID || null,
+        organizationName: "",
+        selfPublished: edition.selfPublished || false,
+        selfPublisherID: edition.selfPublisherID || null,
+        selfPublisherName: "",
+        imageFile: null,
     });
 
-    const [contributors, setContributors] = useState(edition.displayContributors || []);
+    const [contributors, setContributors] = useState(
+        comicContributors
+            .filter(cc => cc.editionID === edition.id)
+            .map(cc => ({
+                peopleID: cc.peopleID,
+                peopleName: peoples.find(p => p.id === cc.peopleID)?.name || "",
+                roleID: cc.roleID,
+                roleName: roles.find(r => r.id === cc.roleID)?.type || "",
+            }))
+    );
+
     const [contributorDraft, setContributorDraft] = useState({
         peopleID: null,
         peopleName: "",
@@ -22,52 +44,157 @@ export function EditEditionModal(props) {
         roleName: "",
     });
 
-    const [searchQuery, setSearchQuery] = useState({
+    const [searchContributor, setSearchContributor] = useState({
         person: "",
         role: "",
     });
 
     const filteredPersons = peoples.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.person.toLowerCase())
+        p.name.toLowerCase().includes(searchContributor.person.toLowerCase())
     );
 
     const filteredRoles = roles.filter(r =>
-        r.type.toLowerCase().includes(searchQuery.role.toLowerCase())
+        r.type.toLowerCase().includes(searchContributor.role.toLowerCase())
     );
 
 
     const [uploading, setUploading] = useState(false);
 
-    function handleChange(e) {
-        setFormData({...formData, [e.target.name]: e.target.value});
-    }
-
     async function handleSave() {
-        await updateEdition(formData);
+        try {
+            const normalize = str => (str || "").trim().toLowerCase();
 
-        const old = comicContributors.filter(cc => cc.editionID === formData.id);
-        await Promise.all(old.map(cc => deleteComicContributor(cc)));
+            const typedFormat = normalize(editionForm.formatName);
+            const existingFormat = editions
+                .map(e => e.format)
+                .filter(Boolean)
+                .find(f => normalize(f) === typedFormat);
 
-        await Promise.all(
-            contributors.map(async c => {
-                const peopleID =
-                    c.peopleID ||
-                    (c.peopleName ? await addPerson({name: c.peopleName}) : null);
+            const finalFormat =
+                existingFormat ||
+                editionForm.format ||
+                (typedFormat ? editionForm.formatName.trim() : null);
 
-                const roleID =
-                    c.roleID ||
-                    (c.roleName ? await addRole({type: c.roleName}) : null);
+            const typedPrintType = normalize(editionForm.printTypeName);
+            const existingPrintType = editions
+                .map(e => e.printType)
+                .filter(Boolean)
+                .find(pt => normalize(pt) === typedPrintType);
 
-                return addComicContributor({
-                    comicID: formData.comicID,
-                    editionID: formData.id,
-                    peopleID,
-                    roleID,
-                });
-            })
-        );
-        onClose();
+            const finalPrintType =
+                existingPrintType ||
+                editionForm.printType ||
+                (typedPrintType ? editionForm.printTypeName.trim() : null);
+
+            const typedPublisher = normalize(editionForm.organizationName);
+            const existingPublisher = organizations.find(
+                o => normalize(o.name) === typedPublisher
+            );
+
+            const publisherID = editionForm.selfPublished
+                ? null
+                : (
+                    editionForm.organizationID ||
+                    (existingPublisher
+                        ? existingPublisher.id
+                        : (typedPublisher
+                            ? await addOrganization({ name: editionForm.organizationName.trim() })
+                            : null))
+                );
+
+            const typedSelfPub = normalize(editionForm.selfPublisherName);
+            const existingSelfPub = peoples.find(
+                p => normalize(p.name) === typedSelfPub
+            );
+
+            const selfPublisherID = editionForm.selfPublished
+                ? (
+                    editionForm.selfPublisherID ||
+                    (existingSelfPub
+                        ? existingSelfPub.id
+                        : (typedSelfPub
+                            ? await addPerson({ name: editionForm.selfPublisherName.trim() })
+                            : null))
+                )
+                : null;
+
+            const imgURL = editionForm.imageFile
+                ? await uploadFile(editionForm.imageFile)
+                : edition.imgURL;
+
+            await updateEdition({
+                ...edition,
+                printYear: editionForm.printYear || null,
+                format: finalFormat,
+                printType: finalPrintType,
+                organizationID: publisherID,
+                organizationName: editionForm.selfPublished ? "" : editionForm.organizationName.trim(),
+                selfPublished: editionForm.selfPublished,
+                selfPublisherID: selfPublisherID,
+                selfPublisherName: editionForm.selfPublished ? editionForm.selfPublisherName.trim() : "",
+                imgURL,
+            });
+
+            const old = comicContributors.filter(cc => cc.editionID === edition.id);
+            await Promise.all(old.map(cc => deleteComicContributor(cc.id)));
+
+            await Promise.all(
+                contributors.map(async c => {
+                    const typedPerson = normalize(c.peopleName);
+                    const existingPerson = peoples.find(
+                        p => normalize(p.name) === typedPerson
+                    );
+
+                    const peopleID =
+                        c.peopleID ||
+                        (existingPerson
+                            ? existingPerson.id
+                            : (typedPerson
+                                ? await addPerson({ name: c.peopleName.trim() })
+                                : null));
+
+                    const typedRole = normalize(c.roleName);
+                    const existingRole = roles.find(
+                        r => normalize(r.type) === typedRole
+                    );
+
+                    const roleID =
+                        c.roleID ||
+                        (existingRole
+                            ? existingRole.id
+                            : (typedRole
+                                ? await addRole({ type: c.roleName.trim() })
+                                : null));
+
+                    return addComicContributor({
+                        comicID: edition.comicID,
+                        editionID: edition.id,
+                        peopleID,
+                        roleID,
+                    });
+                })
+            );
+
+            onClose();
+
+        } catch (err) {
+            console.error("Edit save error:", err);
+        }
     }
+
+    const {
+        searchQuery,
+        setSearchQuery,
+        filteredFormat,
+        filteredPrintType,
+        filteredPublishers,
+        filteredPersonsSelfPub
+    } = useEditionFiltering({
+        editions,
+        organizations,
+        peoples,
+        roles
+    });
 
     return (
         <Modal show onHide={onClose}>
@@ -77,132 +204,30 @@ export function EditEditionModal(props) {
 
             <Modal.Body>
                 <Form>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Cover Image</Form.Label>
-                        <Form.Control
-                            type="file"
-                            accept="image/*"
-                            onChange={async (e) => {
-                                const file = e.target.files[0];
-                                if (!file) return;
-
-                                setUploading(true);
-                                try {
-                                    const url = await uploadFile(file);
-                                    setFormData({ ...formData, imgURL: url });
-                                } finally {
-                                    setUploading(false);
-                                }
-                            }}
-                        />
-                    </Form.Group>
-
-                    {formData.imgURL && (
-                        <img
-                            src={formData.imgURL}
-                            alt="Preview"
-                            className="img-fluid rounded mb-3"
-                        />
-                    )}
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Format</Form.Label>
-                        <Form.Control
-                            name="format"
-                            value={formData.format || ""}
-                            onChange={handleChange}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Print Type</Form.Label>
-                        <Form.Control
-                            name="printType"
-                            value={formData.printType || ""}
-                            onChange={handleChange}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Number in Collection</Form.Label>
-                        <Form.Control
-                            name="numberInCollection"
-                            value={formData.numberInCollection || ""}
-                            onChange={handleChange}
-                        />
-                    </Form.Group>
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Price (€)</Form.Label>
-                        <Form.Control
-                            type="number"
-                            name="price"
-                            value={formData.price || ""}
-                            onChange={handleChange}
-                        />
-                    </Form.Group>
-
-                    <Form.Check
-                        className="mb-3"
-                        type="checkbox"
-                        label="Self-published"
-                        checked={formData.selfPublished || false}
-                        onChange={e =>
-                            setFormData({
-                                ...formData,
-                                selfPublished: e.target.checked,
-                                organizationID: e.target.checked ? null : formData.organizationID,
-                                organizationName: e.target.checked ? "" : formData.organizationName,
-                            })
-                        }
+                    <EditionSection
+                        editionForm={editionForm}
+                        setEditionForm={setEditionForm}
+                        filteredFormat={filteredFormat}
+                        filteredPrintType={filteredPrintType}
+                        filteredPublishers={filteredPublishers}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        currentYear={new Date().getFullYear()}
+                        organizations={organizations}
+                        peoples={peoples}
+                        filteredPersonsSelfPub={filteredPersonsSelfPub}/>
+                    <ContributorSection
+                        contributorDraft={contributorDraft}
+                        setContributorDraft={setContributorDraft}
+                        contributors={contributors}
+                        setContributors={setContributors}
+                        filteredPersons={filteredPersons}
+                        filteredRoles={filteredRoles}
+                        peoples={peoples}
+                        roles={roles}
+                        searchQuery={searchContributor}
+                        setSearchQuery={setSearchContributor}
                     />
-
-                    {!formData.selfPublished && (
-                        <>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Publisher</Form.Label>
-                                <Form.Control
-                                    list="publisher-options"
-                                    name="organizationName"
-                                    value={formData.organizationName || ""}
-                                    onChange={handleChange}
-                                    placeholder="Select or type a publisher"
-                                />
-                                <datalist id="publisher-options">
-                                    {organizations?.map(org => (
-                                        <option key={org.id} value={org.name} />
-                                    ))}
-                                </datalist>
-                            </Form.Group>
-
-                            <ContributorSection
-                                contributorDraft={contributorDraft}
-                                setContributorDraft={setContributorDraft}
-                                contributors={contributors}
-                                setContributors={setContributors}
-                                filteredPersons={filteredPersons}
-                                filteredRoles={filteredRoles}
-                                peoples={peoples}
-                                roles={roles}
-                                searchQuery={searchQuery}
-                                setSearchQuery={setSearchQuery}
-                            />
-                        </>
-                    )}
-
-
-                    {formData.selfPublished && (
-                        <Form.Group className="mb-3">
-                            <Form.Label>Published by (Person)</Form.Label>
-                            <Form.Control
-                                name="selfPublisherName"
-                                value={formData.selfPublisherName || ""}
-                                onChange={handleChange}
-                                placeholder="Enter the person's name"
-                            />
-                        </Form.Group>
-                    )}
-
                 </Form>
             </Modal.Body>
 

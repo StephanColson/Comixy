@@ -56,7 +56,7 @@ export function ComicSection(props) {
                         </Col>
 
                         <Col lg={6}>
-                            <label className="form-label">Serie (optional):</label>
+                            <label className="form-label">Serie:</label>
 
                             <Combobox
                                 value={
@@ -93,12 +93,17 @@ export function ComicSection(props) {
                                         const value = e.target.value;
                                         setSearchQuery(prev => ({...prev, serie: value}));
 
-                                        setComicForm(prev => ({
-                                            ...prev,
-                                            serieID: "",
-                                            serieTitle: value,
-                                        }));
-                                    }}
+                                        const existing = series.find(s => s.title.toLowerCase() === value.toLowerCase());
+
+                                        if(existing){
+                                            setComicForm(prev =>
+                                                ({...prev, serieID: existing.id, serieTitle: existing.title,})
+                                            );
+                                        } else {
+                                            setComicForm(prev => ({...prev, serieID: "", serieTitle: value,}));
+                                        }
+                                    }
+                                }
                                 />
 
                                 <Combobox.Options className="list-group position-absolute z-3">
