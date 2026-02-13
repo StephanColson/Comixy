@@ -190,7 +190,7 @@ export function EditEditionModal(props) {
     const filteredSerie = series.filter(s => s.title.toLowerCase().includes((searchQuery.serie || "").toLowerCase()));
 
     return (
-        <Modal show onHide={onClose}>
+        <Modal show onHide={onClose} dialogClassName="modal-bg">
             <Modal.Header closeButton>
                 <Modal.Title>Edit Edition</Modal.Title>
             </Modal.Header>

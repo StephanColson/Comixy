@@ -9,6 +9,8 @@ import {addComicContributor} from "../api/comicContributer.js";
 import {ComicSection} from "./ComicSection.jsx";
 import {EditionSection} from "./EditionSection.jsx";
 import {ContributorSection} from "./ContributorSection.jsx";
+import {ModeSwitcher} from "./ModeSwitcher.jsx";
+import {Button, Modal} from "react-bootstrap";
 
 function filterList({ list, search, selector }) {
     if (!search) return list;
@@ -30,6 +32,8 @@ export function AddEditions(props) {
     const {peoples = [], loading: peoplesLoading} = usePeopleCollectionData();
     const {roles = [], loading: rolesLoading} = useRoleCollectionData();
     const {series = [], loading: serieLoading} = useSerieCollectionData();
+
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const [isNewComic, setIsNewComic] = useState(false);
     const currentYear = new Date().getFullYear();
@@ -236,9 +240,6 @@ export function AddEditions(props) {
                 printType: finalPrintType,
                 numberInCollection: editionForm.numberInCollection || null,
                 organizationID: publisherID,
-                selfPublished: editionForm.selfPublished,
-                selfPublisherID: selfPublisherID,
-                selfPublisherName: editionForm.selfPublisherName || "",
             });
 
             await Promise.all(
@@ -254,6 +255,7 @@ export function AddEditions(props) {
 
             console.log("Submit complete!");
             setEditionForm(prev => ({ ...prev, imageFile: null }));
+            setShowConfirmation(true);
 
         } catch (err) {
             console.error("Submit error:", err);
@@ -262,6 +264,8 @@ export function AddEditions(props) {
 
     return (
         <>
+            <ModeSwitcher isNewComic={isNewComic} setIsNewComic={setIsNewComic}/>
+
             <ComicSection
                 isNewComic={isNewComic}
                 setIsNewComic={setIsNewComic}
@@ -303,9 +307,28 @@ export function AddEditions(props) {
                 setSearchQuery={setSearchQuery}
             />
 
-            <button type="button" className="btn-submit rounded mt-4" onClick={handleSubmit}>
-                Submit
-            </button>
+            <Modal show={showConfirmation} onHide={() => setShowConfirmation(false)} centered dialogClassName="modal-bg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Submit Confirmation</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    New comic / edition has been added
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="outline-info" onClick={() => setShowConfirmation(false)}>
+                        OK
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+
+            <div className="d-flex justify-content-center m-3">
+                <button type="button" className="btn btn-warning rounded" onClick={handleSubmit}>
+                    Submit
+                </button>
+            </div>
         </>
     );
 }

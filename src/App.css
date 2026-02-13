@@ -8,6 +8,11 @@ body{
     background-color: #34332F !important;
 }
 
+.modal-bg .modal-content{
+    background-color: #34332F !important;
+    color: #E6E0C7 !important;
+}
+
 /*Cards & Link theme*/
 .pop-effect{
     color: #D08C3A;
@@ -45,13 +50,7 @@ body{
     color: #E8B84A !important;
 }
 
-/*Badge & Buttons theme*/
+/*Badge*/
 .coloured-badge{
     background: #2F5D8A;
-}
-
-.btn-submit{
-    background-color: #4E7D4A;
-    border: #4E7D4A;
-    padding: 0.3em;
 }

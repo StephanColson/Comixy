@@ -6,142 +6,122 @@ export function EditionSection(props) {
         setSearchQuery, currentYear, organizations} = props;
 
     return (
-        <Row className="m-4">
-            <Col lg={6}>
-                <label className="form-label">Cover Image:</label>
-                <input
-                    type="file"
-                    accept="image/*"
-                    className="form-control"
-                    onChange={e => {
-                        const file = e.target.files[0];
-                        setEditionForm(prev => ({ ...prev, imageFile: file }));
-                    }}
-                />
+        <div className="d-flex justify-content-center">
+            <Row className="m-2">
+                <Row className="justify-content-center mb-5">
+                    <Col lg={6}>
+                        <div className="mb-2 text-center">
+                            {editionForm.imageFile && (
+                                <img
+                                    src={URL.createObjectURL(editionForm.imageFile)}
+                                    alt="preview"
+                                    className="img-fluid mt-2"
+                                    style={{maxHeight: "200px", objectFit: "contain"}}
+                                />
+                            )}
+                        </div>
 
-                {editionForm.imageFile && (
-                    <img
-                        src={URL.createObjectURL(editionForm.imageFile)}
-                        alt="preview"
-                        className="img-fluid mt-2"
-                        style={{maxHeight: "200px", objectFit: "contain"}}
-                    />
-                )}
-            </Col>
+                        <div>
+                            <label className="form-label">Cover Image:</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                className="form-control"
+                                onChange={e => {
+                                    const file = e.target.files[0];
+                                    setEditionForm(prev => ({...prev, imageFile: file}));
+                                }}
+                            />
+                        </div>
+                    </Col>
+                </Row>
 
-            <Col lg={3}>
-                <label className="form-label">Published:</label>
-                <input
-                    type="number"
-                    className="form-control"
-                    value={editionForm.printYear}
-                    min={1837}
-                    max={currentYear}
-                    onChange={e => {
-                        const inputYear = e.target.value;
+                <Col lg={3}>
+                    <label className="form-label">Format:</label>
 
-                        if (inputYear === "") {
-                            setEditionForm(prev => ({...prev, printYear: ""}));
-                            return;
+                    <Combobox
+                        value={
+                            filteredFormat.find(f => f.id === editionForm.format)
+                            ?? (editionForm.formatName ? {id: null, label: editionForm.formatName} : null)
                         }
-
-                        if (!/^\d{0,4}$/.test(inputYear)) return;
-
-                        setEditionForm(prev => ({
-                            ...prev,
-                            printYear: inputYear,
-                        }));
-                    }}
-                    placeholder="year published"
-                />
-            </Col>
-
-            <Col lg={6}>
-                <label className="form-label">Format:</label>
-
-                <Combobox
-                    value={
-                        filteredFormat.find(f => f.id === editionForm.format)
-                        ?? (editionForm.formatName ? {id: null, label: editionForm.formatName} : null)
-                    }
-                    onChange={opt => {
-                        setEditionForm(prev => ({
-                            ...prev,
-                            format: opt ? opt.id : null,
-                            formatName: opt?.id ? "" : prev.formatName,
-                        }));
-                    }}
-                >
-                    <Combobox.Input
-                        className="form-control"
-                        displayValue={opt => opt?.label ?? editionForm.formatName}
-                        placeholder="Select or type format…"
-                        onChange={e =>
+                        onChange={opt => {
                             setEditionForm(prev => ({
                                 ...prev,
-                                format: null,
-                                formatName: e.target.value,
-                            }))
+                                format: opt ? opt.id : null,
+                                formatName: opt?.id ? "" : prev.formatName,
+                            }));
+                        }}
+                    >
+                        <Combobox.Input
+                            className="form-control"
+                            displayValue={opt => opt?.label ?? editionForm.formatName}
+                            placeholder="Select or type format…"
+                            onChange={e =>
+                                setEditionForm(prev => ({
+                                    ...prev,
+                                    format: null,
+                                    formatName: e.target.value,
+                                }))
+                            }
+                        />
+
+                        <Combobox.Options className="list-group position-absolute z-3">
+                            {filteredFormat.slice(0, 5).map(opt => (
+                                <Combobox.Option
+                                    key={opt.id}
+                                    value={opt}
+                                    className="list-group-item list-group-item-action"
+                                >
+                                    {opt.label}
+                                </Combobox.Option>
+                            ))}
+                        </Combobox.Options>
+                    </Combobox>
+                </Col>
+
+                <Col lg={3}>
+                    <label className="form-label">Print:</label>
+                    <Combobox
+                        value={
+                            filteredPrintType.find(p => p.id === editionForm.printType)
+                            ?? (editionForm.printTypeName ? {id: null, label: editionForm.printTypeName} : null)
                         }
-                    />
-
-                    <Combobox.Options className="list-group position-absolute z-3">
-                        {filteredFormat.slice(0, 5).map(opt => (
-                            <Combobox.Option
-                                key={opt.id}
-                                value={opt}
-                                className="list-group-item list-group-item-action"
-                            >
-                                {opt.label}
-                            </Combobox.Option>
-                        ))}
-                    </Combobox.Options>
-                </Combobox>
-            </Col>
-
-            <Col lg={6}>
-                <label className="form-label">Print:</label>
-                <Combobox
-                    value={
-                        filteredPrintType.find(p => p.id === editionForm.printType)
-                        ?? (editionForm.printTypeName ? {id: null, label: editionForm.printTypeName} : null)
-                    }
-                    onChange={opt => {
-                        setEditionForm(prev => ({
-                            ...prev,
-                            printType: opt ? opt.id : null,
-                            printTypeName: opt?.id ? "" : prev.printTypeName,
-                        }));
-                    }}
-                >
-                    <Combobox.Input
-                        className="form-control"
-                        displayValue={opt => opt?.label ?? editionForm.printTypeName}
-                        placeholder="Type or Select print type…"
-                        onChange={e =>
+                        onChange={opt => {
                             setEditionForm(prev => ({
                                 ...prev,
-                                printType: null,
-                                printTypeName: e.target.value,
-                            }))
-                        }
-                    />
+                                printType: opt ? opt.id : null,
+                                printTypeName: opt?.id ? "" : prev.printTypeName,
+                            }));
+                        }}
+                    >
+                        <Combobox.Input
+                            className="form-control"
+                            displayValue={opt => opt?.label ?? editionForm.printTypeName}
+                            placeholder="Type or Select print type…"
+                            onChange={e =>
+                                setEditionForm(prev => ({
+                                    ...prev,
+                                    printType: null,
+                                    printTypeName: e.target.value,
+                                }))
+                            }
+                        />
 
-                    <Combobox.Options className="list-group position-absolute z-3">
-                        {filteredPrintType.slice(0, 5).map(opt => (
-                            <Combobox.Option
-                                key={opt.id}
-                                value={opt}
-                                className="list-group-item list-group-item-action"
-                            >
-                                {opt.label}
-                            </Combobox.Option>
-                        ))}
-                    </Combobox.Options>
-                </Combobox>
-            </Col>
+                        <Combobox.Options className="list-group position-absolute z-3">
+                            {filteredPrintType.slice(0, 5).map(opt => (
+                                <Combobox.Option
+                                    key={opt.id}
+                                    value={opt}
+                                    className="list-group-item list-group-item-action"
+                                >
+                                    {opt.label}
+                                </Combobox.Option>
+                            ))}
+                        </Combobox.Options>
+                    </Combobox>
+                </Col>
 
-            <Col lg={10} className="mt-4">
+                <Col lg={3}>
                     <Col>
                         <label className="form-label">Publisher:</label>
 
@@ -213,7 +193,35 @@ export function EditionSection(props) {
                             </Combobox.Options>
                         </Combobox>
                     </Col>
-            </Col>
-        </Row>
+                </Col>
+
+                <Col lg={2}>
+                    <label className="form-label">Published:</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        value={editionForm.printYear}
+                        min={1837}
+                        max={currentYear}
+                        onChange={e => {
+                            const inputYear = e.target.value;
+
+                            if (inputYear === "") {
+                                setEditionForm(prev => ({...prev, printYear: ""}));
+                                return;
+                            }
+
+                            if (!/^\d{0,4}$/.test(inputYear)) return;
+
+                            setEditionForm(prev => ({
+                                ...prev,
+                                printYear: inputYear,
+                            }));
+                        }}
+                        placeholder="year published"
+                    />
+                </Col>
+            </Row>
+        </div>
     );
 }
