@@ -3,7 +3,7 @@ import {Row, Col} from "react-bootstrap";
 
 export function ComicSection(props) {
     const {isNewComic, setIsNewComic, comicForm, setComicForm, selectedComic, setSelectedComicID,
-        filteredComics, filteredSerie, searchQuery, setSearchQuery, currentYear, series} = props;
+        filteredComics, filteredSerie, searchQuery, setSearchQuery, currentYear, series, errors} = props;
 
     return (
         <>
@@ -14,7 +14,6 @@ export function ComicSection(props) {
                             <Row className="mb-5">
                                 <Col lg={12}>
                                     <label className="form-label">Serie:</label>
-
                                     <Combobox
                                         value={
                                             series.find(s => s.id === comicForm.serieID)
@@ -87,6 +86,10 @@ export function ComicSection(props) {
                                                 )}
                                         </Combobox.Options>
                                     </Combobox>
+
+                                    {errors?.serie && (
+                                        <div className="text-danger small">{errors.serie}</div>
+                                    )}
                                 </Col>
                             </Row>
 
@@ -102,6 +105,7 @@ export function ComicSection(props) {
                                             setComicForm(prev => ({...prev, title: e.target.value}))
                                         }
                                     />
+                                    {errors?.title && ( <div className="text-danger small">{errors.title}</div> )}
                                 </Col>
 
                                 <Col lg={3}>
@@ -115,6 +119,7 @@ export function ComicSection(props) {
                                             setComicForm(prev => ({...prev, bookNumber: e.target.value}))
                                         }
                                     />
+                                    {errors?.bookNumber && ( <div className="text-danger small">{errors.bookNumber}</div> )}
                                 </Col>
                             </Row>
                         </>
@@ -154,6 +159,7 @@ export function ComicSection(props) {
                                             ))}
                                         </Combobox.Options>
                                     </Combobox>
+                                    {errors?.comic && ( <div className="text-danger small">{errors.comic}</div> )}
                                 </div>
                             </Col>
                         </Row>

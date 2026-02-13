@@ -38,6 +38,8 @@ export function AddEditions(props) {
     const [isNewComic, setIsNewComic] = useState(false);
     const currentYear = new Date().getFullYear();
 
+    const [errors, setErrors] = useState({});
+
     const [comicForm, setComicForm] = useState({
         title: "",
         bookNumber: "",
@@ -135,7 +137,37 @@ export function AddEditions(props) {
         roleName: "",
     });
 
+    function validateRequired() {
+        const newErrors = {};
+        if (isNewComic && !comicForm.serieTitle.trim()) {
+            newErrors.serie = "Serie is required";
+        }
+
+        if (!isNewComic && !selectedComicID) {
+            newErrors.comic = "Select a comic first";
+        }
+
+        if (isNewComic && !comicForm.title.trim()) {
+            newErrors.title = "Comic title is required";
+        }
+
+        if (isNewComic && !comicForm.bookNumber) {
+            newErrors.bookNumber = "Book number is required";
+        }
+
+        return newErrors;
+    }
+
     async function handleSubmit() {
+
+        const validation = validateRequired();
+
+        if (Object.keys(validation).length > 0) {
+            setErrors(validation);
+            return;
+        }
+        setErrors({});
+
         try {
             const normalize = str => (str || "").trim().toLowerCase();
 
@@ -279,6 +311,7 @@ export function AddEditions(props) {
                 setSearchQuery={setSearchQuery}
                 currentYear={currentYear}
                 series={series}
+                errors={errors}
             />
 
             <EditionSection
