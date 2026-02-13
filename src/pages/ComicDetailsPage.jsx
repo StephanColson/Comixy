@@ -3,7 +3,7 @@ import {useState} from "react";
 import {EditEditionModal} from "../components/EditEditionModal.jsx";
 
 export function ComicDetailsPage(props){
-    const {comic, organizations, peoples, roles, comicContributors, editions} = props;
+    const {comic, organizations, peoples, roles, comicContributors, editions, selectedComic, series} = props;
 
     if (!comic) return <div>No Comic Selected</div>;
 
@@ -49,7 +49,10 @@ export function ComicDetailsPage(props){
             <Editions editions={comicEditions} onEditEdition={handleEditEdition}/>
 
             {showEditModal && (
-                <EditEditionModal edition={editingEdition} editions={editions} organizations={organizations}
+                <EditEditionModal edition={editingEdition} editions={editions}
+                                  comic={comic}
+                                  series={series}
+                                  organizations={organizations}
                                   peoples={peoples} roles={roles}
                                   comicContributors={comicContributors}
                                   onClose={() => setShowEditModal(false)

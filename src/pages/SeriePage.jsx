@@ -14,7 +14,7 @@ export function SeriePage(props){
 
     return (
         <>
-            <h2 className="text-center">Catalog of series!</h2>
+            <h2 className="text-center">All Series</h2>
 
             <div>
                 <Series series={paginatedSeries} onSelectSerie={onSelectSerie}/>

@@ -29,6 +29,12 @@ function Edition(props){
                         </Col>
                     )}
 
+                    {edition.printYear && (
+                        <Col xs={6}>
+                            <strong>Year:</strong> {edition.printYear}
+                        </Col>
+                    )}
+
                     {edition.numberInCollection && (
                         <Col xs={6}>
                             <strong>Number:</strong> {edition.numberInCollection}

@@ -19,7 +19,7 @@ export function HomePage(props) {
     return (
         <>
             <div className="text-center">
-                <h2>Welcome to Comyxius!</h2>
+                <h2>Step Into the Panels of Comyxius</h2>
             </div>
 
             <div className="text-center">

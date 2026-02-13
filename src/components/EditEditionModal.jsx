@@ -7,9 +7,15 @@ import {addPerson} from "../api/personInfo.js";
 import {addRole} from "../api/roleInfo.js";
 import {useEditionFiltering} from "./EditionFiltering.jsx";
 import {EditionSection} from "./EditionSection.jsx";
+import {Combobox} from "@headlessui/react";
+import {updateComic} from "../api/comicInfo.js";
 
 export function EditEditionModal(props) {
-    const {edition, onClose, organizations, peoples, roles, comicContributors, editions} = props;
+    const {edition, onClose, organizations, peoples, roles, comicContributors, editions, comic, series} = props;
+
+    const [comicSerie, setComicSerie] = useState({
+        serieID: comic?.serieID ?? null,
+    });
 
     const [editionForm, setEditionForm] = useState({
         comicID: edition.comicID,
@@ -56,7 +62,6 @@ export function EditEditionModal(props) {
     const filteredRoles = roles.filter(r =>
         r.type.toLowerCase().includes(searchContributor.role.toLowerCase())
     );
-
 
     const [uploading, setUploading] = useState(false);
 
@@ -175,6 +180,13 @@ export function EditEditionModal(props) {
                 })
             );
 
+            if (comicSerie.serieID !== comic.serieID) {
+                await updateComic({
+                    ...comic,
+                    serieID: comicSerie.serieID,
+                });
+            }
+
             onClose();
 
         } catch (err) {
@@ -196,6 +208,8 @@ export function EditEditionModal(props) {
         roles
     });
 
+    const filteredSerie = series.filter(s => s.title.toLowerCase().includes((searchQuery.serie || "").toLowerCase()));
+
     return (
         <Modal show onHide={onClose}>
             <Modal.Header closeButton>
@@ -204,6 +218,39 @@ export function EditEditionModal(props) {
 
             <Modal.Body>
                 <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Serie</Form.Label>
+
+                        <Combobox
+                            value={series.find(s => s.id === comicSerie.serieID) || null}
+                            onChange={opt => {
+                                setComicSerie({ serieID: opt?.id || null });
+                            }}
+                        >
+                            <Combobox.Input
+                                className="form-control"
+                                placeholder="Select a serie…"
+                                displayValue={opt => opt?.title ?? ""}
+                                onChange={e => {
+                                    const value = e.target.value;
+                                    setSearchQuery(prev => ({ ...prev, serie: value }));
+                                }}
+                            />
+
+                            <Combobox.Options className="list-group position-absolute z-3">
+                                {filteredSerie.slice(0, 5).map(serie => (
+                                    <Combobox.Option
+                                        key={serie.id}
+                                        value={serie}
+                                        className="list-group-item list-group-item-action"
+                                    >
+                                        {serie.title}
+                                    </Combobox.Option>
+                                ))}
+                            </Combobox.Options>
+                        </Combobox>
+                    </Form.Group>
+
                     <EditionSection
                         editionForm={editionForm}
                         setEditionForm={setEditionForm}

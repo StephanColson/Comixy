@@ -98,6 +98,7 @@ function ActivePage(props){
                     setSelectedComicID(comic.id);
                     setActiveNavBarItem(COMIC_EDITIONS);
                 }}
+                series={series}
                 selectedSerieID={selectedSerieID}
                 initialGenre={initialGenre}
             />;
@@ -114,10 +115,12 @@ function ActivePage(props){
 
         case COMIC_EDITIONS: {
             const selectedComic = comics?.find(c => c.id === selectedComicID);
+            const selectedSerie = series?.find(s => s.id === selectedSerieID);
 
             return (
                 <ComicDetailsPage
                     comic={selectedComic}
+                    series={series}
                     editions={editions}
                     organizations={organizations}
                     roles={roles}
