@@ -9,6 +9,7 @@ import {useEditionFiltering} from "./EditionFiltering.jsx";
 import {EditionSection} from "./EditionSection.jsx";
 import {Combobox} from "@headlessui/react";
 import {updateComic} from "../api/comicInfo.js";
+import {addOrganization} from "../api/organizationInfo.js";
 
 export function EditEditionModal(props) {
     const {edition, onClose, organizations, peoples, roles, comicContributors, editions, comic, series} = props;
@@ -26,9 +27,6 @@ export function EditEditionModal(props) {
         printTypeName: "",
         organizationID: edition.organizationID || null,
         organizationName: "",
-        selfPublished: edition.selfPublished || false,
-        selfPublisherID: edition.selfPublisherID || null,
-        selfPublisherName: "",
         imageFile: null,
     });
 
@@ -107,22 +105,6 @@ export function EditEditionModal(props) {
                             : null))
                 );
 
-            const typedSelfPub = normalize(editionForm.selfPublisherName);
-            const existingSelfPub = peoples.find(
-                p => normalize(p.name) === typedSelfPub
-            );
-
-            const selfPublisherID = editionForm.selfPublished
-                ? (
-                    editionForm.selfPublisherID ||
-                    (existingSelfPub
-                        ? existingSelfPub.id
-                        : (typedSelfPub
-                            ? await addPerson({ name: editionForm.selfPublisherName.trim() })
-                            : null))
-                )
-                : null;
-
             const imgURL = editionForm.imageFile
                 ? await uploadFile(editionForm.imageFile)
                 : edition.imgURL;
@@ -134,9 +116,6 @@ export function EditEditionModal(props) {
                 printType: finalPrintType,
                 organizationID: publisherID,
                 organizationName: editionForm.selfPublished ? "" : editionForm.organizationName.trim(),
-                selfPublished: editionForm.selfPublished,
-                selfPublisherID: selfPublisherID,
-                selfPublisherName: editionForm.selfPublished ? editionForm.selfPublisherName.trim() : "",
                 imgURL,
             });
 
@@ -261,8 +240,8 @@ export function EditEditionModal(props) {
                         setSearchQuery={setSearchQuery}
                         currentYear={new Date().getFullYear()}
                         organizations={organizations}
-                        peoples={peoples}
-                        filteredPersonsSelfPub={filteredPersonsSelfPub}/>
+                    />
+
                     <ContributorSection
                         contributorDraft={contributorDraft}
                         setContributorDraft={setContributorDraft}

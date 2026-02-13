@@ -3,7 +3,7 @@ import {Row, Col} from "react-bootstrap";
 
 export function EditionSection(props) {
     const {editionForm, setEditionForm, filteredFormat, filteredPrintType, filteredPublishers, searchQuery,
-        setSearchQuery, currentYear, organizations, peoples, filteredPersonsSelfPub} = props;
+        setSearchQuery, currentYear, organizations} = props;
 
     return (
         <Row className="m-4">
@@ -141,31 +141,7 @@ export function EditionSection(props) {
                 </Combobox>
             </Col>
 
-            <Col lg={2} className="mt-4">
-                <div>
-                    <input
-                        type="checkbox"
-                        className="form-check-input me-3"
-                        checked={editionForm.selfPublished}
-                        onChange={e => {
-                            const checked = e.target.checked;
-
-                            setEditionForm(prev => ({
-                                ...prev,
-                                selfPublished: checked,
-                                organizationID: checked ? null : prev.organizationID,
-                                organizationName: checked ? "" : prev.organizationName,
-                                selfPublisherID: checked ? prev.selfPublisherID : null,
-                                selfPublisherName: checked ? prev.selfPublisherName : "",
-                            }));
-                        }}
-                    />
-                    <label className="form-check-label">Self-published</label>
-                </div>
-            </Col>
-
             <Col lg={10} className="mt-4">
-                {!editionForm.selfPublished && (
                     <Col>
                         <label className="form-label">Publisher:</label>
 
@@ -237,81 +213,6 @@ export function EditionSection(props) {
                             </Combobox.Options>
                         </Combobox>
                     </Col>
-                )}
-
-                {editionForm.selfPublished && (
-                    <Col className="mt-3">
-                        <label className="form-label">Published by (Person):</label>
-
-                        <Combobox
-                            value={
-                                peoples.find(p => p.id === editionForm.selfPublisherID)
-                                ?? (editionForm.selfPublisherName ? {name: editionForm.selfPublisherName} : null)
-                            }
-                            onChange={opt => {
-                                if (!opt) {
-                                    setEditionForm(prev => ({
-                                        ...prev,
-                                        selfPublisherID: null,
-                                        selfPublisherName: "",
-                                    }));
-                                } else if (opt.id) {
-                                    setEditionForm(prev => ({
-                                        ...prev,
-                                        selfPublisherID: opt.id,
-                                        selfPublisherName: opt.name,
-                                    }));
-                                } else {
-                                    setEditionForm(prev => ({
-                                        ...prev,
-                                        selfPublisherID: null,
-                                        selfPublisherName: opt.name,
-                                    }));
-                                }
-                            }}
-                        >
-                            <Combobox.Input
-                                className="form-control"
-                                displayValue={opt => opt?.name ?? ""}
-                                placeholder="Select or type a person..."
-                                onChange={e => {
-                                    const value = e.target.value;
-                                    setSearchQuery(prev => ({...prev, personSelfPub: value}));
-
-                                    setEditionForm(prev => ({
-                                        ...prev,
-                                        selfPublisherID: null,
-                                        selfPublisherName: value,
-                                    }));
-                                }}
-                            />
-
-                            <Combobox.Options className="list-group position-absolute z-3">
-                                {filteredPersonsSelfPub.slice(0, 5).map(opt => (
-                                    <Combobox.Option
-                                        key={opt.id}
-                                        value={opt}
-                                        className="list-group-item list-group-item-action"
-                                    >
-                                        {opt.name}
-                                    </Combobox.Option>
-                                ))}
-
-                                {searchQuery.personSelfPub !== "" &&
-                                    !filteredPersonsSelfPub.some(
-                                        p => p.name.toLowerCase() === searchQuery.personSelfPub.toLowerCase()
-                                    ) && (
-                                        <Combobox.Option
-                                            value={{name: searchQuery.personSelfPub}}
-                                            className="list-group-item list-group-item-action text-primary"
-                                        >
-                                            Create “{searchQuery.personSelfPub}”
-                                        </Combobox.Option>
-                                    )}
-                            </Combobox.Options>
-                        </Combobox>
-                    </Col>
-                )}
             </Col>
         </Row>
     );

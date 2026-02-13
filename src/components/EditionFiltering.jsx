@@ -7,7 +7,6 @@ export function useEditionFiltering(props) {
         format: "",
         printType: "",
         publisher: "",
-        personSelfPub: "",
     });
 
     const dataFormat = useMemo(() => {
@@ -46,18 +45,11 @@ export function useEditionFiltering(props) {
         p => p.name
     );
 
-    const filteredPersonsSelfPub = filterList(
-        peoples,
-        searchQuery.personSelfPub,
-        p => p.name
-    );
-
     return {
         searchQuery,
         setSearchQuery,
         filteredFormat,
         filteredPrintType,
         filteredPublishers,
-        filteredPersonsSelfPub,
     };
 }

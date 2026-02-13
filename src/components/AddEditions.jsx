@@ -50,7 +50,6 @@ export function AddEditions(props) {
         formatName: "",
         organizationID: null,
         organizationName: "",
-        selfPublished: false,
         imageFile: null,
     });
 
@@ -76,7 +75,6 @@ export function AddEditions(props) {
         publisher: "",
         person: "",
         role: "",
-        personSelfPub: "",
     });
 
     const filteredComics = filterList({
@@ -119,12 +117,6 @@ export function AddEditions(props) {
         list: roles,
         search: searchQuery.role,
         selector: r => r.type,
-    });
-
-    const filteredPersonsSelfPub = filterList({
-        list: peoples,
-        search: searchQuery.personSelfPub,
-        selector: p => p.name,
     });
 
     const selectedComic =
@@ -183,22 +175,6 @@ export function AddEditions(props) {
                             ? await addOrganization({ name: editionForm.organizationName.trim() })
                             : null))
                 );
-
-            const typedSelfPub = normalize(editionForm.selfPublisherName);
-            const existingSelfPub = peoples.find(
-                p => normalize(p.name) === typedSelfPub
-            );
-
-            const selfPublisherID = editionForm.selfPublished
-                ? (
-                    editionForm.selfPublisherID ||
-                    (existingSelfPub
-                        ? existingSelfPub.id
-                        : (typedSelfPub
-                            ? await addPerson({ name: editionForm.selfPublisherName.trim() })
-                            : null))
-                )
-                : null;
 
             const typedFormat = normalize(editionForm.formatName);
             const existingFormat = editions
@@ -312,7 +288,6 @@ export function AddEditions(props) {
                 currentYear={currentYear}
                 organizations={organizations}
                 peoples={peoples}
-                filteredPersonsSelfPub={filteredPersonsSelfPub}
             />
 
             <ContributorSection

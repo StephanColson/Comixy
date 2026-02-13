@@ -32,9 +32,6 @@ const editionConverter = {
         printType: dataInApp.printType,
         numberInCollection: dataInApp.numberInCollection,
         organizationID: dataInApp.organizationID,
-        selfPublished: dataInApp.selfPublished,
-        selfPublisherID: dataInApp.selfPublisherID || null,
-        selfPublisherName: dataInApp.selfPublisherName || "",
         price: dataInApp.price ?? null,
     }),
     fromFirestore: (snapshot, option) => {
