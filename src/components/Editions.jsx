@@ -1,5 +1,48 @@
 import {Section} from "./Section.jsx";
 import {Col, Row} from "react-bootstrap";
+import {useState} from "react";
+import FlipMove from "react-flip-move";
+
+function EditionThumbnails(props){
+    const {imgURLs} = props;
+    const [images, setImages] = useState(imgURLs ?? []);
+
+    if(!images.length) return null;
+
+    function handleThumbnailClick(clickedIndex) {
+        const updated = [...images];
+        [updated[0], updated[clickedIndex]] = [updated[clickedIndex], updated[0]];
+        setImages(updated);
+    }
+
+    return (
+        <div>
+            <img
+                src={images[0]}
+                alt="Edition Cover"
+                className="img-fluid rounded mb-2 w-75 object-fit-cover"
+            />
+
+            {images.length > 1 && (
+                <FlipMove
+                    className="d-flex"
+                    easing="ease-in-out"
+                    appearAnimation="fade"
+                >
+                    {images.slice(1).map((url, i) => (
+                        <div key={url} onClick={() => handleThumbnailClick(i + 1)}>
+                            <img
+                                src={url}
+                                alt={`Thumbnail ${i + 1}`}
+                                className="rounded w-50 object-fit-cover"
+                            />
+                        </div>
+                    ))}
+                </FlipMove>
+            )}
+        </div>
+    )
+}
 
 function Edition(props){
     const {edition, onEdit} = props;
@@ -7,11 +50,7 @@ function Edition(props){
     return<>
         <Row className="mb-4 align-items-start">
             <Col xs={12} md={3}>
-                <img
-                    src={edition.imgURL}
-                    alt="Edition cover"
-                    className="img-fluid rounded shadow-sm"
-                />
+                <EditionThumbnails imgURLs={edition.imgURLs}/>
             </Col>
 
             <Col xs={12} md={9}>

@@ -1,6 +1,6 @@
 import {Modal, Button, Form} from "react-bootstrap";
 import {useState} from "react";
-import {updateEdition, uploadFile} from "../api/editionInfo.js";
+import {updateEdition, uploadFile, uploadFiles} from "../api/editionInfo.js";
 import {ContributorSection} from "./ContributorSection.jsx";
 import {addComicContributor, deleteComicContributor} from "../api/comicContributer.js";
 import {addPerson} from "../api/personInfo.js";
@@ -27,7 +27,8 @@ export function EditEditionModal(props) {
         printTypeName: "",
         organizationID: edition.organizationID || null,
         organizationName: "",
-        imageFile: null,
+        imageFiles: [null, null, null],
+        existingImgURLs: edition.imgURLs ?? [],
     });
 
     const [contributors, setContributors] = useState(
@@ -105,9 +106,13 @@ export function EditEditionModal(props) {
                             : null))
                 );
 
-            const imgURL = editionForm.imageFile
-                ? await uploadFile(editionForm.imageFile)
-                : edition.imgURL;
+            const imgURLs = await Promise.all(
+                [0, 1, 2].map(i =>
+                    editionForm.imageFiles[i]
+                        ? uploadFile(editionForm.imageFiles[i])
+                        : (editionForm.existingImgURLs[i] ?? null)
+                )
+            ).then(urls => urls.filter(Boolean));
 
             await updateEdition({
                 ...edition,
@@ -116,7 +121,7 @@ export function EditEditionModal(props) {
                 printType: finalPrintType,
                 organizationID: publisherID,
                 organizationName: editionForm.selfPublished ? "" : editionForm.organizationName.trim(),
-                imgURL,
+                imgURLs,
             });
 
             const old = comicContributors.filter(cc => cc.editionID === edition.id);
@@ -179,7 +184,6 @@ export function EditEditionModal(props) {
         filteredFormat,
         filteredPrintType,
         filteredPublishers,
-        filteredPersonsSelfPub
     } = useEditionFiltering({
         editions,
         organizations,

@@ -23,10 +23,16 @@ export async function uploadFile(file) {
     return publicData.publicUrl;
 }
 
+export async function uploadFiles(files){
+    const validFiles = files.filter(Boolean);
+    if(!validFiles.length) return [];
+    return Promise.all(validFiles.map(file => uploadFile(file)));
+}
+
 const editionConverter = {
     toFirestore: dataInApp => ({
         format: dataInApp.format,
-        imgURL: dataInApp.imgURL,
+        imgURLs: dataInApp.imgURLs ?? [],
         printYear: dataInApp.printYear,
         comicID: dataInApp.comicID,
         printType: dataInApp.printType,
@@ -36,7 +42,10 @@ const editionConverter = {
     }),
     fromFirestore: (snapshot, option) => {
         const data = snapshot.data(option);
-        return {...data, id: snapshot.id, ref: snapshot.ref}
+        const imgURLs = data.imgURLs?.length
+            ? data.imgURLs
+            : (data.imgURL ? [data.imgURL] : []);
+        return {...data, imgURLs, id: snapshot.id, ref: snapshot.ref}
     }
 };
 

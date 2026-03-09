@@ -9,31 +9,38 @@ export function EditionSection(props) {
         <div className="d-flex justify-content-center">
             <Row className="m-2">
                 <Row className="justify-content-center mb-5">
-                    <Col lg={6}>
-                        <div className="mb-2 text-center">
-                            {editionForm.imageFile && (
+                    {[0, 1, 2].map(i => (
+                        <Col lg={2} key={i} className="text-center">
+                            <label className="form-label">
+                                {i === 0 ? "Main Cover" : `Image ${i + 1}`}
+                                {i > 0 && <span className="text-warning"> (optional)</span>}
+                            </label>
+
+                            {(editionForm.imageFiles[i] || editionForm.existingImgURLs?.[i])  && (
                                 <img
-                                    src={URL.createObjectURL(editionForm.imageFile)}
-                                    alt="preview"
-                                    className="img-fluid mt-2"
-                                    style={{maxHeight: "200px", objectFit: "contain"}}
+                                    src={
+                                        editionForm.imageFiles[i]
+                                        ? URL.createObjectURL(editionForm.imageFiles[i]) : editionForm.existingImgURLs[i]
+                                    }
+                                    alt={`preview ${i + 1}`}
+                                    className="img-fluid mb-2 rounded"
+                                    style={{ maxHeight: "150px", objectFit: "contain" }}
                                 />
                             )}
-                        </div>
 
-                        <div>
-                            <label className="form-label">Cover Image:</label>
                             <input
                                 type="file"
                                 accept="image/*"
                                 className="form-control"
                                 onChange={e => {
-                                    const file = e.target.files[0];
-                                    setEditionForm(prev => ({...prev, imageFile: file}));
+                                    const file = e.target.files[0] || null;
+                                    const updated = [...editionForm.imageFiles];
+                                    updated[i] = file;
+                                    setEditionForm(prev => ({ ...prev, imageFiles: updated }));
                                 }}
                             />
-                        </div>
-                    </Col>
+                        </Col>
+                    ))}
                 </Row>
 
                 <Col lg={3}>
