@@ -9,7 +9,6 @@ import {addComicContributor} from "../api/comicContributer.js";
 import {ComicSection} from "./ComicSection.jsx";
 import {EditionSection} from "./EditionSection.jsx";
 import {ContributorSection} from "./ContributorSection.jsx";
-import {ModeSwitcher} from "./ModeSwitcher.jsx";
 import {Button, Modal} from "react-bootstrap";
 
 function filterList({ list, search, selector }) {
@@ -24,7 +23,7 @@ function filterList({ list, search, selector }) {
 
 
 export function AddEditions(props) {
-    const {selectedComicID, setSelectedComicID} = props;
+    const {selectedComicID, setSelectedComicID, initialIsNewComic} = props;
 
     const {comics = [], loading} = useComicCollectionData();
     const {editions = [], loading: editionsLoading} = useEditionCollectionData();
@@ -35,7 +34,7 @@ export function AddEditions(props) {
 
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const [isNewComic, setIsNewComic] = useState(false);
+    const [isNewComic, setIsNewComic] = useState(initialIsNewComic);
     const currentYear = new Date().getFullYear();
 
     const [errors, setErrors] = useState({});
@@ -296,8 +295,6 @@ export function AddEditions(props) {
 
     return (
         <>
-            <ModeSwitcher isNewComic={isNewComic} setIsNewComic={setIsNewComic}/>
-
             <ComicSection
                 isNewComic={isNewComic}
                 setIsNewComic={setIsNewComic}

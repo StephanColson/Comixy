@@ -1,9 +1,10 @@
 import {Editions} from "../components/Editions.jsx";
 import {useState} from "react";
 import {EditEditionModal} from "../components/EditEditionModal.jsx";
+import {Button} from "react-bootstrap";
 
 export function ComicDetailsPage(props){
-    const {comic, organizations, peoples, roles, comicContributors, editions, selectedComic, series} = props;
+    const {comic, organizations, peoples, roles, comicContributors, editions, selectedComic, series, onAddEditions} = props;
 
     if (!comic) return <div>No Comic Selected</div>;
 
@@ -46,6 +47,11 @@ export function ComicDetailsPage(props){
     return (
         <>
             <h2 className="text-center">Detailed Info: {comic.title}</h2>
+            <div className="d-flex justify-content-center my-3">
+                <Button onClick={() => onAddEditions(comic)}>
+                    Add Editions
+                </Button>
+            </div>
             <Editions editions={comicEditions} onEditEdition={handleEditEdition}/>
 
             {showEditModal && (

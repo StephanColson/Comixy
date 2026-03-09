@@ -19,12 +19,14 @@ import {useRoleCollectionData} from "./api/roleInfo.js";
 import {useComicContributorCollectionData} from "./api/comicContributer.js";
 import {usePeopleCollectionData} from "./api/personInfo.js";
 import {useEditionCollectionData} from "./api/editionInfo.js";
+import {AddEditionPage} from "./pages/AddEditionPage.jsx";
 
 const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
 const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
 const COMIC_EDITIONS = "COMIC_EDITIONS";
 const NAV_ADD_FORM = "NAV_ADD_FORM";
+const NAV_ADD_ED = "NAV_ADD_ED";
 
 function NavigationBar(props){
     const {activeNavBarItem, onSelectNavBarItem} = props;
@@ -61,7 +63,7 @@ function NavigationBar(props){
 }
 
 function ActivePage(props){
-    const {activeNavBarItem, selectedUser, initialGenre, setInitialGenre,
+    const {activeNavBarItem, initialGenre, setInitialGenre,
            setActiveNavBarItem, selectedSerieID, setSelectedSerieID, setSelectedComicID, selectedComicID} = props;
 
     const {comics} = useComicCollectionData();
@@ -71,6 +73,11 @@ function ActivePage(props){
     const {roles} = useRoleCollectionData();
     const {peoples} = usePeopleCollectionData();
     const {comicContributors} = useComicContributorCollectionData();
+
+    function handleAddEditions(comic) {
+        setSelectedComicID(comic.id);
+        setActiveNavBarItem(NAV_ADD_ED);
+    }
 
     const comicsWithImages = comics?.map(comic => {
         const firstEdition = editions?.find(ed => ed.comicID === comic.id);
@@ -111,15 +118,32 @@ function ActivePage(props){
                               }}/>
 
         case NAV_ADD_FORM:
-            return <AddComicPage selectedComicID={selectedComicID} setSelectedComicID={setSelectedComicID}/>
+            return <AddComicPage selectedComicID={selectedComicID}
+                                 setSelectedComicID={setSelectedComicID}/>
+
+        case NAV_ADD_ED: {
+            const selectedComic = comics?.find(c => c.id === selectedComicID);
+
+            return (
+                <AddEditionPage comic={selectedComic}
+                                editions={editions}
+                                selectedComicID={selectedComicID}
+                                setSelectedComicID={setSelectedComicID}
+                                organizations={organizations}
+                                roles={roles} peoples={peoples}
+                                comicContributors={comicContributors}
+                                series={series} />
+            );
+        }
 
         case COMIC_EDITIONS: {
             const selectedComic = comics?.find(c => c.id === selectedComicID);
-            const selectedSerie = series?.find(s => s.id === selectedSerieID);
+            //const selectedSerie = series?.find(s => s.id === selectedSerieID);
 
             return (
                 <ComicDetailsPage
                     comic={selectedComic}
+                    onAddEditions={handleAddEditions}
                     series={series}
                     editions={editions}
                     organizations={organizations}

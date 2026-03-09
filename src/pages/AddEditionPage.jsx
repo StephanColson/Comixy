@@ -1,7 +1,7 @@
 import {Form} from "react-bootstrap";
 import {AddEditions} from "../components/AddEditions.jsx";
 
-export function AddComicPage(props){
+export function AddEditionPage(props){
     const {selectedComicID, setSelectedComicID} = props;
 
     return<>
@@ -9,7 +9,7 @@ export function AddComicPage(props){
             <AddEditions
                 selectedComicID={selectedComicID}
                 setSelectedComicID={setSelectedComicID}
-                initialIsNewComic={true}
+                initialIsNewComic={false}
             />
         </Form>
     </>
