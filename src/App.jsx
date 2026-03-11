@@ -64,7 +64,7 @@ function NavigationBar(props){
 
 function ActivePage(props){
     const {activeNavBarItem, initialGenre, setInitialGenre,
-           setActiveNavBarItem, selectedSerieID, setSelectedSerieID, setSelectedComicID, selectedComicID} = props;
+           navigateTo, selectedSerieID, setSelectedSerieID, setSelectedComicID, selectedComicID} = props;
 
     const {comics} = useComicCollectionData();
     const {editions} = useEditionCollectionData();
@@ -76,7 +76,7 @@ function ActivePage(props){
 
     function handleAddEditions(comic) {
         setSelectedComicID(comic.id);
-        setActiveNavBarItem(NAV_ADD_ED);
+        navigateTo(NAV_ADD_ED);
     }
 
     const comicsWithImages = comics?.map(comic => {
@@ -94,16 +94,16 @@ function ActivePage(props){
                              setInitialGenre={setInitialGenre}
                              onSelectComic={(comic) => {
                                  setSelectedComicID(comic.id);
-                                 setActiveNavBarItem(COMIC_EDITIONS);
+                                 navigateTo(COMIC_EDITIONS);
                              }}
-                             setActiveNavBarItem={setActiveNavBarItem}/>;
+                             navigateTo={navigateTo}/>;
         case COMIC_CATALOG:
             return <ComicPage
                 comics={comicsWithImages}
                 editions={editions}
                 onSelectComic={(comic) => {
                     setSelectedComicID(comic.id);
-                    setActiveNavBarItem(COMIC_EDITIONS);
+                    navigateTo(COMIC_EDITIONS);
                 }}
                 series={series}
                 selectedSerieID={selectedSerieID}
@@ -114,7 +114,7 @@ function ActivePage(props){
             return <SeriePage series={series}
                               onSelectSerie={(serie) => {
                                   setSelectedSerieID(serie.id);
-                                  setActiveNavBarItem(COMIC_CATALOG);
+                                  navigateTo(COMIC_CATALOG);
                               }}/>
 
         case NAV_ADD_FORM:
@@ -163,10 +163,20 @@ function App() {
     const [selectedComicID, setSelectedComicID] = useState(null);
     const [selectedSerieID, setSelectedSerieID] = useState(null);
 
+    function navigateTo(key){
+        window.location.hash = key;
+        setActiveNavBarItem(key);
+    }
+
     useEffect(() => {
         const handleHashChange = () => {
             const key = window.location.hash.replace("#", "");
-            if (key) setActiveNavBarItem(key);
+            if (key) {
+                setActiveNavBarItem(key);
+                if (key === NAV_HOME || key === COMIC_CATALOG || key === NAV_SERIE_CATALOG) {
+                    setSelectedComicID(null);
+                }
+            }
         };
 
         window.addEventListener("hashchange", handleHashChange);
@@ -178,8 +188,7 @@ function App() {
             <NavigationBar
                 activeNavBarItem={activeNavBarItem}
                 onSelectNavBarItem={(key) => {
-                    window.location.hash = key;
-                    setActiveNavBarItem(key);
+                    navigateTo(key);
                     if (key === COMIC_CATALOG) {
                         setSelectedSerieID(null);
                     }
@@ -187,12 +196,13 @@ function App() {
             />
             <div style={{marginTop: "70px"}}>
                 <ActivePage
+                    navigateTo={navigateTo}
                     activeNavBarItem={activeNavBarItem}
                     selectedComicID={selectedComicID}
                     setSelectedComicID={setSelectedComicID}
                     selectedSerieID={selectedSerieID}
                     setSelectedSerieID={setSelectedSerieID}
-                    setActiveNavBarItem={setActiveNavBarItem}/>
+                />
             </div>
         </>
     )
