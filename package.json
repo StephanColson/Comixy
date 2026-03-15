@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
-    "@supabase/supabase-js": "^2.81.1",
     "@uidotdev/usehooks": "^2.4.1",
     "bootstrap": "^5.3.8",
     "firebase": "^12.4.0",
