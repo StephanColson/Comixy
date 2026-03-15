@@ -4,7 +4,6 @@ import 'react-tabs/style/react-tabs.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'rc-pagination/assets/index.css';
 import './api/firebase.js';
-import './api/supabase.js';
 import {ComicPage} from "./pages/ComicPage.jsx";
 import {HomePage} from "./pages/HomePage.jsx";
 import {useComicCollectionData} from "./api/comicInfo.js";
