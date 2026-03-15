@@ -6,6 +6,7 @@ import FlipMove from "react-flip-move";
 function EditionThumbnails(props){
     const {imgURLs} = props;
     const [images, setImages] = useState(imgURLs ?? []);
+    const [lightBoxOpen, setLightBoxOpen] = useState(false)
 
     if(!images.length) return null;
 
@@ -20,6 +21,7 @@ function EditionThumbnails(props){
             <img
                 src={images[0]}
                 alt="Edition Cover"
+                onClick={() => setLightBoxOpen(true)}
                 className="img-fluid rounded mb-2 w-75 object-fit-cover"
             />
 
@@ -39,6 +41,29 @@ function EditionThumbnails(props){
                         </div>
                     ))}
                 </FlipMove>
+            )}
+
+            {lightBoxOpen && (
+                <div
+                    onClick={() => setLightBoxOpen(false)}
+                    style={{
+                        position: "fixed",
+                        inset: 0,                        // shorthand for top/right/bottom/left: 0
+                        background: "rgba(0,0,0,0.85)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 9999,
+                        cursor: "zoom-out"
+                    }}
+                >
+                    <img
+                        src={images[0]}
+                        alt="Zoomed cover"
+                        style={{ maxHeight: "90vh", maxWidth: "90vw", borderRadius: "8px" }}
+                        onClick={e => e.stopPropagation()}  // clicking the image itself won't close it
+                    />
+                </div>
             )}
         </div>
     )

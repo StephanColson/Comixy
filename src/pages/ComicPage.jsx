@@ -38,6 +38,7 @@ export function ComicPage(props) {
                     selectedSerieID={selectedSerieID}
                     series={series}
                     onSelectComic={onSelectComic}
+                    editions={editions}
                 />
             </Section>
 

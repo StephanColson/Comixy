@@ -49,7 +49,9 @@ export function HomePage(props) {
                         <Carousel.Item key={c.id}>
                             <Comics comics={[comics.find(x => x.id === c.id)]}
                                     carouselMode={true}
-                                    onSelectComic={onSelectComic}/>
+                                    onSelectComic={onSelectComic}
+                                    editions={editions}
+                            />
                         </Carousel.Item>
                     ))}
                 </Carousel>

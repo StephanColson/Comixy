@@ -5,9 +5,11 @@ import {Col, Row} from "react-bootstrap";
 import {useState} from "react";
 
 function ComicGallery(props) {
-    const {comic, onSelect} = props;
+    const {comic, onSelect, editions = []} = props;
+    const edition = editions.find(e => e.comicID === comic.id);
+    const coverImg = edition?.imgURLs?.[0];
     return (
-        <SectionCard className="card-pop" coverImg={comic.imageURL} onClick={() => onSelect(comic)} role="button">
+        <SectionCard className="card-pop" coverImg={coverImg} onClick={() => onSelect(comic)} role="button">
             <div className="fw-bold">{comic.bookNumber} - {comic.title}</div>
             <hr/>
             {comic.price && (
@@ -31,7 +33,7 @@ function ComicList(props){
 }
 
 export function Comics(props) {
-    const {comics, carouselMode = false, onSelectComic} = props;
+    const {comics, carouselMode = false, onSelectComic, editions = []} = props;
 
     const sortedComics = [...comics].sort((a, b) => Number(a.bookNumber) - Number(b.bookNumber));
     const [selectedComic, setSelectedComic] = useState(null);
@@ -43,7 +45,7 @@ export function Comics(props) {
                 <div className="d-flex justify-content-center">
                     {comics.map((c) => (
                         <div key={c.id} className="w-25 mb-5">
-                            <ComicGallery comic={c} onSelect={onSelectComic}/>
+                            <ComicGallery comic={c} onSelect={onSelectComic} editions={editions}/>
                         </div>
                     ))}
                 </div>
@@ -73,7 +75,7 @@ export function Comics(props) {
                         <Row className="m-2">
                             {sortedComics?.map(c => (
                                 <Col xl={4} lg={4} md={4} key={c.id}>
-                                    <ComicGallery comic={c} onSelect={onSelectComic}/>
+                                    <ComicGallery comic={c} onSelect={onSelectComic} editions={editions}/>
                                 </Col>
                             ))}
                         </Row>
