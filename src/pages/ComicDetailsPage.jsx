@@ -48,7 +48,7 @@ export function ComicDetailsPage(props){
         <>
             <h2 className="text-center">Detailed Info: {comic.title}</h2>
             <div className="d-flex justify-content-center my-3">
-                <Button onClick={() => onAddEditions(comic)}>
+                <Button onClick={() => onAddEditions(comic)} className="btn btn-warning">
                     Add Editions
                 </Button>
             </div>

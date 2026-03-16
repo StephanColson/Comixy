@@ -3,6 +3,7 @@ import {Carousel, Badge} from "react-bootstrap";
 import {Comics} from "../components/Comics.jsx";
 import {useLatestComics} from "../api/comicInfo.js";
 import {useState} from "react";
+import {Combobox} from "@headlessui/react";
 
 export function HomePage(props) {
     const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic} = props;
@@ -18,8 +19,20 @@ export function HomePage(props) {
 
     return (
         <>
-            <div className="text-center">
+            <div className="text-center mb-5">
                 <h2>Step Into the Panels of Comyxius</h2>
+            </div>
+
+            <div className="d-flex justify-content-center mb-5">
+                <div className="w-50">
+                    <Combobox>
+                        <Combobox.Input
+                            className="form-control"
+                            placeholder="Search catalog..."
+                        />
+                        <Combobox.Options/>
+                    </Combobox>
+                </div>
             </div>
 
             <div className="text-center">

@@ -1,7 +1,7 @@
 import FlipMove from "react-flip-move";
 import {Section} from "./Section.jsx";
 import {SectionCard} from "./SectionCard.jsx";
-import {Col, Row} from "react-bootstrap";
+import {Carousel, Col, Row} from "react-bootstrap";
 import {useState} from "react";
 
 function ComicGallery(props) {
@@ -33,11 +33,12 @@ function ComicList(props){
 }
 
 export function Comics(props) {
-    const {comics, carouselMode = false, onSelectComic, editions = []} = props;
+    const {comics, carouselMode = false, onSelectComic, editions = [], slides = []} = props;
 
     const sortedComics = [...comics].sort((a, b) => Number(a.bookNumber) - Number(b.bookNumber));
     const [selectedComic, setSelectedComic] = useState(null);
     const [showDetails, setShowDetails] = useState(false);
+
 
     if (carouselMode) {
         return (
@@ -56,7 +57,7 @@ export function Comics(props) {
     return (
         <Section>
             <FlipMove typeName={Row}>
-                <Col className="mt-4">
+                <Col xs={12} md={6} lg={6} xl={6} className="mt-4">
                     <div>
                         {sortedComics.map(cl => (
                             <div key={cl.id} className="d-flex align-items-baseline">
@@ -70,15 +71,21 @@ export function Comics(props) {
                     </div>
                 </Col>
 
-                <Col className="mt-4">
+                <Col xs={12} md={6} lg={6} xl={6} className="mt-4">
                     <div className="border border-2 border-dark rounded">
-                        <Row className="m-2">
-                            {sortedComics?.map(c => (
-                                <Col xl={4} lg={4} md={4} key={c.id}>
-                                    <ComicGallery comic={c} onSelect={onSelectComic} editions={editions}/>
-                                </Col>
+                        <Carousel interval={null} indicators={slides.length > 1} variant="dark">
+                            {slides.map((slide, slideIndex) => (
+                                <Carousel.Item key={slideIndex}>
+                                    <Row className="m-2">
+                                        {slide.map(c => (
+                                            <Col xl={4} lg={4} md={4} xs={6} key={c.id}>
+                                                <ComicGallery comic={c} onSelect={onSelectComic} editions={editions}/>
+                                            </Col>
+                                        ))}
+                                    </Row>
+                                </Carousel.Item>
                             ))}
-                        </Row>
+                        </Carousel>
                     </div>
                 </Col>
             </FlipMove>
