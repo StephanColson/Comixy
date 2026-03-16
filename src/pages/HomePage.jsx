@@ -6,12 +6,23 @@ import {useState} from "react";
 import {Combobox} from "@headlessui/react";
 
 export function HomePage(props) {
-    const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic} = props;
+    const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic, series, onSelectSerie} = props;
     const {latest = [], loading} = useLatestComics(5);
 
     const allGenres = [...new Set(
         comics.flatMap(c => Array.isArray(c.genres) ? c.genres : [])
     )];
+
+    const [query, setQuery] = useState("");
+
+    const searchResults = query.length < 2 ? [] : [
+        ...comics
+            .filter(c => c.title?.toLowerCase().includes(query.toLowerCase()))
+            .map(c => ({ id: c.id, label: c.title, type: "Comic", data: c })),
+        ...( series ?? [])
+            .filter(s => s.title?.toLowerCase().includes(query.toLowerCase()))
+            .map(s => ({ id: s.id, label: s.title, type: "Serie", data: s })),
+    ];
 
     const [publishedYear, setPublishedYear] = useState("");
 
@@ -24,13 +35,60 @@ export function HomePage(props) {
             </div>
 
             <div className="d-flex justify-content-center mb-5">
-                <div className="w-50">
-                    <Combobox>
+                <div className="w-50 position-relative">
+                    <Combobox onChange={(result) => {
+                        if (!result) return;
+                        if (result.type === "Comic") {
+                            onSelectComic(result.data);
+                        } else if (result.type === "Serie") {
+                            onSelectSerie(result.data);
+                        }
+                        setQuery("");
+                    }}>
                         <Combobox.Input
                             className="form-control"
                             placeholder="Search catalog..."
+                            value={query}
+                            onChange={e => setQuery(e.target.value)}
+                            displayValue={() => query}
                         />
-                        <Combobox.Options/>
+                        {searchResults.length > 0 && (
+                            <Combobox.Options
+                                className="position-absolute w-100 rounded shadow mt-1 py-1"
+                                style={{background: "#34332F", zIndex: 1000, listStyle: "none", padding: 0}}
+                            >
+                                {searchResults.map(result => (
+                                    <Combobox.Option
+                                        key={`${result.type}-${result.id}`}
+                                        value={result}
+                                        className="px-3 py-2"
+                                        style={{cursor: "pointer"}}
+                                    >
+                                        {({active}) => (
+                                            <div
+                                                className="d-flex justify-content-between align-items-center"
+                                                style={{
+                                                    background: active ? "#4a4843" : "transparent",
+                                                    borderRadius: "4px",
+                                                    padding: "4px 8px"
+                                                }}
+                                            >
+                                                <span>{result.label}</span>
+                                                <span
+                                                    className="badge ms-2"
+                                                    style={{
+                                                        background: result.type === "Comic" ? "#2F5D8A" : "#5A3E8A",
+                                                        fontSize: "0.7rem"
+                                                    }}
+                                                >
+                                        {result.type}
+                                    </span>
+                                            </div>
+                                        )}
+                                    </Combobox.Option>
+                                ))}
+                            </Combobox.Options>
+                        )}
                     </Combobox>
                 </div>
             </div>

@@ -90,10 +90,15 @@ function ActivePage(props){
         case NAV_HOME:
             return <HomePage comics={comicsWithImages || []}
                              editions={editions}
+                             series={series}
                              setInitialGenre={setInitialGenre}
                              onSelectComic={(comic) => {
                                  setSelectedComicID(comic.id);
                                  navigateTo(COMIC_EDITIONS);
+                             }}
+                             onSelectSerie={(serie) => {
+                                 setSelectedSerieID(serie.id);
+                                 navigateTo(COMIC_CATALOG);
                              }}
                              navigateTo={navigateTo}/>;
         case COMIC_CATALOG:

@@ -57,7 +57,7 @@ export function Comics(props) {
     return (
         <Section>
             <FlipMove typeName={Row}>
-                <Col xs={12} md={6} lg={6} xl={6} className="mt-4">
+                <Col xs={12} md={12} lg={6} xl={6} className="mt-4">
                     <div>
                         {sortedComics.map(cl => (
                             <div key={cl.id} className="d-flex align-items-baseline">
@@ -71,7 +71,7 @@ export function Comics(props) {
                     </div>
                 </Col>
 
-                <Col xs={12} md={6} lg={6} xl={6} className="mt-4">
+                <Col xs={12} md={12} lg={6} xl={6} className="mt-4">
                     <div className="border border-2 border-dark rounded">
                         <Carousel interval={null} indicators={slides.length > 1} variant="dark">
                             {slides.map((slide, slideIndex) => (
