@@ -22,6 +22,12 @@ export async function addSerie(newSerie){
     return docRef.id;
 }
 
+import {updateDoc} from "firebase/firestore";
+
+export async function updateSerie(serie) {
+    await updateDoc(serie.ref, { description: serie.description });
+}
+
 export function useSerieCollectionData(){
     const collectionRef = collection(firestoreDB, SERIE_COLLECTION_NAME).withConverter(serieConverter);
     const queryRef = query(collectionRef);
