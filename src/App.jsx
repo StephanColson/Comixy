@@ -50,10 +50,6 @@ function NavigationBar(props){
                             </Nav.Item>
 
                             <Nav.Item>
-                                <Nav.Link className="nav-text" eventKey={COMIC_CATALOG}>Comic Catalog</Nav.Link>
-                            </Nav.Item>
-
-                            <Nav.Item>
                                 <Nav.Link className="nav-text" eventKey={NAV_ADD_FORM}>Add Comics</Nav.Link>
                             </Nav.Item>
                         </Nav>
