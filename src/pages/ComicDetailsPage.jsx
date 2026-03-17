@@ -5,7 +5,8 @@ import {Button} from "react-bootstrap";
 
 export function ComicDetailsPage(props){
     const {comic, organizations, peoples, roles, comicContributors, editions,
-        selectedComic, series, onAddEditions, compendium, selectedSerie, onSelectCompendium} = props;
+        selectedComic, series, onAddEditions, compendium,
+        selectedSerie, onSelectCompendium, onSelectPublisher} = props;
 
     if (!comic) return <div>No Comic Selected</div>;
 
@@ -55,7 +56,10 @@ export function ComicDetailsPage(props){
                     Add Editions
                 </Button>
             </div>
-            <Editions editions={comicEditions} onEditEdition={handleEditEdition} onSelectCompendium={onSelectCompendium}/>
+            <Editions editions={comicEditions}
+                      onEditEdition={handleEditEdition}
+                      onSelectCompendium={onSelectCompendium}
+                      onSelectPublisher={onSelectPublisher}/>
 
             {showEditModal && (
                 <EditEditionModal edition={editingEdition} editions={editions}
