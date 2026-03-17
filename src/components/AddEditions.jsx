@@ -1,5 +1,5 @@
 import {addComic, useComicCollectionData} from "../api/comicInfo.js";
-import {addEdition, uploadFile, uploadFiles, useEditionCollectionData} from "../api/editionInfo.js";
+import {addEdition, uploadFiles, useEditionCollectionData} from "../api/editionInfo.js";
 import {addOrganization, useOrganizationCollectionData} from "../api/organizationInfo.js";
 import {addPerson, usePeopleCollectionData} from "../api/personInfo.js";
 import {addRole, useRoleCollectionData} from "../api/roleInfo.js";
@@ -10,6 +10,7 @@ import {ComicSection} from "./ComicSection.jsx";
 import {EditionSection} from "./EditionSection.jsx";
 import {ContributorSection} from "./ContributorSection.jsx";
 import {Button, Modal} from "react-bootstrap";
+import {useCompendiumCollectionData, addCompendium} from "../api/compendiumInfo.js";
 
 function filterList({ list, search, selector }) {
     if (!search) return list;
@@ -31,6 +32,7 @@ export function AddEditions(props) {
     const {peoples = [], loading: peoplesLoading} = usePeopleCollectionData();
     const {roles = [], loading: rolesLoading} = useRoleCollectionData();
     const {series = [], loading: serieLoading} = useSerieCollectionData();
+    const {compendium: compendium = []} = useCompendiumCollectionData();
 
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -56,6 +58,8 @@ export function AddEditions(props) {
         organizationID: null,
         organizationName: "",
         imageFiles: [null, null, null],
+        compendiumID: null,
+        compendiumName: "",
     });
 
     const formats = editions.map(e => e.format);
@@ -211,6 +215,16 @@ export function AddEditions(props) {
                             : null))
                 );
 
+            const typedCompendium = normalize(editionForm.compendiumName ?? "");
+            const existingCompendium = compendium.find(c => normalize(c.title) === typedCompendium);
+
+            const compendiumID = editionForm.compendiumID ||
+                (existingCompendium
+                    ? existingCompendium.id
+                    : (typedCompendium
+                        ? await addCompendium({ title: editionForm.compendiumName.trim(), description: "" })
+                        : null));
+
             const typedFormat = normalize(editionForm.formatName);
             const existingFormat = editions
                 .map(e => e.format)
@@ -269,6 +283,7 @@ export function AddEditions(props) {
                 printType: finalPrintType,
                 numberInCollection: editionForm.numberInCollection || null,
                 organizationID: publisherID,
+                compendiumID: compendiumID ?? null,
             });
 
             await Promise.all(
@@ -320,6 +335,7 @@ export function AddEditions(props) {
                 currentYear={currentYear}
                 organizations={organizations}
                 peoples={peoples}
+                compendium={compendium}
             />
 
             <ContributorSection

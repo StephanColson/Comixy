@@ -28,13 +28,14 @@ const editionConverter = {
         numberInCollection: dataInApp.numberInCollection,
         organizationID: dataInApp.organizationID,
         price: dataInApp.price ?? null,
+        compendiumID: dataInApp.compendiumID ?? null,
     }),
     fromFirestore: (snapshot, option) => {
         const data = snapshot.data(option);
         const imgURLs = data.imgURLs?.length
             ? data.imgURLs
             : (data.imgURL ? [data.imgURL] : []);
-        return {...data, imgURLs, id: snapshot.id, ref: snapshot.ref}
+        return {...data, imgURLs, compendiumID: data.compendiumID ?? null, id: snapshot.id, ref: snapshot.ref}
     }
 };
 

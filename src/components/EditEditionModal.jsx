@@ -10,9 +10,10 @@ import {EditionSection} from "./EditionSection.jsx";
 import {Combobox} from "@headlessui/react";
 import {updateComic} from "../api/comicInfo.js";
 import {addOrganization} from "../api/organizationInfo.js";
+import {addCompendium} from "../api/compendiumInfo.js";
 
 export function EditEditionModal(props) {
-    const {edition, onClose, organizations, peoples, roles, comicContributors, editions, comic, series} = props;
+    const {edition, onClose, organizations, peoples, roles, comicContributors, editions, comic, series, compendium} = props;
 
     const [comicSerie, setComicSerie] = useState({
         serieID: comic?.serieID ?? null,
@@ -29,6 +30,8 @@ export function EditEditionModal(props) {
         organizationName: "",
         imageFiles: [null, null, null],
         existingImgURLs: edition.imgURLs ?? [],
+        compendiumID: edition.compendiumID ?? null,
+        compendiumName: "",
     });
 
     const [contributors, setContributors] = useState(
@@ -106,6 +109,16 @@ export function EditEditionModal(props) {
                             : null))
                 );
 
+            const typedCompendium = normalize(editionForm.compendiumName ?? "");
+            const existingCompendium = compendium.find(c => normalize(c.title) === typedCompendium);
+
+            const compendiumID = editionForm.compendiumID ||
+                (existingCompendium
+                    ? existingCompendium.id
+                    : (typedCompendium
+                        ? await addCompendium({ title: editionForm.compendiumName.trim(), description: "" })
+                        : null));
+
             const imgURLs = await Promise.all(
                 [0, 1, 2].map(i =>
                     editionForm.imageFiles[i]
@@ -122,6 +135,7 @@ export function EditEditionModal(props) {
                 organizationID: publisherID,
                 organizationName: editionForm.selfPublished ? "" : editionForm.organizationName.trim(),
                 imgURLs,
+                compendiumID: compendiumID ?? null,
             });
 
             const old = comicContributors.filter(cc => cc.editionID === edition.id);
@@ -244,6 +258,7 @@ export function EditEditionModal(props) {
                         setSearchQuery={setSearchQuery}
                         currentYear={new Date().getFullYear()}
                         organizations={organizations}
+                        compendium={compendium}
                     />
 
                     <ContributorSection

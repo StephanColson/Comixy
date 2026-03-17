@@ -70,7 +70,7 @@ function EditionThumbnails(props){
 }
 
 function Edition(props){
-    const {edition, onEdit} = props;
+    const {edition, onEdit, onSelectCompendium} = props;
 
     return<>
         <Row className="mb-4 align-items-start">
@@ -80,6 +80,20 @@ function Edition(props){
 
             <Col xs={12} md={9}>
                 <Row className="g-2">
+
+                    {edition.compendiumTitle && (
+                        <Col xs={6}>
+                            <strong>Collection: </strong>
+                            <span
+                                className="pop-effect"
+                                role="button"
+                                onClick={() =>
+                                    onSelectCompendium(edition.compendiumID)}
+                            >
+                                {edition.compendiumTitle}
+                            </span>
+                        </Col>
+                    )}
 
                     {edition.format && (
                         <Col xs={6}>
@@ -140,7 +154,7 @@ function Edition(props){
 }
 
 export function Editions(props){
-    const {editions, onEditEdition} = props;
+    const {editions, onEditEdition, onSelectCompendium} = props;
 
     if(!editions || editions.length === 0){
        return <div>No editions found</div>;
@@ -149,7 +163,7 @@ export function Editions(props){
     return<>
         <Section>
             {editions?.map(ed => <Col xs={12} lg={12} key={ed.id}>
-                <Edition edition={ed} onEdit={onEditEdition}/>
+                <Edition edition={ed} onEdit={onEditEdition} onSelectCompendium={onSelectCompendium}/>
             </Col>)}
         </Section>
     </>

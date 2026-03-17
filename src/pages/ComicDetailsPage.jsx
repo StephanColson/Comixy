@@ -4,7 +4,8 @@ import {EditEditionModal} from "../components/EditEditionModal.jsx";
 import {Button} from "react-bootstrap";
 
 export function ComicDetailsPage(props){
-    const {comic, organizations, peoples, roles, comicContributors, editions, selectedComic, series, onAddEditions} = props;
+    const {comic, organizations, peoples, roles, comicContributors, editions,
+        selectedComic, series, onAddEditions, compendium, selectedSerie, onSelectCompendium} = props;
 
     if (!comic) return <div>No Comic Selected</div>;
 
@@ -20,6 +21,7 @@ export function ComicDetailsPage(props){
         ?.filter(ed => ed.comicID === comic.id)
         .map(ed => {
             const publisher = organizations?.find(org => org.id === ed.organizationID);
+            const collection = compendium?.find(c => c.id === ed.compendiumID);
 
             const contributors = comicContributors
                 ?.filter(cc => cc.editionID === ed.id)
@@ -40,24 +42,26 @@ export function ComicDetailsPage(props){
                         ? `Self-published by ${ed.selfPublisherName}`
                         : "Self-published")
                     : publisher?.name || "Unknown",
-                displayContributors: contributors || []
+                displayContributors: contributors || [],
+                compendiumTitle: collection?.title ?? null,
             };
         });
 
     return (
         <>
-            <h2 className="text-center">Detailed Info: {comic.title}</h2>
+            <h2 className="text-center">{selectedSerie?.title}: {comic.title}</h2>
             <div className="d-flex justify-content-center my-3">
                 <Button onClick={() => onAddEditions(comic)} className="btn btn-warning">
                     Add Editions
                 </Button>
             </div>
-            <Editions editions={comicEditions} onEditEdition={handleEditEdition}/>
+            <Editions editions={comicEditions} onEditEdition={handleEditEdition} onSelectCompendium={onSelectCompendium}/>
 
             {showEditModal && (
                 <EditEditionModal edition={editingEdition} editions={editions}
                                   comic={comic}
                                   series={series}
+                                  compendium={compendium}
                                   organizations={organizations}
                                   peoples={peoples} roles={roles}
                                   comicContributors={comicContributors}

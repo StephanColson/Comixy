@@ -3,7 +3,7 @@ import {Row, Col} from "react-bootstrap";
 
 export function EditionSection(props) {
     const {editionForm, setEditionForm, filteredFormat, filteredPrintType, filteredPublishers, searchQuery,
-        setSearchQuery, currentYear, organizations} = props;
+        setSearchQuery, currentYear, organizations, compendium} = props;
 
     return (
         <div className="d-flex justify-content-center">
@@ -42,6 +42,56 @@ export function EditionSection(props) {
                         </Col>
                     ))}
                 </Row>
+
+                <Col lg={12}>
+                    <label className="form-label">
+                        Collection: <span className="text-warning">(optional)</span>
+                    </label>
+                    <Combobox
+                        value={compendium?.find(c => c.id === editionForm.compendiumID) ?? null}
+                        onChange={opt => {
+                            setEditionForm(prev => ({
+                                ...prev,
+                                compendiumID: opt?.id ?? null,
+                                compendiumName: opt?.id ? "" : opt?.title ?? "",
+                            }));
+                        }}
+                    >
+                        <Combobox.Input
+                            className="form-control"
+                            displayValue={opt => opt?.title ?? ""}
+                            placeholder="Select or type a collection..."
+                            onChange={e => {
+                                setSearchQuery(prev => ({...prev, compendium: e.target.value}));
+                                setEditionForm(prev => ({...prev, compendiumName: e.target.value}));
+                            }}
+                        />
+                        <Combobox.Options className="list-group position-absolute z-3">
+                            {compendium
+                                ?.filter(c => c.title.toLowerCase().includes((searchQuery.compendium || "").toLowerCase()))
+                                .slice(0, 5)
+                                .map(c => (
+                                    <Combobox.Option
+                                        key={c.id}
+                                        value={c}
+                                        className="list-group-item list-group-item-action"
+                                    >
+                                        {c.title}
+                                    </Combobox.Option>
+                                ))}
+
+                            {searchQuery.compendium &&
+                                !compendium?.some(c => c.title?.toLowerCase() === searchQuery.compendium.toLowerCase()) && (
+                                    <Combobox.Option
+                                        value={{title: searchQuery.compendium}}
+                                        className="list-group-item list-group-item-action text-primary"
+                                    >
+                                        Create "{searchQuery.compendium}"
+                                    </Combobox.Option>
+                                )}
+                        </Combobox.Options>
+                    </Combobox>
+                </Col>
 
                 <Col lg={3}>
                     <label className="form-label">Format:</label>

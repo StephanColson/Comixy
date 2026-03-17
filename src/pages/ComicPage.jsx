@@ -58,7 +58,7 @@ export function ComicPage(props) {
             <div className="text-center">
                 <h2>
                     {selectedSerie
-                        ? `Comics – ${selectedSerie.title}`
+                        ? selectedSerie.title
                         : "All Comics"}
                 </h2>
                 {selectedSerie && (

@@ -6,7 +6,8 @@ import {useState} from "react";
 import {Combobox} from "@headlessui/react";
 
 export function HomePage(props) {
-    const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic, series, onSelectSerie} = props;
+    const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic,
+        series, onSelectSerie, compendium, onSelectCompendium} = props;
     const {latest = [], loading} = useLatestComics(5);
 
     const allGenres = [...new Set(
@@ -19,9 +20,12 @@ export function HomePage(props) {
         ...comics
             .filter(c => c.title?.toLowerCase().includes(query.toLowerCase()))
             .map(c => ({ id: c.id, label: c.title, type: "Comic", data: c })),
-        ...( series ?? [])
+        ...(series ?? [])
             .filter(s => s.title?.toLowerCase().includes(query.toLowerCase()))
             .map(s => ({ id: s.id, label: s.title, type: "Serie", data: s })),
+        ...(compendium ?? [])
+            .filter(cpd => cpd.title?.toLowerCase().includes(query.toLowerCase()))
+            .map(cpd => ({ id: cpd.id, label: cpd.title, type: "Collection", data: cpd})),
     ];
 
     const [publishedYear, setPublishedYear] = useState("");
@@ -42,6 +46,8 @@ export function HomePage(props) {
                             onSelectComic(result.data);
                         } else if (result.type === "Serie") {
                             onSelectSerie(result.data);
+                        } else if (result.type === "Collection") {
+                            onSelectCompendium(result.data);
                         }
                         setQuery("");
                     }}>
