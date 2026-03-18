@@ -22,6 +22,7 @@ import {AddEditionPage} from "./pages/AddEditionPage.jsx";
 import {useCompendiumCollectionData} from "./api/compendiumInfo.js";
 import {CompendiumPage} from "./pages/CompendiumPage.jsx";
 import {PublisherDetailsPage} from "./pages/PublisherDetailsPage.jsx";
+import {PersonDetailsPage} from "./pages/PersonDetailsPage.jsx";
 
 const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
@@ -31,6 +32,7 @@ const NAV_ADD_FORM = "NAV_ADD_FORM";
 const NAV_ADD_ED = "NAV_ADD_ED";
 const NAV_COLLECTION = "NAV_COLLECTION";
 const NAV_PUBLISHER = "NAV_PUBLISHER";
+const NAV_PERSON = "NAV_PERSON";
 
 function NavigationBar(props){
     const {activeNavBarItem, onSelectNavBarItem} = props;
@@ -77,6 +79,7 @@ function ActivePage(props){
 
     const [selectedCompendiumID, setSelectedCompendiumID] = useState(null);
     const [selectedPublisherID, setSelectedPublisherID] = useState(null);
+    const [selectedPersonID, setSelectedPersonID] = useState(null);
 
     function handleAddEditions(comic) {
         setSelectedComicID(comic.id);
@@ -99,6 +102,7 @@ function ActivePage(props){
                              organizations={organizations}
                              compendium={compendium}
                              setInitialGenre={setInitialGenre}
+                             peoples={peoples}
                              onSelectComic={(comic) => {
                                  setSelectedComicID(comic.id);
                                  navigateTo(COMIC_EDITIONS);
@@ -114,6 +118,10 @@ function ActivePage(props){
                              onSelectPublisher={(publisher) => {
                                  setSelectedPublisherID(publisher.id);
                                  navigateTo(NAV_PUBLISHER);
+                             }}
+                             onSelectPerson={(person) => {
+                                 setSelectedPersonID(person.id);
+                                 navigateTo(NAV_PERSON);
                              }}
                              navigateTo={navigateTo}/>;
         case COMIC_CATALOG:
@@ -179,6 +187,10 @@ function ActivePage(props){
                         setSelectedPublisherID(publisherID);
                         navigateTo(NAV_PUBLISHER);
                     }}
+                    onSelectPerson={(peopleID) => {
+                        setSelectedPersonID(peopleID);
+                        navigateTo(NAV_PERSON);
+                    }}
                 />
             );
         }
@@ -210,6 +222,33 @@ function ActivePage(props){
                     onSelectCompendium={(compendiumID) => {
                         setSelectedCompendiumID(compendiumID);
                         navigateTo(NAV_COLLECTION);
+                    }}
+                />
+            );
+        }
+
+        case NAV_PERSON: {
+            const selectedPerson = peoples?.find(p => p.id === selectedPersonID);
+            return (
+                <PersonDetailsPage
+                    person={selectedPerson}
+                    editions={editions}
+                    comicContributors={comicContributors}
+                    roles={roles}
+                    organizations={organizations}
+                    compendium={compendium}
+                    peoples={peoples}
+                    onEditEdition={(edition) => {
+                        setSelectedComicID(edition.comicID);
+                        navigateTo(NAV_ADD_ED);
+                    }}
+                    onSelectCompendium={(compendiumID) => {
+                        setSelectedCompendiumID(compendiumID);
+                        navigateTo(NAV_COLLECTION);
+                    }}
+                    onSelectPublisher={(publisherID) => {
+                        setSelectedPublisherID(publisherID);
+                        navigateTo(NAV_PUBLISHER);
                     }}
                 />
             );

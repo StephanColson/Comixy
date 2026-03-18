@@ -70,7 +70,7 @@ function EditionThumbnails(props){
 }
 
 function Edition(props){
-    const {edition, onEdit, onSelectCompendium, onSelectPublisher} = props;
+    const {edition, onEdit, onSelectCompendium, onSelectPublisher, onSelectPerson} = props;
 
     return<>
         <Row className="mb-4 align-items-start">
@@ -142,7 +142,14 @@ function Edition(props){
                             <ul className="mb-0">
                                 {edition.displayContributors.map((c, i) => (
                                     <li key={i}>
-                                        {c.peopleName} — {c.roleName}
+                                        <span
+                                            className="pop-effect"
+                                            role="button"
+                                            onClick={() => onSelectPerson(c.peopleID)}
+                                        >
+                                            {c.peopleName}
+                                        </span>
+                                        {""} — {c.roleName}
                                     </li>
                                 ))}
                             </ul>
@@ -161,7 +168,7 @@ function Edition(props){
 }
 
 export function Editions(props){
-    const {editions, onEditEdition, onSelectCompendium, onSelectPublisher} = props;
+    const {editions, onEditEdition, onSelectCompendium, onSelectPublisher, onSelectPerson} = props;
 
     if(!editions || editions.length === 0){
        return <div>No editions found</div>;
@@ -173,7 +180,8 @@ export function Editions(props){
                 <Edition edition={ed}
                          onEdit={onEditEdition}
                          onSelectCompendium={onSelectCompendium}
-                         onSelectPublisher={onSelectPublisher}/>
+                         onSelectPublisher={onSelectPublisher}
+                         onSelectPerson={onSelectPerson}/>
             </Col>)}
         </Section>
     </>

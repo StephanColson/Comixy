@@ -7,7 +7,8 @@ import {Combobox} from "@headlessui/react";
 
 export function HomePage(props) {
     const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic,
-        series, onSelectSerie, compendium, onSelectCompendium, organizations, onSelectPublisher} = props;
+        series, onSelectSerie, compendium, onSelectCompendium, organizations,
+        onSelectPublisher, peoples, onSelectPerson} = props;
     const {latest = [], loading} = useLatestComics(5);
 
     const allGenres = [...new Set(
@@ -29,9 +30,10 @@ export function HomePage(props) {
         ...(organizations ?? [])
             .filter(o => o.name?.toLowerCase().includes(query.toLowerCase()))
             .map(o => ({ id: o.id, label: o.name, type: "Publisher", data: o })),
+        ...(peoples ?? [])
+            .filter(p => p.name?.toLowerCase().includes(query.toLowerCase()))
+            .map(p => ({ id: p.id, label: p.name, type: "Person", data: p })),
     ];
-
-    const [publishedYear, setPublishedYear] = useState("");
 
     const [genreList, setGenreList] = useState("");
 
@@ -53,6 +55,8 @@ export function HomePage(props) {
                             onSelectCompendium(result.data);
                         } else if (result.type === "Publisher") {
                             onSelectPublisher(result.data);
+                        } else if (result.type === "Person") {
+                            onSelectPerson(result.data);
                         }
                         setQuery("");
                     }}>
