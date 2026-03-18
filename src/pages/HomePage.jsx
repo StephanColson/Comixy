@@ -92,7 +92,12 @@ export function HomePage(props) {
                                                 <span
                                                     className="badge ms-2"
                                                     style={{
-                                                        background: result.type === "Comic" ? "#2F5D8A" : "#5A3E8A",
+                                                        background: result.type === "Comic" ? "#2F5D8A" :
+                                                            result.type === "Serie" ? "#5A3E8A" :
+                                                                result.type === "Collection" ? "#2A8A5A" :
+                                                                    result.type === "Publisher" ? "#8A5A2A" :
+                                                                        result.type === "Person" ? "#8A2A2A" :
+                                                                            "#5A3E8A",
                                                         fontSize: "0.7rem"
                                                     }}
                                                 >
