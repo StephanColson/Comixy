@@ -56,7 +56,7 @@ body{
     background: #2F5D8A;
 }
 
-.carousel-inner {
+.gallery-carousel .carousel-inner {
     padding: 3% 8%;
 }
 
@@ -66,4 +66,26 @@ body{
 
 .navbar-toggler {
     border-color: #8C5E00 !important;
+}
+
+.lightbox-carousel .carousel {
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    max-width: 900px;
+}
+
+.lightbox-carousel .carousel-control-prev,
+.lightbox-carousel .carousel-control-next {
+    width: 8%;
+}
+
+.lightbox-carousel .carousel-inner {
+    order: 1;
+}
+
+.lightbox-carousel .carousel-indicators {
+    position: relative;
+    margin: 10px 0 0 0;
+    order: 2;
 }

@@ -73,7 +73,7 @@ export function Comics(props) {
 
                 <Col xs={12} md={12} lg={6} xl={6} className="mt-4">
                     <div className="border border-2 border-dark rounded">
-                        <Carousel interval={null} indicators={slides.length > 1} variant="dark">
+                        <Carousel interval={null} indicators={slides.length > 1} className="gallery-carousel" variant="light">
                             {slides.map((slide, slideIndex) => (
                                 <Carousel.Item key={slideIndex}>
                                     <Row className="m-2">

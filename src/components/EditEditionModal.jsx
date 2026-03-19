@@ -246,6 +246,30 @@ export function EditEditionModal(props) {
                                 ))}
                             </Combobox.Options>
                         </Combobox>
+
+                        <Combobox>
+                            <Combobox.Input
+                                className="form-control"
+                                placeholder="Change/Rename Comic..."
+                                displayValue={opt => opt?.title ?? ""}
+                                onChange={e => {
+                                    const value = e.target.value;
+                                    setSearchQuery(prev => ({ ...prev, comic: value }));
+                                }}
+                            />
+
+                            <Combobox.Options className="list-group position-absolute z-3">
+                                {filteredSerie.slice(0, 5).map(comic => (
+                                    <Combobox.Option
+                                        key={comic.id}
+                                        value={comic}
+                                        className="list-group-item list-group-item-action"
+                                    >
+                                        {comic.title}
+                                    </Combobox.Option>
+                                ))}
+                            </Combobox.Options>
+                        </Combobox>
                     </Form.Group>
 
                     <EditionSection

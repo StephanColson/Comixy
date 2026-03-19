@@ -48,7 +48,10 @@ export function EditionSection(props) {
                         Collection: <span className="text-warning">(optional)</span>
                     </label>
                     <Combobox
-                        value={compendium?.find(c => c.id === editionForm.compendiumID) ?? null}
+                        value={
+                            compendium.find(cpd => cpd.id === editionForm.compendiumID)
+                            ?? (editionForm.compendiumName ? {title: editionForm.compendiumName} : null)
+                        }
                         onChange={opt => {
                             setEditionForm(prev => ({
                                 ...prev,
@@ -63,7 +66,7 @@ export function EditionSection(props) {
                             placeholder="Select or type a collection..."
                             onChange={e => {
                                 setSearchQuery(prev => ({...prev, compendium: e.target.value}));
-                                setEditionForm(prev => ({...prev, compendiumName: e.target.value}));
+                                setEditionForm(prev => ({...prev, compendiumName: e.target.value, compendiumID: null}));
                             }}
                         />
                         <Combobox.Options className="list-group position-absolute z-3">

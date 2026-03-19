@@ -1,5 +1,5 @@
 import {Section} from "./Section.jsx";
-import {Col, Row} from "react-bootstrap";
+import {Carousel, Col, Row} from "react-bootstrap";
 import {useState} from "react";
 import FlipMove from "react-flip-move";
 
@@ -48,7 +48,7 @@ function EditionThumbnails(props){
                     onClick={() => setLightBoxOpen(false)}
                     style={{
                         position: "fixed",
-                        inset: 0,                        // shorthand for top/right/bottom/left: 0
+                        inset: 0,
                         background: "rgba(0,0,0,0.85)",
                         display: "flex",
                         alignItems: "center",
@@ -57,12 +57,29 @@ function EditionThumbnails(props){
                         cursor: "zoom-out"
                     }}
                 >
-                    <img
-                        src={images[0]}
-                        alt="Zoomed cover"
-                        style={{ maxHeight: "90vh", maxWidth: "90vw", borderRadius: "8px" }}
-                        onClick={e => e.stopPropagation()}  // clicking the image itself won't close it
-                    />
+                    <div onClick={e => e.stopPropagation()} className="lightbox-carousel">
+                        <Carousel interval={null}
+                                  indicators={images.length > 1}
+                                  variant="light"
+                                  defaultActiveIndex={0}>
+                            {images.map((url, i) => (
+                                <Carousel.Item key={url}>
+                                    <img
+                                        src={url}
+                                        alt={`Image ${i + 1}`}
+                                        style={{
+                                            maxHeight: "90vh",
+                                            maxWidth: "90vw",
+                                            objectFit: "contain",
+                                            borderRadius: "8px",
+                                            margin: "0 auto",
+                                            display: "block"
+                                        }}
+                                    />
+                                </Carousel.Item>
+                            ))}
+                        </Carousel>
+                    </div>
                 </div>
             )}
         </div>
