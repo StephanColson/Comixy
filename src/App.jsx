@@ -23,6 +23,8 @@ import {useCompendiumCollectionData} from "./api/compendiumInfo.js";
 import {CompendiumPage} from "./pages/CompendiumPage.jsx";
 import {PublisherDetailsPage} from "./pages/PublisherDetailsPage.jsx";
 import {PersonDetailsPage} from "./pages/PersonDetailsPage.jsx";
+import {useAuth} from "./context/AuthContext.jsx";
+import {LoginPage} from "./pages/LoginPage.jsx";
 
 const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
@@ -259,6 +261,7 @@ function ActivePage(props){
 }
 
 function App() {
+    const {currentUser, role} = useAuth();
     const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_HOME);
     const [selectedComicID, setSelectedComicID] = useState(null);
     const [selectedSerieID, setSelectedSerieID] = useState(null);
@@ -282,6 +285,9 @@ function App() {
         window.addEventListener("hashchange", handleHashChange);
         return () => window.removeEventListener("hashchange", handleHashChange);
     }, []);
+
+    if (currentUser === undefined) return <div className="text-center mt-5">Loading...</div>;
+    if (currentUser === null) return <LoginPage />;
 
     return (
         <>
