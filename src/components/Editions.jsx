@@ -87,7 +87,7 @@ function EditionThumbnails(props){
 }
 
 function Edition(props){
-    const {edition, onEdit, onSelectCompendium, onSelectPublisher, onSelectPerson} = props;
+    const {edition, onEdit, onSelectCompendium, onSelectPublisher, onSelectPerson, onDelete} = props;
 
     return<>
         <Row className="mb-4 align-items-start">
@@ -173,9 +173,12 @@ function Edition(props){
                         </Col>
                     )}
 
-                    <Col xs={12} className="mt-2">
-                        <button className="btn btn-success btn-sm" onClick={() => onEdit(edition)}>
+                    <Col xs={12} className="mt-4">
+                        <button className="btn btn-success btn-sm mx-2" onClick={() => onEdit(edition)}>
                             Edit Edition
+                        </button>
+                        <button className="btn btn-danger btn-sm" onClick={() => onDelete(edition)}>
+                            Delete Edition
                         </button>
                     </Col>
                 </Row>
@@ -184,8 +187,8 @@ function Edition(props){
     </>
 }
 
-export function Editions(props){
-    const {editions, onEditEdition, onSelectCompendium, onSelectPublisher, onSelectPerson} = props;
+export function Editions(props) {
+    const {editions, onEditEdition, onSelectCompendium, onSelectPublisher, onSelectPerson, onDeleteEdition} = props;
 
     if(!editions || editions.length === 0){
        return <div>No editions found</div>;
@@ -198,7 +201,9 @@ export function Editions(props){
                          onEdit={onEditEdition}
                          onSelectCompendium={onSelectCompendium}
                          onSelectPublisher={onSelectPublisher}
-                         onSelectPerson={onSelectPerson}/>
+                         onSelectPerson={onSelectPerson}
+                         onDelete={onDeleteEdition}
+                />
             </Col>)}
         </Section>
     </>

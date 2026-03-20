@@ -2,6 +2,7 @@ import {Editions} from "../components/Editions.jsx";
 import {useState} from "react";
 import {EditEditionModal} from "../components/EditEditionModal.jsx";
 import {Button} from "react-bootstrap";
+import {deleteEdition} from "../api/editionInfo.js";
 
 export function ComicDetailsPage(props){
     const {comic, organizations, peoples, roles, comicContributors, editions,
@@ -61,7 +62,11 @@ export function ComicDetailsPage(props){
                       onEditEdition={handleEditEdition}
                       onSelectCompendium={onSelectCompendium}
                       onSelectPublisher={onSelectPublisher}
-                      onSelectPerson={onSelectPerson}/>
+                      onSelectPerson={onSelectPerson}
+                      onDeleteEdition={async (edition) => {
+                          await deleteEdition(edition, comicContributors);
+                      }}
+            />
 
             {showEditModal && (
                 <EditEditionModal edition={editingEdition} editions={editions}

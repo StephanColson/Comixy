@@ -1,7 +1,8 @@
 import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
-import {addDoc, collection, query, updateDoc} from "firebase/firestore";
+import {addDoc, collection, deleteDoc, doc, query, updateDoc} from "firebase/firestore";
 import {uploadImage} from "./storage.js";
+import {deleteComicContributor} from "./comicContributer.js";
 
 const EDITION_COLLECTION_NAME = 'Editions';
 
@@ -54,4 +55,10 @@ export async function addEdition(newEdition) {
 
 export async function updateEdition(edition) {
     await updateDoc(edition.ref, edition);
+}
+
+export async function deleteEdition(edition, comicContributors){
+    const editionContributors = comicContributors.filter(cc => cc.editionID === edition.id);
+    await Promise.all(editionContributors.map(cc => deleteComicContributor(cc.id)));
+    await deleteDoc(doc(firestoreDB, "Editions", edition.id));
 }
