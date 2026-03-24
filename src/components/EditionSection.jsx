@@ -96,7 +96,7 @@ export function EditionSection(props) {
                     </Combobox>
                 </Col>
 
-                <Col lg={3}>
+                <Col sm={6} lg={3}>
                     <label className="form-label">Format:</label>
 
                     <Combobox
@@ -139,7 +139,7 @@ export function EditionSection(props) {
                     </Combobox>
                 </Col>
 
-                <Col lg={3}>
+                <Col sm={6} lg={3}>
                     <label className="form-label">Print:</label>
                     <Combobox
                         value={
@@ -181,7 +181,7 @@ export function EditionSection(props) {
                     </Combobox>
                 </Col>
 
-                <Col lg={3}>
+                <Col sm={7} lg={3}>
                     <Col>
                         <label className="form-label">Publisher:</label>
 
@@ -255,7 +255,7 @@ export function EditionSection(props) {
                     </Col>
                 </Col>
 
-                <Col lg={2}>
+                <Col sm={5} lg={2}>
                     <label className="form-label">Published:</label>
                     <input
                         type="number"

@@ -7,21 +7,22 @@ import {useState} from "react";
 function ComicGallery(props) {
     const {comic, onSelect, editions = []} = props;
     const edition = editions.find(e => e.comicID === comic.id);
-    const coverImg = edition?.imgURLs?.[0];
+    const coverImg = edition?.imgURLs?.[0] ?? "/images/placeholder/missing_edition_image.webp";
     return (
-        <SectionCard className="card-pop" coverImg={coverImg} onClick={() => onSelect(comic)} role="button">
-            <div className="fw-bold">{comic.bookNumber} - {comic.title}</div>
-            <hr/>
-            {comic.price && (
-                <div className="badge coloured-badge px-4 py-2">
-                    {comic.price} €
-                </div>
-            )}
-        </SectionCard>
+        <div className="comic-tooltip-wrapper">
+            <SectionCard className="card-pop" coverImg={coverImg} onClick={() => onSelect(comic)} role="button">
+                {comic.price && (
+                    <div className="badge coloured-badge px-4 py-2">
+                        {comic.price} €
+                    </div>
+                )}
+            </SectionCard>
+            <div className="comic-tooltip">{comic.bookNumber} - {comic.title}</div>
+        </div>
     )
 }
 
-function ComicList(props){
+function ComicList(props) {
     const {comic, onSelect} = props;
     return <>
         <div>

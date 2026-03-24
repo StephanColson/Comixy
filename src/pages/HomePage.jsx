@@ -9,7 +9,7 @@ export function HomePage(props) {
     const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic,
         series, onSelectSerie, compendium, onSelectCompendium, organizations,
         onSelectPublisher, peoples, onSelectPerson} = props;
-    const {latest = [], loading} = useLatestComics(5);
+    const {latest = [], loading} = useLatestComics(9);
 
     const allGenres = [...new Set(
         comics.flatMap(c => Array.isArray(c.genres) ? c.genres : [])
@@ -135,14 +135,27 @@ export function HomePage(props) {
                 <div className="text-center">
                     <h3>Recently added</h3>
                 </div>
-                <Carousel interval={3000} pause="hover">
-                    {latest.map(c => (
-                        <Carousel.Item key={c.id}>
-                            <Comics comics={[comics.find(x => x.id === c.id)]}
-                                    carouselMode={true}
-                                    onSelectComic={onSelectComic}
-                                    editions={editions}
-                            />
+                <Carousel interval={3000} pause="hover" className="homepage-recent-carousel">
+                    {Array.from({length: Math.ceil(latest.length / 3)}, (_, i) =>
+                        latest.slice(i * 3, i * 3 + 3)
+                    ).map((slide, slideIndex) => (
+                        <Carousel.Item key={slideIndex}>
+                            <div className="d-flex justify-content-center w-100">
+                                {slide.map(c => {
+                                    const comic = comics.find(x => x.id === c.id);
+                                    if (!comic) return null;
+                                    return (
+                                        <div key={c.id} style={{width: "32%"}}>
+                                            <Comics
+                                                comics={[comic]}
+                                                carouselMode={true}
+                                                onSelectComic={onSelectComic}
+                                                editions={editions}
+                                            />
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </Carousel.Item>
                     ))}
                 </Carousel>

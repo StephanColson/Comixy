@@ -2,6 +2,7 @@ import {Section} from "./Section.jsx";
 import {Carousel, Col, Row} from "react-bootstrap";
 import {useState} from "react";
 import FlipMove from "react-flip-move";
+import {useAuth} from "../context/AuthContext.jsx";
 
 function EditionThumbnails(props){
     const {imgURLs} = props;
@@ -88,6 +89,7 @@ function EditionThumbnails(props){
 
 function Edition(props){
     const {edition, onEdit, onSelectCompendium, onSelectPublisher, onSelectPerson, onDelete} = props;
+    const {role} = useAuth();
 
     return<>
         <Row className="mb-4 align-items-start">

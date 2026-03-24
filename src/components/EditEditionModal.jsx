@@ -19,6 +19,8 @@ export function EditEditionModal(props) {
         serieID: comic?.serieID ?? null,
     });
 
+    const [comicTitle, setComicTitle] = useState(comic?.title ?? "")
+
     const [editionForm, setEditionForm] = useState({
         comicID: edition.comicID,
         printYear: edition.printYear || "",
@@ -185,6 +187,13 @@ export function EditEditionModal(props) {
                 });
             }
 
+            if (comicTitle.trim() !== comic.title) {
+                await updateComic({
+                    ...comic,
+                    title: comicTitle.trim(),
+                });
+            }
+
             onClose();
 
         } catch (err) {
@@ -208,7 +217,7 @@ export function EditEditionModal(props) {
     const filteredSerie = series.filter(s => s.title.toLowerCase().includes((searchQuery.serie || "").toLowerCase()));
 
     return (
-        <Modal show onHide={onClose} dialogClassName="modal-bg">
+        <Modal show onHide={onClose} size={"lg"} dialogClassName="modal-bg">
             <Modal.Header closeButton>
                 <Modal.Title>Edit Edition</Modal.Title>
             </Modal.Header>
@@ -216,7 +225,7 @@ export function EditEditionModal(props) {
             <Modal.Body>
                 <Form>
                     <Form.Group className="mb-3">
-                        <Form.Label>Serie</Form.Label>
+                        <Form.Label>Serie:</Form.Label>
 
                         <Combobox
                             value={series.find(s => s.id === comicSerie.serieID) || null}
@@ -248,14 +257,13 @@ export function EditEditionModal(props) {
                         </Combobox>
 
                         <Combobox>
+                            <Form.Label className="mt-3">Comic:</Form.Label>
+
                             <Combobox.Input
                                 className="form-control"
                                 placeholder="Change/Rename Comic..."
-                                displayValue={opt => opt?.title ?? ""}
-                                onChange={e => {
-                                    const value = e.target.value;
-                                    setSearchQuery(prev => ({ ...prev, comic: value }));
-                                }}
+                                value={comicTitle}
+                                onChange={e => setComicTitle(e.target.value)}
                             />
 
                             <Combobox.Options className="list-group position-absolute z-3">

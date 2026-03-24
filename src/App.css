@@ -58,6 +58,7 @@ body{
 
 .gallery-carousel .carousel-inner {
     padding: 3% 8%;
+    overflow: visible !important;
 }
 
 .navbar-toggler-icon {
@@ -88,4 +89,77 @@ body{
     position: relative;
     margin: 10px 0 0 0;
     order: 2;
+}
+
+/* Pagination theme */
+.rc-pagination-item {
+    background-color: #34332F !important;
+    border-color: #8C5E00 !important;
+}
+
+.rc-pagination-item a {
+    color: #E6E0C7 !important;
+}
+
+.rc-pagination-item:hover {
+    border-color: #E8B84A !important;
+}
+
+.rc-pagination-item:hover a {
+    color: #E8B84A !important;
+}
+
+.rc-pagination-item-active {
+    background-color: #8C5E00 !important;
+    border-color: #8C5E00 !important;
+}
+
+.rc-pagination-item-active a {
+    color: #E6E0C7 !important;
+}
+
+.rc-pagination-prev button,
+.rc-pagination-next button {
+    background-color: #34332F !important;
+    color: #E6E0C7 !important;
+    border-color: #8C5E00 !important;
+}
+
+.rc-pagination-prev:hover button,
+.rc-pagination-next:hover button {
+    border-color: #E8B84A !important;
+    color: #E8B84A !important;
+}
+
+.comic-tooltip-wrapper {
+    position: relative;
+}
+
+.comic-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    background-color: #1A1A1D;
+    color: #E6E0C7;
+    text-align: center;
+    padding: 5px 8px;
+    border-radius: 4px;
+    border: 1px solid #8C5E00;
+    position: absolute;
+    bottom: auto;
+    top: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 100;
+    transition: opacity 0.2s ease;
+    font-size: 0.85rem;
+}
+
+.comic-tooltip-wrapper:hover .comic-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.homepage-recent-carousel .carousel-inner {
+    overflow: visible !important;
 }

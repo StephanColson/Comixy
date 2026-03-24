@@ -5,7 +5,7 @@ import Pagination from "rc-pagination";
 import {updateSerie} from "../api/serieInfo.js";
 
 function useSlideSize() {
-    const [slideSize, setSlideSize] = useState(window.innerWidth < 768 ? 4 : 6);
+    const [slideSize, setSlideSize] = useState(window.innerWidth < 768 ? 6 : 30);
 
     useEffect(() => {
         const handler = () => setSlideSize(window.innerWidth < 768 ? 4 : 6);
@@ -21,15 +21,15 @@ export function ComicPage(props) {
     const slideSize = useSlideSize();
 
     const baseComics = selectedSerieID
-        ? [...comics].filter(c => c.serieID === selectedSerieID).sort((a, b) => a.title.localeCompare(b.title))
-        : [...comics].sort((a, b) => a.title.localeCompare(b.title));
+        ? [...comics].filter(c => c.serieID === selectedSerieID)
+        : [...comics]
 
     const selectedSerie = selectedSerieID
         ? series.find(s => s.id === selectedSerieID)
         : null;
 
     const [currentPage, setCurrentPage] = useState(1);
-    const displayComic = 18;
+    const displayComic = 60;
 
     const startIndex = (currentPage - 1) * displayComic;
     const endIndex = startIndex + displayComic;
@@ -88,6 +88,15 @@ export function ComicPage(props) {
                     </div>
                 )}
             </div>
+
+            <Pagination
+                className="my-3"
+                align="center"
+                current={currentPage}
+                pageSize={displayComic}
+                total={baseComics.length}
+                onChange={setCurrentPage}
+            />
 
             <Section>
                 <Comics
