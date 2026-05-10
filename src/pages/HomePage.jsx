@@ -8,7 +8,7 @@ import {Combobox} from "@headlessui/react";
 export function HomePage(props) {
     const {comics, editions, setInitialGenre, setActiveNavBarItem, onSelectComic,
         series, onSelectSerie, compendium, onSelectCompendium, organizations,
-        onSelectPublisher, peoples, onSelectPerson} = props;
+        onSelectPublisher, peoples, onSelectPerson, onDeleteComic} = props;
     const {latest = [], loading} = useLatestComics(9);
 
     const allGenres = [...new Set(
@@ -151,6 +151,7 @@ export function HomePage(props) {
                                                 carouselMode={true}
                                                 onSelectComic={onSelectComic}
                                                 editions={editions}
+                                                onDeleteComic={onDeleteComic}
                                             />
                                         </div>
                                     );

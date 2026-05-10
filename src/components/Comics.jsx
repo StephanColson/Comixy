@@ -3,9 +3,10 @@ import {Section} from "./Section.jsx";
 import {SectionCard} from "./SectionCard.jsx";
 import {Carousel, Col, Row} from "react-bootstrap";
 import {useState} from "react";
+import {useAuth} from "../context/AuthContext.jsx";
 
 function ComicGallery(props) {
-    const {comic, onSelect, editions = []} = props;
+    const {comic, onSelect, onDelete, canDelete, editions = []} = props;
     const edition = editions.find(e => e.comicID === comic.id);
     const coverImg = edition?.imgURLs?.[0] ?? "/images/placeholder/missing_edition_image.webp";
     return (
@@ -15,6 +16,15 @@ function ComicGallery(props) {
                     <div className="badge coloured-badge px-4 py-2">
                         {comic.price} €
                     </div>
+                )}
+
+                {canDelete && (
+                    <button className="btn btn-danger" onClick={e => {
+                        e.stopPropagation();
+                        onDelete(comic);
+                    }}>
+                        <i className="bi bi-trash"></i>
+                    </button>
                 )}
             </SectionCard>
             <div className="comic-tooltip">{comic.bookNumber} - {comic.title}</div>
@@ -34,7 +44,9 @@ function ComicList(props) {
 }
 
 export function Comics(props) {
-    const {comics, carouselMode = false, onSelectComic, editions = [], slides = []} = props;
+    const {comics, carouselMode = false, onSelectComic, onDeleteComic, editions = [], slides = []} = props;
+    const {role} = useAuth();
+    const canDelete = role === "mod" || role === "admin";
 
     const sortedComics = [...comics].sort((a, b) => Number(a.bookNumber) - Number(b.bookNumber));
     const [selectedComic, setSelectedComic] = useState(null);
@@ -47,7 +59,13 @@ export function Comics(props) {
                 <div className="d-flex justify-content-center">
                     {comics.map((c) => (
                         <div key={c.id} className="w-25 mb-5">
-                            <ComicGallery comic={c} onSelect={onSelectComic} editions={editions}/>
+                            <ComicGallery
+                                comic={c}
+                                onSelect={onSelectComic}
+                                editions={editions}
+                                canDelete={canDelete}
+                                onDelete={onDeleteComic}
+                            />
                         </div>
                     ))}
                 </div>
@@ -80,7 +98,13 @@ export function Comics(props) {
                                     <Row className="m-2">
                                         {slide.map(c => (
                                             <Col xl={4} lg={4} md={4} xs={6} key={c.id}>
-                                                <ComicGallery comic={c} onSelect={onSelectComic} editions={editions}/>
+                                                <ComicGallery
+                                                    comic={c}
+                                                    onSelect={onSelectComic}
+                                                    editions={editions}
+                                                    canDelete={canDelete}
+                                                    onDelete={onDeleteComic}
+                                                />
                                             </Col>
                                         ))}
                                     </Row>

@@ -8,7 +8,7 @@ export function SeriePage(props){
     const {series, onSelectSerie} = props;
     const [selectedLetter, setSelectedLetter] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const displaySerie = 10;
+    const displaySerie = 20;
 
     const sortedSeries = [...series].sort((a, b) => a.title.localeCompare(b.title));
 

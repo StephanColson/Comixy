@@ -2,11 +2,12 @@ import 'normalize.css'
 import './App.css'
 import 'react-tabs/style/react-tabs.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'rc-pagination/assets/index.css';
 import './api/firebase.js';
 import {ComicPage} from "./pages/ComicPage.jsx";
 import {HomePage} from "./pages/HomePage.jsx";
-import {useComicCollectionData} from "./api/comicInfo.js";
+import {deleteComic, useComicCollectionData} from "./api/comicInfo.js";
 import {useSerieCollectionData} from "./api/serieInfo.js";
 import {Nav, Navbar, Container} from "react-bootstrap";
 import {useEffect, useState} from "react";
@@ -125,6 +126,9 @@ function ActivePage(props){
                                  setSelectedPersonID(person.id);
                                  navigateTo(NAV_PERSON);
                              }}
+                             onDeleteComic={async (comic) => {
+                                 await deleteComic(comic, editions, comicContributors);
+                             }}
                              navigateTo={navigateTo}/>;
         case COMIC_CATALOG:
             return <ComicPage
@@ -136,6 +140,7 @@ function ActivePage(props){
                 }}
                 series={series}
                 selectedSerieID={selectedSerieID}
+                comicContributors={comicContributors}
                 initialGenre={initialGenre}
             />;
 

@@ -1,6 +1,7 @@
 import {deleteDoc, updateDoc, addDoc, collection, query, orderBy, limit, serverTimestamp} from "firebase/firestore";
 import {firestoreDB} from "./firebase.js";
 import {useCollectionData} from "react-firebase-hooks/firestore";
+import {deleteEdition} from "./editionInfo.js";
 
 const COMIC_COLLECTION_NAME = 'Comics';
 
@@ -40,4 +41,10 @@ export function useLatestComics(limitCount = 5) {
     const q = query(collectionRef, orderBy('createdAt', 'desc'), limit(limitCount));
     const [latest, loading, error] = useCollectionData(q);
     return { latest, loading, error };
+}
+
+export async function deleteComic(comic, editions, comicContributors){
+    const comicEditions = editions.filter(ed => ed.comicID === comic.id);
+    await Promise.all(comicEditions.map(ed => deleteEdition(ed, comicContributors)));
+    await deleteDoc(comic.ref);
 }

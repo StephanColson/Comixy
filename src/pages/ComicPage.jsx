@@ -3,6 +3,7 @@ import {Comics} from "../components/Comics.jsx";
 import {useEffect, useState} from "react";
 import Pagination from "rc-pagination";
 import {updateSerie} from "../api/serieInfo.js";
+import {deleteComic} from "../api/comicInfo.js";
 
 function useSlideSize() {
     const [slideSize, setSlideSize] = useState(window.innerWidth < 768 ? 6 : 30);
@@ -17,7 +18,7 @@ function useSlideSize() {
 }
 
 export function ComicPage(props) {
-    const {comics, editions, selectedSerieID, onSelectComic, series} = props;
+    const {comics, editions, selectedSerieID, onSelectComic, series, comicContributors} = props;
     const slideSize = useSlideSize();
 
     const baseComics = selectedSerieID
@@ -104,6 +105,9 @@ export function ComicPage(props) {
                     selectedSerieID={selectedSerieID}
                     series={series}
                     onSelectComic={onSelectComic}
+                    onDeleteComic={async (comic) => {
+                        await deleteComic(comic, editions, comicContributors);
+                    }}
                     editions={editions}
                     slides={slides}
                 />
