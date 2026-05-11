@@ -25,6 +25,8 @@ export function ComicPage(props) {
         ? [...comics].filter(c => c.serieID === selectedSerieID)
         : [...comics]
 
+    const sortedBaseComics = [...baseComics].sort((a, b) => Number(a.bookNumber) - Number(b.bookNumber));
+
     const selectedSerie = selectedSerieID
         ? series.find(s => s.id === selectedSerieID)
         : null;
@@ -34,7 +36,7 @@ export function ComicPage(props) {
 
     const startIndex = (currentPage - 1) * displayComic;
     const endIndex = startIndex + displayComic;
-    const paginatedComics = baseComics.slice(startIndex, endIndex);
+    const paginatedComics = sortedBaseComics.slice(startIndex, endIndex);
 
     const slides = Array.from(
         {length: Math.ceil(paginatedComics.length / slideSize)},
@@ -95,7 +97,7 @@ export function ComicPage(props) {
                 align="center"
                 current={currentPage}
                 pageSize={displayComic}
-                total={baseComics.length}
+                total={sortedBaseComics.length}
                 onChange={setCurrentPage}
             />
 

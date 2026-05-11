@@ -6,25 +6,16 @@ import {useState} from "react";
 import {useAuth} from "../context/AuthContext.jsx";
 
 function ComicGallery(props) {
-    const {comic, onSelect, onDelete, canDelete, editions = []} = props;
+    const {comic, onSelect, editions = []} = props;
     const edition = editions.find(e => e.comicID === comic.id);
     const coverImg = edition?.imgURLs?.[0] ?? "/images/placeholder/missing_edition_image.webp";
     return (
         <div className="comic-tooltip-wrapper">
             <SectionCard className="card-pop" coverImg={coverImg} onClick={() => onSelect(comic)} role="button">
-                {comic.price && (
+                {!!comic.price && (
                     <div className="badge coloured-badge px-4 py-2">
                         {comic.price} €
                     </div>
-                )}
-
-                {canDelete && (
-                    <button className="btn btn-danger" onClick={e => {
-                        e.stopPropagation();
-                        onDelete(comic);
-                    }}>
-                        <i className="bi bi-trash"></i>
-                    </button>
                 )}
             </SectionCard>
             <div className="comic-tooltip">{comic.bookNumber} - {comic.title}</div>
@@ -79,12 +70,25 @@ export function Comics(props) {
                 <Col xs={12} md={12} lg={6} xl={6} className="mt-4">
                     <div>
                         {sortedComics.map(cl => (
-                            <div key={cl.id} className="d-flex align-items-baseline">
-                                <div className="me-3 fw-bold">
-                                    {cl.bookNumber}.
+                            <div key={cl.id} className="d-flex align-items-baseline justify-content-between">
+                                <div className="d-flex align-items-baseline">
+                                    <div className="me-3 fw-bold">
+                                        {cl.bookNumber}.
+                                    </div>
+                                    <ComicList comic={cl}
+                                               onSelect={onSelectComic}
+                                               canDelete={canDelete}
+                                               onDelete={onDeleteComic}/>
                                 </div>
 
-                                <ComicList comic={cl} onSelect={onSelectComic}/>
+                                {canDelete && (
+                                    <button className="btn btn-danger btn-sm ms-2" onClick={e => {
+                                        e.stopPropagation();
+                                        onDeleteComic(cl);
+                                    }}>
+                                        <i className="bi bi-trash"></i>
+                                    </button>
+                                )}
                             </div>
                             ))}
                     </div>
@@ -102,8 +106,6 @@ export function Comics(props) {
                                                     comic={c}
                                                     onSelect={onSelectComic}
                                                     editions={editions}
-                                                    canDelete={canDelete}
-                                                    onDelete={onDeleteComic}
                                                 />
                                             </Col>
                                         ))}

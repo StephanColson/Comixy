@@ -8,9 +8,11 @@ export function SectionCard(props) {
             {coverImg && (
                 <Card.Img src={coverImg} className="object-fit-cover"/>
             )}
-            <Card.Body className={"text-center"}>
-                {children}
-            </Card.Body>
+            {children && (
+                <Card.Body className={"text-center"}>
+                    {children}
+                </Card.Body>
+            )}
         </Card>
     </>
 }

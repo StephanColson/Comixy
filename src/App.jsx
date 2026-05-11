@@ -26,10 +26,13 @@ import {PublisherDetailsPage} from "./pages/PublisherDetailsPage.jsx";
 import {PersonDetailsPage} from "./pages/PersonDetailsPage.jsx";
 import {useAuth} from "./context/AuthContext.jsx";
 import {LoginPage} from "./pages/LoginPage.jsx";
+import {UniversePage} from "./pages/UniversePage.jsx";
+import {useUniverseCollectionData} from "./api/universeInfo.js";
 
 const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
 const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
+const NAV_UNIVERSE_CATALOG = "NAV_UNIVERSE_CATALOG";
 const COMIC_EDITIONS = "COMIC_EDITIONS";
 const NAV_ADD_FORM = "NAV_ADD_FORM";
 const NAV_ADD_ED = "NAV_ADD_ED";
@@ -53,6 +56,10 @@ function NavigationBar(props){
                             </Nav.Item>
 
                             <Nav.Item>
+                                <Nav.Link className="nav-text" eventKey={NAV_UNIVERSE_CATALOG}>Universe Catalog</Nav.Link>
+                            </Nav.Item>
+
+                            <Nav.Item>
                                 <Nav.Link className="nav-text" eventKey={NAV_SERIE_CATALOG}>Serie Catalog</Nav.Link>
                             </Nav.Item>
 
@@ -69,11 +76,12 @@ function NavigationBar(props){
 
 function ActivePage(props){
     const {activeNavBarItem, initialGenre, setInitialGenre,
-           navigateTo, selectedSerieID, setSelectedSerieID, setSelectedComicID, selectedComicID} = props;
+           navigateTo, selectedSerieID, setSelectedSerieID, setSelectedComicID, selectedComicID, selectedUniverseID, setSelectedUniverseID} = props;
 
     const {comics} = useComicCollectionData();
     const {editions} = useEditionCollectionData();
     const {series} = useSerieCollectionData();
+    const {universes} = useUniverseCollectionData();
     const {compendium} = useCompendiumCollectionData();
     const {organizations} = useOrganizationCollectionData();
     const {roles} = useRoleCollectionData();
@@ -150,6 +158,12 @@ function ActivePage(props){
                                   setSelectedSerieID(serie.id);
                                   navigateTo(COMIC_CATALOG);
                               }}/>
+        case NAV_UNIVERSE_CATALOG:
+            return <UniversePage universes={universes}
+                                 onSelectUniverse={(universe) => {
+                                     setSelectedUniverseID(universe.id);
+                                     navigateTo(NAV_SERIE_CATALOG);
+            }}/>
 
         case NAV_ADD_FORM:
             return <AddComicPage selectedComicID={selectedComicID}
@@ -270,6 +284,7 @@ function App() {
     const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_HOME);
     const [selectedComicID, setSelectedComicID] = useState(null);
     const [selectedSerieID, setSelectedSerieID] = useState(null);
+    const [selectedUniverseID, setSelectedUniverseID] = useState(null);
 
     function navigateTo(key){
         window.location.hash = key;
@@ -281,7 +296,7 @@ function App() {
             const key = window.location.hash.replace("#", "");
             if (key) {
                 setActiveNavBarItem(key);
-                if (key === NAV_HOME || key === COMIC_CATALOG || key === NAV_SERIE_CATALOG) {
+                if (key === NAV_HOME || key === COMIC_CATALOG || key === NAV_SERIE_CATALOG || key === NAV_UNIVERSE_CATALOG) {
                     setSelectedComicID(null);
                 }
             }
@@ -313,6 +328,7 @@ function App() {
                     setSelectedComicID={setSelectedComicID}
                     selectedSerieID={selectedSerieID}
                     setSelectedSerieID={setSelectedSerieID}
+                    setSelectedUniverseID={setSelectedUniverseID}
                 />
             </div>
         </>
