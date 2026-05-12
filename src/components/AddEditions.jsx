@@ -185,7 +185,7 @@ export function AddEditions(props) {
                     ? await addSerie({
                         title: comicForm.serieTitle.trim(),
                         description: "",
-                        franchiseID: null,
+                        universeID: null,
                     })
                     : null);
 
