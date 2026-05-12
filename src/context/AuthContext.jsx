@@ -27,7 +27,12 @@ export function AuthProvider({children}) {
                         displayName: user.displayName,
                         role: "user",
                     });
-                    setRole("user");
+                    setCurrentUser({
+                        ...user,
+                        photoURL: user.photoURL
+                            ? user.photoURL.replace("s96-c", "s256-c")
+                            : null
+                    });
                 }
                 setCurrentUser(user);
             } else {

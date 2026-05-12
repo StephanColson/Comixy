@@ -42,15 +42,18 @@ const NAV_PERSON = "NAV_PERSON";
 
 function NavigationBar(props){
     const {activeNavBarItem, onSelectNavBarItem} = props;
+    const {currentUser, role, logout} = useAuth();
 
     return (
         <>
             <Navbar expand="md" className="fixed-top nav-bg">
-                <Container className="m-0">
+                <Container fluid>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                    <Navbar.Collapse id="basic-navbar-nav">
+                    <Navbar.Collapse id="basic-navbar-nav" className="justify-content-between">
                         <Nav activeKey={activeNavBarItem}
-                             onSelect={selectedEventKey => onSelectNavBarItem(selectedEventKey)}>
+                             onSelect={selectedEventKey => onSelectNavBarItem(selectedEventKey)}
+                             className="me-auto"
+                        >
                             <Nav.Item>
                                 <Nav.Link className="nav-text" eventKey={NAV_HOME}>Home</Nav.Link>
                             </Nav.Item>
@@ -67,6 +70,30 @@ function NavigationBar(props){
                                 <Nav.Link className="nav-text" eventKey={NAV_ADD_FORM}>Add Comics</Nav.Link>
                             </Nav.Item>
                         </Nav>
+
+                        {currentUser && (
+                            <div className="d-flex align-items-center gap-2 ms-auto">
+                                {currentUser.photoURL && (
+                                    <img
+                                        src={currentUser.photoURL}
+                                        alt="profile"
+                                        referrerPolicy="no-referrer"
+                                        style={{width: "32px", height: "32px", borderRadius: "50%", overflow: "hidden", objectFit: "cover"}}
+                                    />
+                                )}
+                                <span className="nav-text small">
+                                    {currentUser.displayName}
+                                </span>
+
+                                <span className="badge bg-warning text-dark">
+                                {role}
+                                </span>
+
+                                <button className="btn btn-sm btn-outline-danger" onClick={logout}>
+                                    Logout
+                                </button>
+                            </div>
+                        )}
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
@@ -74,9 +101,14 @@ function NavigationBar(props){
     );
 }
 
-function ActivePage(props){
-    const {activeNavBarItem, initialGenre, setInitialGenre,
-           navigateTo, selectedSerieID, setSelectedSerieID, setSelectedComicID, selectedComicID, selectedUniverseID, setSelectedUniverseID} = props;
+function ActivePage(props) {
+    const {
+        activeNavBarItem,
+        initialGenre,
+        setInitialGenre,
+        navigateTo,
+        selectedSerieID,
+        setSelectedSerieID, setSelectedComicID, selectedComicID, selectedUniverseID, setSelectedUniverseID} = props;
 
     const {comics} = useComicCollectionData();
     const {editions} = useEditionCollectionData();
