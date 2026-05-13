@@ -1,321 +1,344 @@
-import {Modal, Button, Form} from "react-bootstrap";
-import {useState} from "react";
-import {updateEdition, uploadFile, uploadFiles} from "../api/editionInfo.js";
-import {ContributorSection} from "./ContributorSection.jsx";
-import {addComicContributor, deleteComicContributor} from "../api/comicContributer.js";
-import {addPerson} from "../api/personInfo.js";
-import {addRole} from "../api/roleInfo.js";
-import {useEditionFiltering} from "./EditionFiltering.jsx";
-import {EditionSection} from "./EditionSection.jsx";
-import {Combobox} from "@headlessui/react";
-import {updateComic} from "../api/comicInfo.js";
-import {addOrganization} from "../api/organizationInfo.js";
-import {addCompendium} from "../api/compendiumInfo.js";
+import { Modal, Button, Form } from "react-bootstrap";
+import { useState } from "react";
+import { updateEdition, uploadFile, uploadFiles } from "../api/editionInfo.js";
+import { ContributorSection } from "./ContributorSection.jsx";
+import {
+  addComicContributor,
+  deleteComicContributor,
+} from "../api/comicContributer.js";
+import { addPerson } from "../api/personInfo.js";
+import { addRole } from "../api/roleInfo.js";
+import { useEditionFiltering } from "./EditionFiltering.jsx";
+import { EditionSection } from "./EditionSection.jsx";
+import { Combobox } from "@headlessui/react";
+import { updateComic } from "../api/comicInfo.js";
+import { addOrganization } from "../api/organizationInfo.js";
+import { addCompendium } from "../api/compendiumInfo.js";
 
 export function EditEditionModal(props) {
-    const {edition, onClose, organizations, peoples, roles, comicContributors, editions, comic, series, compendium} = props;
+  const {
+    edition,
+    onClose,
+    organizations,
+    peoples,
+    roles,
+    comicContributors,
+    editions,
+    comic,
+    series,
+    compendium,
+  } = props;
 
-    const [comicSerie, setComicSerie] = useState({
-        serieID: comic?.serieID ?? null,
-    });
+  const [comicSerie, setComicSerie] = useState({
+    serieID: comic?.serieID ?? null,
+  });
 
-    const [comicTitle, setComicTitle] = useState(comic?.title ?? "")
+  const [comicTitle, setComicTitle] = useState(comic?.title ?? "");
 
-    const [editionForm, setEditionForm] = useState({
-        comicID: edition.comicID,
-        printYear: edition.printYear || "",
-        format: edition.format || null,
-        formatName: "",
-        printType: edition.printType || null,
-        printTypeName: "",
-        organizationID: edition.organizationID || null,
-        organizationName: "",
-        imageFiles: [null, null, null],
-        existingImgURLs: edition.imgURLs ?? [],
-        compendiumID: edition.compendiumID ?? null,
-        compendiumName: "",
-    });
+  const [editionForm, setEditionForm] = useState({
+    comicID: edition.comicID,
+    printYear: edition.printYear || "",
+    format: edition.format || null,
+    formatName: "",
+    printType: edition.printType || null,
+    printTypeName: "",
+    organizationID: edition.organizationID || null,
+    organizationName: "",
+    imageFiles: [null, null, null],
+    existingImgURLs: edition.imgURLs ?? [],
+    compendiumID: edition.compendiumID ?? null,
+    compendiumName: "",
+  });
 
-    const [contributors, setContributors] = useState(
-        comicContributors
-            .filter(cc => cc.editionID === edition.id)
-            .map(cc => ({
-                peopleID: cc.peopleID,
-                peopleName: peoples.find(p => p.id === cc.peopleID)?.name || "",
-                roleID: cc.roleID,
-                roleName: roles.find(r => r.id === cc.roleID)?.type || "",
-            }))
-    );
+  const [contributors, setContributors] = useState(
+    comicContributors
+      .filter((cc) => cc.editionID === edition.id)
+      .map((cc) => ({
+        peopleID: cc.peopleID,
+        peopleName: peoples.find((p) => p.id === cc.peopleID)?.name || "",
+        roleID: cc.roleID,
+        roleName: roles.find((r) => r.id === cc.roleID)?.type || "",
+      })),
+  );
 
-    const [contributorDraft, setContributorDraft] = useState({
-        peopleID: null,
-        peopleName: "",
-        roleID: null,
-        roleName: "",
-    });
+  const [contributorDraft, setContributorDraft] = useState({
+    peopleID: null,
+    peopleName: "",
+    roleID: null,
+    roleName: "",
+  });
 
-    const [searchContributor, setSearchContributor] = useState({
-        person: "",
-        role: "",
-    });
+  const [searchContributor, setSearchContributor] = useState({
+    person: "",
+    role: "",
+  });
 
-    const filteredPersons = peoples.filter(p =>
-        p.name.toLowerCase().includes(searchContributor.person.toLowerCase())
-    );
+  const filteredPersons = peoples.filter((p) =>
+    p.name.toLowerCase().includes(searchContributor.person.toLowerCase()),
+  );
 
-    const filteredRoles = roles.filter(r =>
-        r.type.toLowerCase().includes(searchContributor.role.toLowerCase())
-    );
+  const filteredRoles = roles.filter((r) =>
+    r.type.toLowerCase().includes(searchContributor.role.toLowerCase()),
+  );
 
-    const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
-    async function handleSave() {
-        try {
-            const normalize = str => (str || "").trim().toLowerCase();
+  async function handleSave() {
+    try {
+      const normalize = (str) => (str || "").trim().toLowerCase();
 
-            const typedFormat = normalize(editionForm.formatName);
-            const existingFormat = editions
-                .map(e => e.format)
-                .filter(Boolean)
-                .find(f => normalize(f) === typedFormat);
+      const typedFormat = normalize(editionForm.formatName);
+      const existingFormat = editions
+        .map((e) => e.format)
+        .filter(Boolean)
+        .find((f) => normalize(f) === typedFormat);
 
-            const finalFormat =
-                existingFormat ||
-                editionForm.format ||
-                (typedFormat ? editionForm.formatName.trim() : null);
+      const finalFormat =
+        existingFormat ||
+        editionForm.format ||
+        (typedFormat ? editionForm.formatName.trim() : null);
 
-            const typedPrintType = normalize(editionForm.printTypeName);
-            const existingPrintType = editions
-                .map(e => e.printType)
-                .filter(Boolean)
-                .find(pt => normalize(pt) === typedPrintType);
+      const typedPrintType = normalize(editionForm.printTypeName);
+      const existingPrintType = editions
+        .map((e) => e.printType)
+        .filter(Boolean)
+        .find((pt) => normalize(pt) === typedPrintType);
 
-            const finalPrintType =
-                existingPrintType ||
-                editionForm.printType ||
-                (typedPrintType ? editionForm.printTypeName.trim() : null);
+      const finalPrintType =
+        existingPrintType ||
+        editionForm.printType ||
+        (typedPrintType ? editionForm.printTypeName.trim() : null);
 
-            const typedPublisher = normalize(editionForm.organizationName);
-            const existingPublisher = organizations.find(
-                o => normalize(o.name) === typedPublisher
-            );
+      const typedPublisher = normalize(editionForm.organizationName);
+      const existingPublisher = organizations.find(
+        (o) => normalize(o.name) === typedPublisher,
+      );
 
-            const publisherID = editionForm.selfPublished
-                ? null
-                : (
-                    editionForm.organizationID ||
-                    (existingPublisher
-                        ? existingPublisher.id
-                        : (typedPublisher
-                            ? await addOrganization({ name: editionForm.organizationName.trim() })
-                            : null))
-                );
-
-            const typedCompendium = normalize(editionForm.compendiumName ?? "");
-            const existingCompendium = compendium.find(c => normalize(c.title) === typedCompendium);
-
-            const compendiumID = editionForm.compendiumID ||
-                (existingCompendium
-                    ? existingCompendium.id
-                    : (typedCompendium
-                        ? await addCompendium({ title: editionForm.compendiumName.trim(), description: "" })
-                        : null));
-
-            const imgURLs = await Promise.all(
-                [0, 1, 2].map(i =>
-                    editionForm.imageFiles[i]
-                        ? uploadFile(editionForm.imageFiles[i])
-                        : (editionForm.existingImgURLs[i] ?? null)
-                )
-            ).then(urls => urls.filter(Boolean));
-
-            await updateEdition({
-                ...edition,
-                printYear: editionForm.printYear || null,
-                format: finalFormat,
-                printType: finalPrintType,
-                organizationID: publisherID,
-                organizationName: editionForm.selfPublished ? "" : editionForm.organizationName.trim(),
-                imgURLs,
-                compendiumID: compendiumID ?? null,
-            });
-
-            const old = comicContributors.filter(cc => cc.editionID === edition.id);
-            await Promise.all(old.map(cc => deleteComicContributor(cc.id)));
-
-            await Promise.all(
-                contributors.map(async c => {
-                    const typedPerson = normalize(c.peopleName);
-                    const existingPerson = peoples.find(
-                        p => normalize(p.name) === typedPerson
-                    );
-
-                    const peopleID =
-                        c.peopleID ||
-                        (existingPerson
-                            ? existingPerson.id
-                            : (typedPerson
-                                ? await addPerson({ name: c.peopleName.trim() })
-                                : null));
-
-                    const typedRole = normalize(c.roleName);
-                    const existingRole = roles.find(
-                        r => normalize(r.type) === typedRole
-                    );
-
-                    const roleID =
-                        c.roleID ||
-                        (existingRole
-                            ? existingRole.id
-                            : (typedRole
-                                ? await addRole({ type: c.roleName.trim() })
-                                : null));
-
-                    return addComicContributor({
-                        comicID: edition.comicID,
-                        editionID: edition.id,
-                        peopleID,
-                        roleID,
-                    });
+      const publisherID = editionForm.selfPublished
+        ? null
+        : editionForm.organizationID ||
+          (existingPublisher
+            ? existingPublisher.id
+            : typedPublisher
+              ? await addOrganization({
+                  name: editionForm.organizationName.trim(),
                 })
-            );
+              : null);
 
-            if (comicSerie.serieID !== comic.serieID) {
-                await updateComic({
-                    ...comic,
-                    serieID: comicSerie.serieID,
-                });
-            }
+      const typedCompendium = normalize(editionForm.compendiumName ?? "");
+      const existingCompendium = compendium.find(
+        (c) => normalize(c.title) === typedCompendium,
+      );
 
-            if (comicTitle.trim() !== comic.title) {
-                await updateComic({
-                    ...comic,
-                    title: comicTitle.trim(),
-                });
-            }
+      const compendiumID =
+        editionForm.compendiumID ||
+        (existingCompendium
+          ? existingCompendium.id
+          : typedCompendium
+            ? await addCompendium({
+                title: editionForm.compendiumName.trim(),
+                description: "",
+              })
+            : null);
 
-            onClose();
+      const imgURLs = await Promise.all(
+        [0, 1, 2].map((i) =>
+          editionForm.imageFiles[i]
+            ? uploadFile(editionForm.imageFiles[i])
+            : (editionForm.existingImgURLs[i] ?? null),
+        ),
+      ).then((urls) => urls.filter(Boolean));
 
-        } catch (err) {
-            console.error("Edit save error:", err);
-        }
+      await updateEdition({
+        ...edition,
+        printYear: editionForm.printYear || null,
+        format: finalFormat,
+        printType: finalPrintType,
+        organizationID: publisherID,
+        organizationName: editionForm.selfPublished
+          ? ""
+          : editionForm.organizationName.trim(),
+        imgURLs,
+        compendiumID: compendiumID ?? null,
+      });
+
+      const old = comicContributors.filter((cc) => cc.editionID === edition.id);
+      await Promise.all(old.map((cc) => deleteComicContributor(cc.id)));
+
+      await Promise.all(
+        contributors.map(async (c) => {
+          const typedPerson = normalize(c.peopleName);
+          const existingPerson = peoples.find(
+            (p) => normalize(p.name) === typedPerson,
+          );
+
+          const peopleID =
+            c.peopleID ||
+            (existingPerson
+              ? existingPerson.id
+              : typedPerson
+                ? await addPerson({ name: c.peopleName.trim() })
+                : null);
+
+          const typedRole = normalize(c.roleName);
+          const existingRole = roles.find(
+            (r) => normalize(r.type) === typedRole,
+          );
+
+          const roleID =
+            c.roleID ||
+            (existingRole
+              ? existingRole.id
+              : typedRole
+                ? await addRole({ type: c.roleName.trim() })
+                : null);
+
+          return addComicContributor({
+            comicID: edition.comicID,
+            editionID: edition.id,
+            peopleID,
+            roleID,
+          });
+        }),
+      );
+
+      if (comicSerie.serieID !== comic.serieID) {
+        await updateComic({
+          ...comic,
+          serieID: comicSerie.serieID,
+        });
+      }
+
+      if (comicTitle.trim() !== comic.title) {
+        await updateComic({
+          ...comic,
+          title: comicTitle.trim(),
+        });
+      }
+
+      onClose();
+    } catch (err) {
+      console.error("Edit save error:", err);
     }
+  }
 
-    const {
-        searchQuery,
-        setSearchQuery,
-        filteredFormat,
-        filteredPrintType,
-        filteredPublishers,
-    } = useEditionFiltering({
-        editions,
-        organizations,
-        peoples,
-        roles
-    });
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredFormat,
+    filteredPrintType,
+    filteredPublishers,
+  } = useEditionFiltering({
+    editions,
+    organizations,
+    peoples,
+    roles,
+  });
 
-    const filteredSerie = series.filter(s => s.title.toLowerCase().includes((searchQuery.serie || "").toLowerCase()));
+  const filteredSerie = series.filter((s) =>
+    s.title.toLowerCase().includes((searchQuery.serie || "").toLowerCase()),
+  );
 
-    return (
-        <Modal show onHide={onClose} size={"lg"} dialogClassName="modal-bg">
-            <Modal.Header closeButton>
-                <Modal.Title>Edit Edition</Modal.Title>
-            </Modal.Header>
+  return (
+    <Modal show onHide={onClose} size={"lg"} dialogClassName="modal-bg">
+      <Modal.Header closeButton>
+        <Modal.Title>Edit Edition</Modal.Title>
+      </Modal.Header>
 
-            <Modal.Body>
-                <Form>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Serie:</Form.Label>
+      <Modal.Body>
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Serie:</Form.Label>
 
-                        <Combobox
-                            value={series.find(s => s.id === comicSerie.serieID) || null}
-                            onChange={opt => {
-                                setComicSerie({ serieID: opt?.id || null });
-                            }}
-                        >
-                            <Combobox.Input
-                                className="form-control"
-                                placeholder="Select a serie…"
-                                displayValue={opt => opt?.title ?? ""}
-                                onChange={e => {
-                                    const value = e.target.value;
-                                    setSearchQuery(prev => ({ ...prev, serie: value }));
-                                }}
-                            />
+            <Combobox
+              value={series.find((s) => s.id === comicSerie.serieID) || null}
+              onChange={(opt) => {
+                setComicSerie({ serieID: opt?.id || null });
+              }}
+            >
+              <Combobox.Input
+                className="form-control"
+                placeholder="Select a serie…"
+                displayValue={(opt) => opt?.title ?? ""}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSearchQuery((prev) => ({ ...prev, serie: value }));
+                }}
+              />
 
-                            <Combobox.Options className="list-group position-absolute z-3">
-                                {filteredSerie.slice(0, 5).map(serie => (
-                                    <Combobox.Option
-                                        key={serie.id}
-                                        value={serie}
-                                        className="list-group-item list-group-item-action"
-                                    >
-                                        {serie.title}
-                                    </Combobox.Option>
-                                ))}
-                            </Combobox.Options>
-                        </Combobox>
+              <Combobox.Options className="list-group position-absolute z-3">
+                {filteredSerie.slice(0, 5).map((serie) => (
+                  <Combobox.Option
+                    key={serie.id}
+                    value={serie}
+                    className="list-group-item list-group-item-action"
+                  >
+                    {serie.title}
+                  </Combobox.Option>
+                ))}
+              </Combobox.Options>
+            </Combobox>
 
-                        <Combobox>
-                            <Form.Label className="mt-3">Comic:</Form.Label>
+            <Combobox>
+              <Form.Label className="mt-3">Comic:</Form.Label>
 
-                            <Combobox.Input
-                                className="form-control"
-                                placeholder="Change/Rename Comic..."
-                                value={comicTitle}
-                                onChange={e => setComicTitle(e.target.value)}
-                            />
+              <Combobox.Input
+                className="form-control"
+                placeholder="Change/Rename Comic..."
+                value={comicTitle}
+                onChange={(e) => setComicTitle(e.target.value)}
+              />
 
-                            <Combobox.Options className="list-group position-absolute z-3">
-                                {filteredSerie.slice(0, 5).map(comic => (
-                                    <Combobox.Option
-                                        key={comic.id}
-                                        value={comic}
-                                        className="list-group-item list-group-item-action"
-                                    >
-                                        {comic.title}
-                                    </Combobox.Option>
-                                ))}
-                            </Combobox.Options>
-                        </Combobox>
-                    </Form.Group>
+              <Combobox.Options className="list-group position-absolute z-3">
+                {filteredSerie.slice(0, 5).map((comic) => (
+                  <Combobox.Option
+                    key={comic.id}
+                    value={comic}
+                    className="list-group-item list-group-item-action"
+                  >
+                    {comic.title}
+                  </Combobox.Option>
+                ))}
+              </Combobox.Options>
+            </Combobox>
+          </Form.Group>
 
-                    <EditionSection
-                        editionForm={editionForm}
-                        setEditionForm={setEditionForm}
-                        filteredFormat={filteredFormat}
-                        filteredPrintType={filteredPrintType}
-                        filteredPublishers={filteredPublishers}
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
-                        currentYear={new Date().getFullYear()}
-                        organizations={organizations}
-                        compendium={compendium}
-                    />
+          <EditionSection
+            editionForm={editionForm}
+            setEditionForm={setEditionForm}
+            filteredFormat={filteredFormat}
+            filteredPrintType={filteredPrintType}
+            filteredPublishers={filteredPublishers}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            currentYear={new Date().getFullYear()}
+            organizations={organizations}
+            compendium={compendium}
+          />
 
-                    <ContributorSection
-                        contributorDraft={contributorDraft}
-                        setContributorDraft={setContributorDraft}
-                        contributors={contributors}
-                        setContributors={setContributors}
-                        filteredPersons={filteredPersons}
-                        filteredRoles={filteredRoles}
-                        peoples={peoples}
-                        roles={roles}
-                        searchQuery={searchContributor}
-                        setSearchQuery={setSearchContributor}
-                    />
-                </Form>
-            </Modal.Body>
+          <ContributorSection
+            contributorDraft={contributorDraft}
+            setContributorDraft={setContributorDraft}
+            contributors={contributors}
+            setContributors={setContributors}
+            filteredPersons={filteredPersons}
+            filteredRoles={filteredRoles}
+            peoples={peoples}
+            roles={roles}
+            searchQuery={searchContributor}
+            setSearchQuery={setSearchContributor}
+          />
+        </Form>
+      </Modal.Body>
 
-            <Modal.Footer>
-                <Button variant="secondary" onClick={onClose}>
-                    Cancel
-                </Button>
-                <Button variant="primary" onClick={handleSave} disabled={uploading}>
-                    {uploading ? "Uploading..." : "Save Changes"}
-                </Button>
-            </Modal.Footer>
-        </Modal>
-    );
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleSave} disabled={uploading}>
+          {uploading ? "Uploading..." : "Save Changes"}
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 }

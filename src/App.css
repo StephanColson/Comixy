@@ -1,165 +1,168 @@
 /*Website base theme*/
-body{
-    background-color: #2A2925 !important;
-    color: #E6E0C7 !important;
-    overflow-x: hidden !important;
+body {
+  background-color: #2a2925 !important;
+  color: #e6e0c7 !important;
+  overflow-x: hidden !important;
 }
 
-.section-bg{
-    background-color: #34332F !important;
+.section-bg {
+  background-color: #34332f !important;
 }
 
-.modal-bg .modal-content{
-    background-color: #34332F !important;
-    color: #E6E0C7 !important;
+.modal-bg .modal-content {
+  background-color: #34332f !important;
+  color: #e6e0c7 !important;
 }
 
 /*Cards & Link theme*/
-.pop-effect{
-    color: #D08C3A;
-    transition: transform 0.15s ease, color 0.15s ease;
-    display: inline-block;
+.pop-effect {
+  color: #d08c3a;
+  transition:
+    transform 0.15s ease,
+    color 0.15s ease;
+  display: inline-block;
 }
 
-.pop-effect:hover{
-    color: #F0A95C;
-    transform: scale(1.06);
+.pop-effect:hover {
+  color: #f0a95c;
+  transform: scale(1.06);
 }
 
-.card-pop{
-    transition: transform 0.15s ease;
-    will-change: transform;
+.card-pop {
+  transition: transform 0.15s ease;
+  will-change: transform;
 }
 
-.card-pop:hover{
-    transform: scale(1.05);
+.card-pop:hover {
+  transform: scale(1.05);
 }
 
 /*Navbar theme*/
-.nav-bg{
-    background: #1A1A1D;
+.nav-bg {
+  background: #1a1a1d;
 }
 
-.nav-text{
-    color: #8C5E00 !important;
+.nav-text {
+  color: #8c5e00 !important;
 }
-.nav-text:hover{
-    color: #E8B84A !important;
+.nav-text:hover {
+  color: #e8b84a !important;
 }
 
-.nav-link.active, .nav-link.active.nav-text{
-    color: #E8B84A !important;
+.nav-link.active,
+.nav-link.active.nav-text {
+  color: #e8b84a !important;
 }
 
 /*Badge*/
-.coloured-badge{
-    background: #2F5D8A;
+.coloured-badge {
+  background: #2f5d8a;
 }
 
 .gallery-carousel .carousel-inner {
-    padding: 3% 8%;
-    overflow: visible !important;
+  padding: 3% 8%;
+  overflow: visible !important;
 }
 
 .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23FFC107' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23FFC107' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
 }
 
 .navbar-toggler {
-    border-color: #8C5E00 !important;
+  border-color: #8c5e00 !important;
 }
 
 .lightbox-carousel .carousel {
-    display: flex;
-    flex-direction: column;
-    width: 90vw;
-    max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  max-width: 900px;
 }
 
 .lightbox-carousel .carousel-control-prev,
 .lightbox-carousel .carousel-control-next {
-    width: 8%;
+  width: 8%;
 }
 
 .lightbox-carousel .carousel-inner {
-    order: 1;
+  order: 1;
 }
 
 .lightbox-carousel .carousel-indicators {
-    position: relative;
-    margin: 10px 0 0 0;
-    order: 2;
+  position: relative;
+  margin: 10px 0 0 0;
+  order: 2;
 }
 
 /* Pagination theme */
 .rc-pagination-item {
-    background-color: #34332F !important;
-    border-color: #8C5E00 !important;
+  background-color: #34332f !important;
+  border-color: #8c5e00 !important;
 }
 
 .rc-pagination-item a {
-    color: #E6E0C7 !important;
+  color: #e6e0c7 !important;
 }
 
 .rc-pagination-item:hover {
-    border-color: #E8B84A !important;
+  border-color: #e8b84a !important;
 }
 
 .rc-pagination-item:hover a {
-    color: #E8B84A !important;
+  color: #e8b84a !important;
 }
 
 .rc-pagination-item-active {
-    background-color: #8C5E00 !important;
-    border-color: #8C5E00 !important;
+  background-color: #8c5e00 !important;
+  border-color: #8c5e00 !important;
 }
 
 .rc-pagination-item-active a {
-    color: #E6E0C7 !important;
+  color: #e6e0c7 !important;
 }
 
 .rc-pagination-prev button,
 .rc-pagination-next button {
-    background-color: #34332F !important;
-    color: #E6E0C7 !important;
-    border-color: #8C5E00 !important;
+  background-color: #34332f !important;
+  color: #e6e0c7 !important;
+  border-color: #8c5e00 !important;
 }
 
 .rc-pagination-prev:hover button,
 .rc-pagination-next:hover button {
-    border-color: #E8B84A !important;
-    color: #E8B84A !important;
+  border-color: #e8b84a !important;
+  color: #e8b84a !important;
 }
 
 .comic-tooltip-wrapper {
-    position: relative;
+  position: relative;
 }
 
 .comic-tooltip {
-    visibility: hidden;
-    opacity: 0;
-    background-color: #1A1A1D;
-    color: #E6E0C7;
-    text-align: center;
-    padding: 5px 8px;
-    border-radius: 4px;
-    border: 1px solid #8C5E00;
-    position: absolute;
-    bottom: auto;
-    top: auto;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-    z-index: 100;
-    transition: opacity 0.2s ease;
-    font-size: 0.85rem;
+  visibility: hidden;
+  opacity: 0;
+  background-color: #1a1a1d;
+  color: #e6e0c7;
+  text-align: center;
+  padding: 5px 8px;
+  border-radius: 4px;
+  border: 1px solid #8c5e00;
+  position: absolute;
+  bottom: auto;
+  top: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 100;
+  transition: opacity 0.2s ease;
+  font-size: 0.85rem;
 }
 
 .comic-tooltip-wrapper:hover .comic-tooltip {
-    visibility: visible;
-    opacity: 1;
+  visibility: visible;
+  opacity: 1;
 }
 
 .homepage-recent-carousel .carousel-inner {
-    overflow: visible !important;
+  overflow: visible !important;
 }

@@ -1,128 +1,148 @@
-import {Section} from "../components/Section.jsx";
-import {Comics} from "../components/Comics.jsx";
-import {useEffect, useState} from "react";
+import { Section } from "../components/Section.jsx";
+import { Comics } from "../components/Comics.jsx";
+import { useEffect, useState } from "react";
 import Pagination from "rc-pagination";
-import {updateSerie} from "../api/serieInfo.js";
-import {deleteComic} from "../api/comicInfo.js";
+import { updateSerie } from "../api/serieInfo.js";
+import { deleteComic } from "../api/comicInfo.js";
 
 function useSlideSize() {
-    const [slideSize, setSlideSize] = useState(window.innerWidth < 768 ? 6 : 30);
+  const [slideSize, setSlideSize] = useState(window.innerWidth < 768 ? 6 : 30);
 
-    useEffect(() => {
-        const handler = () => setSlideSize(window.innerWidth < 768 ? 4 : 6);
-        window.addEventListener("resize", handler);
-        return () => window.removeEventListener("resize", handler);
-    }, []);
+  useEffect(() => {
+    const handler = () => setSlideSize(window.innerWidth < 768 ? 4 : 6);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
 
-    return slideSize;
+  return slideSize;
 }
 
 export function ComicPage(props) {
-    const {comics, editions, selectedSerieID, onSelectComic, series, comicContributors} = props;
-    const slideSize = useSlideSize();
+  const {
+    comics,
+    editions,
+    selectedSerieID,
+    onSelectComic,
+    series,
+    comicContributors,
+  } = props;
+  const slideSize = useSlideSize();
 
-    const baseComics = selectedSerieID
-        ? [...comics].filter(c => c.serieID === selectedSerieID)
-        : [...comics]
+  const baseComics = selectedSerieID
+    ? [...comics].filter((c) => c.serieID === selectedSerieID)
+    : [...comics];
 
-    const sortedBaseComics = [...baseComics].sort((a, b) => Number(a.bookNumber) - Number(b.bookNumber));
+  const sortedBaseComics = [...baseComics].sort(
+    (a, b) => Number(a.bookNumber) - Number(b.bookNumber),
+  );
 
-    const selectedSerie = selectedSerieID
-        ? series.find(s => s.id === selectedSerieID)
-        : null;
+  const selectedSerie = selectedSerieID
+    ? series.find((s) => s.id === selectedSerieID)
+    : null;
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const displayComic = 60;
+  const [currentPage, setCurrentPage] = useState(1);
+  const displayComic = 60;
 
-    const startIndex = (currentPage - 1) * displayComic;
-    const endIndex = startIndex + displayComic;
-    const paginatedComics = sortedBaseComics.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * displayComic;
+  const endIndex = startIndex + displayComic;
+  const paginatedComics = sortedBaseComics.slice(startIndex, endIndex);
 
-    const slides = Array.from(
-        {length: Math.ceil(paginatedComics.length / slideSize)},
-        (_, i) => paginatedComics.slice(i * slideSize, i * slideSize + slideSize)
-    );
+  const slides = Array.from(
+    { length: Math.ceil(paginatedComics.length / slideSize) },
+    (_, i) => paginatedComics.slice(i * slideSize, i * slideSize + slideSize),
+  );
 
-    const [editingDescription, setEditingDescription] = useState(false);
-    const [descriptionInput, setDescriptionInput] = useState("");
+  const [editingDescription, setEditingDescription] = useState(false);
+  const [descriptionInput, setDescriptionInput] = useState("");
 
-    function handleEditClick() {
-        setDescriptionInput(selectedSerie?.description ?? "");
-        setEditingDescription(true);
-    }
+  function handleEditClick() {
+    setDescriptionInput(selectedSerie?.description ?? "");
+    setEditingDescription(true);
+  }
 
-    async function handleSaveDescription() {
-        await updateSerie({...selectedSerie, description: descriptionInput});
-        setEditingDescription(false);
-    }
+  async function handleSaveDescription() {
+    await updateSerie({ ...selectedSerie, description: descriptionInput });
+    setEditingDescription(false);
+  }
 
-    return (
-        <>
-            <div className="text-center">
-                <h2>
-                    {selectedSerie
-                        ? selectedSerie.title
-                        : "All Comics"}
-                </h2>
-                {selectedSerie && (
-                    <div className="mb-3">
-                        {editingDescription ? (
-                            <>
+  return (
+    <>
+      <div className="text-center">
+        <h2>{selectedSerie ? selectedSerie.title : "All Comics"}</h2>
+        {selectedSerie && (
+          <div className="mb-3">
+            {editingDescription ? (
+              <>
                 <textarea
-                    className="form-control w-75 mx-auto"
-                    rows={3}
-                    value={descriptionInput}
-                    onChange={e => setDescriptionInput(e.target.value)}
-                    placeholder="Enter serie description..."
+                  className="form-control w-75 mx-auto"
+                  rows={3}
+                  value={descriptionInput}
+                  onChange={(e) => setDescriptionInput(e.target.value)}
+                  placeholder="Enter serie description..."
                 />
-                                <div className="d-flex justify-content-center gap-2 mt-2">
-                                    <button className="btn btn-sm btn-success" onClick={handleSaveDescription}>Save</button>
-                                    <button className="btn btn-sm btn-secondary" onClick={() => setEditingDescription(false)}>Cancel</button>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                {selectedSerie.description && (
-                                    <p>{selectedSerie.description}</p>
-                                )}
-                                <button className="btn btn-sm btn-outline-warning" onClick={handleEditClick}>Edit</button>
-                            </>
-                        )}
-                    </div>
+                <div className="d-flex justify-content-center gap-2 mt-2">
+                  <button
+                    className="btn btn-sm btn-success"
+                    onClick={handleSaveDescription}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="btn btn-sm btn-secondary"
+                    onClick={() => setEditingDescription(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                {selectedSerie.description && (
+                  <p>{selectedSerie.description}</p>
                 )}
-            </div>
+                <button
+                  className="btn btn-sm btn-outline-warning"
+                  onClick={handleEditClick}
+                >
+                  Edit
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
 
-            <Pagination
-                className="my-3"
-                align="center"
-                current={currentPage}
-                pageSize={displayComic}
-                total={sortedBaseComics.length}
-                onChange={setCurrentPage}
-            />
+      <Pagination
+        className="my-3"
+        align="center"
+        current={currentPage}
+        pageSize={displayComic}
+        total={sortedBaseComics.length}
+        onChange={setCurrentPage}
+      />
 
-            <Section>
-                <Comics
-                    comics={paginatedComics}
-                    selectedSerieID={selectedSerieID}
-                    series={series}
-                    onSelectComic={onSelectComic}
-                    onDeleteComic={async (comic) => {
-                        await deleteComic(comic, editions, comicContributors);
-                    }}
-                    editions={editions}
-                    slides={slides}
-                />
-            </Section>
+      <Section>
+        <Comics
+          comics={paginatedComics}
+          selectedSerieID={selectedSerieID}
+          series={series}
+          onSelectComic={onSelectComic}
+          onDeleteComic={async (comic) => {
+            await deleteComic(comic, editions, comicContributors);
+          }}
+          editions={editions}
+          slides={slides}
+        />
+      </Section>
 
-            <Pagination
-                className="my-3"
-                align="center"
-                current={currentPage}
-                pageSize={displayComic}
-                total={baseComics.length}
-                onChange={setCurrentPage}
-            />
-        </>
-    );
+      <Pagination
+        className="my-3"
+        align="center"
+        current={currentPage}
+        pageSize={displayComic}
+        total={baseComics.length}
+        onChange={setCurrentPage}
+      />
+    </>
+  );
 }

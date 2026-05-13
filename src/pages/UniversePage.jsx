@@ -1,58 +1,65 @@
-import {useState} from "react";
-import {Series} from "../components/Series.jsx";
+import { useState } from "react";
+import { Series } from "../components/Series.jsx";
 import Pagination from "rc-pagination";
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 export function UniversePage(props) {
-    const {universes, onSelectUniverse} = props;
-    const [selectedLexicon, setSelectedLexicon] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const displayUniverse = 20;
+  const { universes, onSelectUniverse } = props;
+  const [selectedLexicon, setSelectedLexicon] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const displayUniverse = 20;
 
-    const sortedUniverses = [...universes].sort((a, b) => a.title.localeCompare(b.title));
+  const sortedUniverses = [...universes].sort((a, b) =>
+    a.title.localeCompare(b.title),
+  );
 
-    const filteredUniverses = selectedLexicon
-        ? sortedUniverses.filter(s => s.title.toUpperCase().startsWith(selectedLexicon))
-        : sortedUniverses;
+  const filteredUniverses = selectedLexicon
+    ? sortedUniverses.filter((s) =>
+        s.title.toUpperCase().startsWith(selectedLexicon),
+      )
+    : sortedUniverses;
 
-    const startIndex = (currentPage - 1) * displayUniverse;
-    const endIndex = startIndex + displayUniverse;
-    const paginatedUniverses = filteredUniverses.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * displayUniverse;
+  const endIndex = startIndex + displayUniverse;
+  const paginatedUniverses = filteredUniverses.slice(startIndex, endIndex);
 
-    function handleLexiconClick(letter) {
-        setSelectedLexicon(prev => prev === letter ? null : letter);
-        setCurrentPage(1);
-    }
+  function handleLexiconClick(letter) {
+    setSelectedLexicon((prev) => (prev === letter ? null : letter));
+    setCurrentPage(1);
+  }
 
-    return (
-        <>
-            <h2 className="text-center">All Universe</h2>
+  return (
+    <>
+      <h2 className="text-center">All Universe</h2>
 
-            <div className="d-flex flex-wrap justify-content-center gap-1 my-3">
-                {ALPHABET.map(letter => (
-                    <button
-                        key={letter}
-                        onClick={() => handleLexiconClick(letter)}
-                        className={`btn btn-sm ${selectedLexicon === letter ? "btn-warning" : "btn-outline-warning"}`}
-                    >
-                        {letter}
-                    </button>
-                ))}
-            </div>
+      <div className="d-flex flex-wrap justify-content-center gap-1 my-3">
+        {ALPHABET.map((letter) => (
+          <button
+            key={letter}
+            onClick={() => handleLexiconClick(letter)}
+            className={`btn btn-sm ${selectedLexicon === letter ? "btn-warning" : "btn-outline-warning"}`}
+          >
+            {letter}
+          </button>
+        ))}
+      </div>
 
-            <div>
-                <Series series={paginatedUniverses} onSelectUniverse={onSelectUniverse}/>
-            </div>
+      <div>
+        <Series
+          series={paginatedUniverses}
+          onSelectUniverse={onSelectUniverse}
+        />
+      </div>
 
-            <Pagination
-                className="my-3"
-                align="center"
-                current={currentPage}
-                pageSize={displayUniverse}
-                total={filteredUniverses.length}
-                onChange={setCurrentPage}
-            />
-        </>
-    );
+      <Pagination
+        className="my-3"
+        align="center"
+        current={currentPage}
+        pageSize={displayUniverse}
+        total={filteredUniverses.length}
+        onChange={setCurrentPage}
+      />
+    </>
+  );
 }

@@ -1,16 +1,18 @@
-import {Form} from "react-bootstrap";
-import {AddEditions} from "../components/AddEditions.jsx";
+import { Form } from "react-bootstrap";
+import { AddEditions } from "../components/AddEditions.jsx";
 
-export function AddEditionPage(props){
-    const {selectedComicID, setSelectedComicID} = props;
+export function AddEditionPage(props) {
+  const { selectedComicID, setSelectedComicID } = props;
 
-    return<>
-        <Form>
-            <AddEditions
-                selectedComicID={selectedComicID}
-                setSelectedComicID={setSelectedComicID}
-                initialIsNewComic={false}
-            />
-        </Form>
+  return (
+    <>
+      <Form>
+        <AddEditions
+          selectedComicID={selectedComicID}
+          setSelectedComicID={setSelectedComicID}
+          initialIsNewComic={false}
+        />
+      </Form>
     </>
+  );
 }
