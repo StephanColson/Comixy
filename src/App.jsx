@@ -219,7 +219,11 @@ function ActivePage(props) {
     case NAV_SERIE_CATALOG:
       return (
         <SeriePage
-          series={series}
+          series={
+            selectedUniverseID
+              ? series.filter((s) => s.universeID === selectedUniverseID)
+              : series
+          }
           onSelectSerie={(serie) => {
             setSelectedSerieID(serie.id);
             navigateTo(COMIC_CATALOG);
@@ -409,6 +413,7 @@ function App() {
           if (key === COMIC_CATALOG) {
             setSelectedSerieID(null);
           }
+          if (key === NAV_SERIE_CATALOG) setSelectedUniverseID(null);
         }}
       />
       <div style={{ marginTop: "70px" }}>
@@ -420,6 +425,7 @@ function App() {
           selectedSerieID={selectedSerieID}
           setSelectedSerieID={setSelectedSerieID}
           setSelectedUniverseID={setSelectedUniverseID}
+          selectedUniverseID={selectedUniverseID}
         />
       </div>
     </>

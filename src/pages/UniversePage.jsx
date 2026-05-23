@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Series } from "../components/Series.jsx";
 import Pagination from "rc-pagination";
+import { Universes } from "../components/Universe.jsx";
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -31,7 +31,7 @@ export function UniversePage(props) {
 
   return (
     <>
-      <h2 className="text-center">All Universe</h2>
+      <h2 className="text-center">All Universes</h2>
 
       <div className="d-flex flex-wrap justify-content-center gap-1 my-3">
         {ALPHABET.map((letter) => (
@@ -46,8 +46,8 @@ export function UniversePage(props) {
       </div>
 
       <div>
-        <Series
-          series={paginatedUniverses}
+        <Universes
+          universes={paginatedUniverses}
           onSelectUniverse={onSelectUniverse}
         />
       </div>

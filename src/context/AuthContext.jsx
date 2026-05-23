@@ -12,29 +12,29 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // Check Firestore for their role
+        const resizedUser = {
+          ...user,
+          photoURL: user.photoURL
+            ? user.photoURL.replace("s96-c", "s256-c")
+            : null,
+        };
+
         const userRef = doc(firestoreDB, "Users", user.uid);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-          // Existing user — grab their role
           setRole(userSnap.data().role);
         } else {
-          // First time login — create user doc with default role
           await setDoc(userRef, {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
             role: "user",
           });
-          setCurrentUser({
-            ...user,
-            photoURL: user.photoURL
-              ? user.photoURL.replace("s96-c", "s256-c")
-              : null,
-          });
+          setRole("user"); // ← was missing
         }
-        setCurrentUser(user);
+
+        setCurrentUser(resizedUser); // ← one place, always with resized photo
       } else {
         setCurrentUser(null);
         setRole(null);

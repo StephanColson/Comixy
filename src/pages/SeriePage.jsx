@@ -10,9 +10,9 @@ export function SeriePage(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const displaySerie = 20;
 
-  const sortedSeries = [...series].sort((a, b) =>
-    a.title.localeCompare(b.title),
-  );
+const sortedSeries = [...(series || [])].sort((a, b) =>
+  a.title.localeCompare(b.title),
+);
 
   const filteredSeries = selectedLetter
     ? sortedSeries.filter((s) =>

@@ -28,7 +28,7 @@ export function Universes(props) {
       <Section>
         <FlipMove typeName={Row} className="mt-2">
           {universes?.map((un) => (
-            <div key={s.id}>
+            <div key={un.id}>
               <Universe universe={un} onSelect={onSelectUniverse} />
             </div>
           ))}

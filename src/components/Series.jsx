@@ -28,9 +28,7 @@ export function Series(props) {
       <Section>
         <FlipMove typeName={Row} className="mt-2">
           {series?.map((s) => (
-            <div key={s.id}>
-              <Serie serie={s} onSelect={onSelectSerie} />
-            </div>
+              <Serie key={s.id} serie={s} onSelect={onSelectSerie} />
           ))}
         </FlipMove>
       </Section>

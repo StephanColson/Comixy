@@ -4,17 +4,19 @@ import { Row, Col } from "react-bootstrap";
 export function ComicSection(props) {
   const {
     isNewComic,
-    setIsNewComic,
+    // setIsNewComic,
     comicForm,
     setComicForm,
     selectedComic,
     setSelectedComicID,
     filteredComics,
     filteredSerie,
+    filteredUniverses,
     searchQuery,
     setSearchQuery,
-    currentYear,
+    //currentYear,
     series,
+    universes,
     errors,
   } = props;
 
@@ -24,6 +26,106 @@ export function ComicSection(props) {
         <Row className="m-3">
           {isNewComic && (
             <>
+
+                          {isNewComic &&
+                !comicForm.serieID &&
+                comicForm.serieTitle.trim() && (
+                  <Row className="mt-3">
+                    <Col lg={12}>
+                       <label className="form-label">Universe:</label>
+                      <Combobox
+                        value={
+                          universes.find(
+                            (u) => u.id === comicForm.universeID,
+                          ) ??
+                          (comicForm.universeTitle
+                            ? { title: comicForm.universeTitle }
+                            : null)
+                        }
+                        onChange={(opt) => {
+                          if (!opt) {
+                            setComicForm((prev) => ({
+                              ...prev,
+                              universeID: "",
+                              universeTitle: "",
+                            }));
+                          } else if (opt.id) {
+                            setComicForm((prev) => ({
+                              ...prev,
+                              universeID: opt.id,
+                              universeTitle: opt.title,
+                            }));
+                          } else {
+                            setComicForm((prev) => ({
+                              ...prev,
+                              universeID: "",
+                              universeTitle: opt.title,
+                            }));
+                          }
+                        }}
+                      >
+                        <Combobox.Input
+                          className="form-control"
+                          placeholder="select or type a universe..."
+                          displayValue={(opt) => opt?.title ?? ""}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchQuery((prev) => ({
+                              ...prev,
+                              universe: value,
+                            }));
+
+                            const existing = universes.find(
+                              (u) =>
+                                u.title.toLowerCase() === value.toLowerCase(),
+                            );
+
+                            if (existing) {
+                              setComicForm((prev) => ({
+                                ...prev,
+                                universeID: existing.id,
+                                universeTitle: existing.title,
+                              }));
+                            } else {
+                              setComicForm((prev) => ({
+                                ...prev,
+                                universeID: "",
+                                universeTitle: value,
+                              }));
+                            }
+                          }}
+                        />
+
+                        <Combobox.Options className="list-group position-absolute z-3">
+                          {filteredUniverses.slice(0, 5).map((universe) => (
+                            <Combobox.Option
+                              key={universe.id}
+                              value={universe}
+                              className="list-group-item list-group-item-action"
+                            >
+                              {universe.title}
+                            </Combobox.Option>
+                          ))}
+
+                          {searchQuery.universe !== "" &&
+                            !filteredUniverses.some(
+                              (u) =>
+                                u.title.toLowerCase() ===
+                                searchQuery.universe.toLowerCase(),
+                            ) && (
+                              <Combobox.Option
+                                value={{ title: searchQuery.universe }}
+                                className="list-group-item list-group-item-action text-primary"
+                              >
+                                Create "{searchQuery.universe}"
+                              </Combobox.Option>
+                            )}
+                        </Combobox.Options>
+                      </Combobox>
+                    </Col>
+                  </Row>
+                )}
+                
               <Row className="mb-5">
                 <Col lg={12}>
                   <label className="form-label">Serie:</label>

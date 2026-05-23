@@ -16,6 +16,7 @@ import { addComicContributor } from "../api/comicContributer.js";
 import { ComicSection } from "./ComicSection.jsx";
 import { EditionSection } from "./EditionSection.jsx";
 import { ContributorSection } from "./ContributorSection.jsx";
+import { addUniverse, useUniverseCollectionData } from "../api/universeInfo.js";
 import { Button, Modal } from "react-bootstrap";
 import {
   useCompendiumCollectionData,
@@ -43,6 +44,8 @@ export function AddEditions(props) {
   const { peoples = [], loading: peoplesLoading } = usePeopleCollectionData();
   const { roles = [], loading: rolesLoading } = useRoleCollectionData();
   const { series = [], loading: serieLoading } = useSerieCollectionData();
+  const { universes = [], loading: universesLoading } =
+    useUniverseCollectionData();
   const { compendium: compendium = [] } = useCompendiumCollectionData();
 
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -57,6 +60,8 @@ export function AddEditions(props) {
     bookNumber: "",
     serieID: "",
     serieTitle: "",
+    universeID: "",
+    universeTitle: "",
   });
 
   const [editionForm, setEditionForm] = useState({
@@ -95,6 +100,7 @@ export function AddEditions(props) {
     publisher: "",
     person: "",
     role: "",
+    universe: "",
   });
 
   const filteredComics = filterList({
@@ -107,6 +113,12 @@ export function AddEditions(props) {
     list: series,
     search: searchQuery.serie,
     selector: (s) => s.title,
+  });
+
+  const filteredUniverses = filterList({
+    list: universes,
+    search: searchQuery.universe,
+    selector: (u) => u.title,
   });
 
   const filteredPrintType = filterList({
@@ -190,13 +202,27 @@ export function AddEditions(props) {
         (s) => normalize(s.title) === typedSerie,
       );
 
+      const typedUniverse = normalize(comicForm.universeTitle);
+      const existingUniverse = universes.find(
+        (u) => normalize(u.title) === typedUniverse,
+      );
+
+      const universeID = existingUniverse
+        ? existingUniverse.id
+        : typedUniverse
+          ? await addUniverse({
+              title: comicForm.universeTitle.trim(),
+              description: "",
+            })
+          : null;
+
       const serieID = existingSerie
         ? existingSerie.id
         : typedSerie
           ? await addSerie({
               title: comicForm.serieTitle.trim(),
               description: "",
-              universeID: null,
+              universeID: universeID,
             })
           : null;
 
@@ -341,6 +367,8 @@ export function AddEditions(props) {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         currentYear={currentYear}
+        universes={universes}
+        filteredUniverses={filteredUniverses}
         series={series}
         errors={errors}
       />
