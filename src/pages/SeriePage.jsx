@@ -1,5 +1,5 @@
 import { Series } from "../components/Series.jsx";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Pagination from "rc-pagination";
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -10,15 +10,19 @@ export function SeriePage(props) {
   const [currentPage, setCurrentPage] = useState(1);
   const displaySerie = 20;
 
-const sortedSeries = [...(series || [])].sort((a, b) =>
-  a.title.localeCompare(b.title),
-);
+const sortedSeries = useMemo(
+  () => [...(series || [])].sort((a, b) => a.title.localeCompare(b.title)),
+    [series],
+  );
 
-  const filteredSeries = selectedLetter
-    ? sortedSeries.filter((s) =>
-        s.title.toUpperCase().startsWith(selectedLetter),
-      )
-    : sortedSeries;
+  const filteredSeries = useMemo(() =>
+      selectedLetter
+        ? sortedSeries.filter((s) =>
+            s.title.toUpperCase().startsWith(selectedLetter),
+          )
+        : sortedSeries,
+    [sortedSeries, selectedLetter],
+  );
 
   const startIndex = (currentPage - 1) * displaySerie;
   const endIndex = startIndex + displaySerie;
@@ -46,7 +50,7 @@ const sortedSeries = [...(series || [])].sort((a, b) =>
       </div>
 
       <div>
-        <Series series={paginatedSeries} onSelectSerie={onSelectSerie} />
+        <Series key={`${selectedLetter}-${currentPage}`} series={paginatedSeries} onSelectSerie={onSelectSerie} />
       </div>
 
       <Pagination

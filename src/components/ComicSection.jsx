@@ -26,13 +26,14 @@ export function ComicSection(props) {
         <Row className="m-3">
           {isNewComic && (
             <>
-
-                          {isNewComic &&
-                !comicForm.serieID &&
-                comicForm.serieTitle.trim() && (
+              {isNewComic &&
+                (!comicForm.serieID
+                  ? comicForm.serieTitle.trim()
+                  : !series.find((s) => s.id === comicForm.serieID)
+                      ?.universeID) && (
                   <Row className="mt-3">
                     <Col lg={12}>
-                       <label className="form-label">Universe:</label>
+                      <label className="form-label">Universe:</label>
                       <Combobox
                         value={
                           universes.find(
@@ -125,7 +126,7 @@ export function ComicSection(props) {
                     </Col>
                   </Row>
                 )}
-                
+
               <Row className="mb-5">
                 <Col lg={12}>
                   <label className="form-label">Serie:</label>

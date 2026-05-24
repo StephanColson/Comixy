@@ -47,6 +47,7 @@ export function UniversePage(props) {
 
       <div>
         <Universes
+        key={`${selectedLexicon}-${currentPage}`}
           universes={paginatedUniverses}
           onSelectUniverse={onSelectUniverse}
         />

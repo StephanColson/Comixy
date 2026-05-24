@@ -1,5 +1,4 @@
 import { Section } from "./Section.jsx";
-import FlipMove from "react-flip-move";
 import { Row } from "react-bootstrap";
 
 function Serie(props) {
@@ -26,11 +25,11 @@ export function Series(props) {
   return (
     <>
       <Section>
-        <FlipMove typeName={Row} className="mt-2">
+        <Row className="mt-2 animation-list">
           {series?.map((s) => (
               <Serie key={s.id} serie={s} onSelect={onSelectSerie} />
           ))}
-        </FlipMove>
+        </Row>
       </Section>
     </>
   );

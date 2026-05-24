@@ -26,7 +26,7 @@ export async function addSerie(newSerie) {
 }
 
 export async function updateSerie(serie) {
-  await updateDoc(serie.ref, { description: serie.description });
+  await updateDoc(serie.ref, { description: serie.description, universeID: serie.universeID ?? null, });
 }
 
 export function useSerieCollectionData() {

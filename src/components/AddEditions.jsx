@@ -11,7 +11,11 @@ import {
 import { addPerson, usePeopleCollectionData } from "../api/personInfo.js";
 import { addRole, useRoleCollectionData } from "../api/roleInfo.js";
 import { useState } from "react";
-import { addSerie, useSerieCollectionData } from "../api/serieInfo.js";
+import {
+  addSerie,
+  updateSerie,
+  useSerieCollectionData,
+} from "../api/serieInfo.js";
 import { addComicContributor } from "../api/comicContributer.js";
 import { ComicSection } from "./ComicSection.jsx";
 import { EditionSection } from "./EditionSection.jsx";
@@ -225,6 +229,10 @@ export function AddEditions(props) {
               universeID: universeID,
             })
           : null;
+
+      if (existingSerie && !existingSerie.universeID && universeID) {
+        await updateSerie({ ...existingSerie, universeID });
+      }
 
       const comicID = isNewComic
         ? await addComic({
