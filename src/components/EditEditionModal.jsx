@@ -1,6 +1,6 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useState } from "react";
-import { updateEdition, uploadFile, uploadFiles } from "../api/editionInfo.js";
+import { updateEdition, uploadFile } from "../api/editionInfo.js";
 import { ContributorSection } from "./ContributorSection.jsx";
 import {
   addComicContributor,
@@ -119,16 +119,15 @@ export function EditEditionModal(props) {
         (o) => normalize(o.name) === typedPublisher,
       );
 
-      const publisherID = editionForm.selfPublished
-        ? null
-        : editionForm.organizationID ||
-          (existingPublisher
-            ? existingPublisher.id
-            : typedPublisher
-              ? await addOrganization({
-                  name: editionForm.organizationName.trim(),
-                })
-              : null);
+      const publisherID =
+        editionForm.organizationID ||
+        (existingPublisher
+          ? existingPublisher.id
+          : typedPublisher
+            ? await addOrganization({
+                name: editionForm.organizationName.trim(),
+              })
+            : null);
 
       const typedCompendium = normalize(editionForm.compendiumName ?? "");
       const existingCompendium = compendium.find(
@@ -160,9 +159,7 @@ export function EditEditionModal(props) {
         format: finalFormat,
         printType: finalPrintType,
         organizationID: publisherID,
-        organizationName: editionForm.selfPublished
-          ? ""
-          : editionForm.organizationName.trim(),
+        organizationName: editionForm.organizationName.trim(),
         imgURLs,
         compendiumID: compendiumID ?? null,
       });
@@ -313,28 +310,13 @@ export function EditEditionModal(props) {
               </Combobox.Options>
             </Combobox>
 
-            <Combobox>
-              <Form.Label className="mt-3">Comic:</Form.Label>
-
-              <Combobox.Input
-                className="form-control"
-                placeholder="Change/Rename Comic..."
-                value={comicTitle}
-                onChange={(e) => setComicTitle(e.target.value)}
-              />
-
-              <Combobox.Options className="list-group position-absolute z-3">
-                {filteredSerie.slice(0, 5).map((comic) => (
-                  <Combobox.Option
-                    key={comic.id}
-                    value={comic}
-                    className="list-group-item list-group-item-action"
-                  >
-                    {comic.title}
-                  </Combobox.Option>
-                ))}
-              </Combobox.Options>
-            </Combobox>
+            <Form.Label className="mt-4">Comic Title:</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Rename comic..."
+              value={comicTitle}
+              onChange={(e) => setComicTitle(e.target.value)}
+            />
           </Form.Group>
 
           <EditionSection
