@@ -28,6 +28,7 @@ import { useAuth } from "./context/AuthContext.jsx";
 import { LoginPage } from "./pages/LoginPage.jsx";
 import { UniversePage } from "./pages/UniversePage.jsx";
 import { useUniverseCollectionData } from "./api/universeInfo.js";
+import { MyLibraryPage } from "./pages/MyLibrary.jsx";
 
 const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
@@ -39,6 +40,7 @@ const NAV_ADD_ED = "NAV_ADD_ED";
 const NAV_COLLECTION = "NAV_COLLECTION";
 const NAV_PUBLISHER = "NAV_PUBLISHER";
 const NAV_PERSON = "NAV_PERSON";
+const NAV_MY_LIBRARY = "NAV_MY_LIBRARY";
 
 function NavigationBar(props) {
   const { activeNavBarItem, onSelectNavBarItem } = props;
@@ -75,6 +77,12 @@ function NavigationBar(props) {
               <Nav.Item>
                 <Nav.Link className="nav-text" eventKey={NAV_SERIE_CATALOG}>
                   Serie Catalog
+                </Nav.Link>
+              </Nav.Item>
+
+              <Nav.Item>
+                <Nav.Link className="nav-text" eventKey={NAV_MY_LIBRARY}>
+                  My Library
                 </Nav.Link>
               </Nav.Item>
 
@@ -363,6 +371,10 @@ function ActivePage(props) {
         />
       );
     }
+
+    case NAV_MY_LIBRARY: {
+      return <MyLibraryPage />;
+    }
     default:
       return;
   }
@@ -389,7 +401,8 @@ function App() {
           key === NAV_HOME ||
           key === COMIC_CATALOG ||
           key === NAV_SERIE_CATALOG ||
-          key === NAV_UNIVERSE_CATALOG
+          key === NAV_UNIVERSE_CATALOG ||
+          key === NAV_MY_LIBRARY
         ) {
           setSelectedComicID(null);
         }

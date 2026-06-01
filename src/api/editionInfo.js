@@ -5,13 +5,79 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
+  setDoc,
+  getDocs,
+  collectionGroup,
   query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { uploadImage } from "./storage.js";
 import { deleteComicContributor } from "./comicContributer.js";
 
 const EDITION_COLLECTION_NAME = "Editions";
+const LIBRARY_SUBCOLLECTION_NAME = "userLibrary";
+
+const defaultLibraryEntry = {
+  owned: false,
+  read: false,
+  wishlist: false,
+  favourite: false,
+  condition: null,
+};
+
+export async function getUserLibraryEntry(editionId, userId) {
+  const ref = doc(
+    firestoreDB,
+    EDITION_COLLECTION_NAME,
+    editionId,
+    LIBRARY_SUBCOLLECTION_NAME,
+    userId
+  );
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return { ...defaultLibraryEntry };
+  return snap.data();
+}
+
+export async function setUserLibraryEntry(editionId, userId, fields) {
+  const ref = doc(
+    firestoreDB,
+    EDITION_COLLECTION_NAME,
+    editionId,
+    LIBRARY_SUBCOLLECTION_NAME,
+    userId
+  );
+  await setDoc(ref, fields, { merge: true });
+}
+
+export async function getUserOwnedEditions(userId) {
+  const q = query(
+    collectionGroup(firestoreDB, LIBRARY_SUBCOLLECTION_NAME),
+    where("owned", "==", true)
+  );
+  const snap = await getDocs(q);
+  return snap.docs
+    .filter((d) => d.id === userId)
+    .map((d) => ({
+      editionId: d.ref.parent.parent.id,
+      ...d.data(),
+    }));
+}
+
+export async function getUserWishlist(userId) {
+  const q = query(
+    collectionGroup(firestoreDB, LIBRARY_SUBCOLLECTION_NAME),
+    where("wishlist", "==", true)
+  );
+  const snap = await getDocs(q);
+  return snap.docs
+    .filter((d) => d.id === userId)
+    .map((d) => ({
+      editionId: d.ref.parent.parent.id,
+      ...d.data(),
+    }));
+}
 
 export async function uploadFile(file) {
   if (!file) throw new Error("No files selected");
