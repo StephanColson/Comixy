@@ -285,6 +285,7 @@ function ActivePage(props) {
         <ComicDetailsPage
           comic={selectedComic}
           onAddEditions={handleAddEditions}
+          universes={universes}
           series={series}
           selectedSerie={selectedSerie}
           editions={editions}

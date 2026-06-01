@@ -14,6 +14,7 @@ import { Combobox } from "@headlessui/react";
 import { updateComic } from "../api/comicInfo.js";
 import { addOrganization } from "../api/organizationInfo.js";
 import { addCompendium } from "../api/compendiumInfo.js";
+import { updateSerie } from "../api/serieInfo.js";
 
 export function EditEditionModal(props) {
   const {
@@ -27,10 +28,14 @@ export function EditEditionModal(props) {
     comic,
     series,
     compendium,
+    universes,
   } = props;
+
+  const currentSerie = series.find((s) => s.id === comic?.serieID);
 
   const [comicSerie, setComicSerie] = useState({
     serieID: comic?.serieID ?? null,
+    universeID: currentSerie?.universeID ?? null,
   });
 
   const [comicTitle, setComicTitle] = useState(comic?.title ?? "");
@@ -202,17 +207,22 @@ export function EditEditionModal(props) {
         }),
       );
 
-      if (comicSerie.serieID !== comic.serieID) {
+      const serieChanged = comicSerie.serieID !== comic.serieID;
+      const titleChanged = comicTitle.trim() !== comic.title;
+
+      if (serieChanged || titleChanged) {
         await updateComic({
           ...comic,
           serieID: comicSerie.serieID,
+          title: comicTitle.trim(),
         });
       }
 
-      if (comicTitle.trim() !== comic.title) {
-        await updateComic({
-          ...comic,
-          title: comicTitle.trim(),
+      const targetSerie = series.find((s) => s.id === comicSerie.serieID);
+      if (targetSerie && targetSerie.universeID !== comicSerie.universeID) {
+        await updateSerie({
+          ...targetSerie,
+          universeID: comicSerie.universeID,
         });
       }
 
@@ -248,12 +258,36 @@ export function EditEditionModal(props) {
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
+            <Form.Label>Universe:</Form.Label>
+            <Form.Select
+              value={comicSerie.universeID ?? ""}
+              onChange={(e) =>
+                setComicSerie((prev) => ({
+                  ...prev,
+                  universeID: e.target.value || null,
+                }))
+              }
+            >
+              <option value="">— No universe —</option>
+              {universes.map((u) => (
+                <option key={u.id} value={u.id}>
+                  {u.title}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
             <Form.Label>Serie:</Form.Label>
 
             <Combobox
               value={series.find((s) => s.id === comicSerie.serieID) || null}
               onChange={(opt) => {
-                setComicSerie({ serieID: opt?.id || null });
+                const selectedSerie = series.find((s) => s.id === opt?.id);
+                setComicSerie({
+                  serieID: opt?.id || null,
+                  universeID: selectedSerie?.universeID ?? null,
+                });
               }}
             >
               <Combobox.Input

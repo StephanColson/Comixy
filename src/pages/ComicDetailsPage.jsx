@@ -12,7 +12,6 @@ export function ComicDetailsPage(props) {
     roles,
     comicContributors,
     editions,
-    selectedComic,
     series,
     onAddEditions,
     compendium,
@@ -20,12 +19,13 @@ export function ComicDetailsPage(props) {
     onSelectCompendium,
     onSelectPublisher,
     onSelectPerson,
+    universes,
   } = props;
-
-  if (!comic) return <div>No Comic Selected</div>;
 
   const [editingEdition, setEditingEdition] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  if (!comic) return <div>No Comic Selected</div>;
 
   function handleEditEdition(edition) {
     setEditingEdition(edition);
@@ -93,6 +93,7 @@ export function ComicDetailsPage(props) {
         <EditEditionModal
           edition={editingEdition}
           editions={editions}
+          universes={universes}
           comic={comic}
           series={series}
           compendium={compendium}
