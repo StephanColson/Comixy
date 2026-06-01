@@ -38,6 +38,11 @@ export function EditEditionModal(props) {
     universeID: currentSerie?.universeID ?? null,
   });
 
+  const [comicBookNumber, setComicBookNumber] = useState(
+    comic?.bookNumber ?? "",
+  );
+  const [comicPrice, setComicPrice] = useState(comic?.price ?? "");
+
   const [comicTitle, setComicTitle] = useState(comic?.title ?? "");
 
   const [editionForm, setEditionForm] = useState({
@@ -145,6 +150,7 @@ export function EditEditionModal(props) {
               })
             : null);
 
+      setUploading(true);
       const imgURLs = await Promise.all(
         [0, 1, 2].map((i) =>
           editionForm.imageFiles[i]
@@ -152,6 +158,7 @@ export function EditEditionModal(props) {
             : (editionForm.existingImgURLs[i] ?? null),
         ),
       ).then((urls) => urls.filter(Boolean));
+      setUploading(false);
 
       await updateEdition({
         ...edition,
@@ -207,11 +214,18 @@ export function EditEditionModal(props) {
       const serieChanged = comicSerie.serieID !== comic.serieID;
       const titleChanged = comicTitle.trim() !== comic.title;
 
-      if (serieChanged || titleChanged) {
+      if (
+        serieChanged ||
+        titleChanged ||
+        comicBookNumber != comic.bookNumber ||
+        comicPrice != comic.price
+      ) {
         await updateComic({
           ...comic,
           serieID: comicSerie.serieID,
           title: comicTitle.trim(),
+          bookNumber: comicBookNumber ? Number(comicBookNumber) : null,
+          price: comicPrice ? Number(comicPrice) : null,
         });
       }
 
@@ -225,6 +239,7 @@ export function EditEditionModal(props) {
 
       onClose();
     } catch (err) {
+      setUploading(false);
       console.error("Edit save error:", err);
     }
   }
@@ -294,6 +309,12 @@ export function EditEditionModal(props) {
                 onChange={(e) => {
                   const value = e.target.value;
                   setSearchQuery((prev) => ({ ...prev, serie: value }));
+                  if (!value.trim()) {
+                    setComicSerie({
+                      serieID: null,
+                      universeID: null,
+                    });
+                  }
                 }}
               />
 
@@ -310,13 +331,26 @@ export function EditEditionModal(props) {
               </Combobox.Options>
             </Combobox>
 
-            <Form.Label className="mt-4">Comic Title:</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Rename comic..."
-              value={comicTitle}
-              onChange={(e) => setComicTitle(e.target.value)}
-            />
+            <div className="d-flex gap-2 align-items-end mt-4">
+              <div className="flex-grow-1">
+                <Form.Label>Comic Title:</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Rename comic..."
+                  value={comicTitle}
+                  onChange={(e) => setComicTitle(e.target.value)}
+                />
+              </div>
+              <div>
+                <Form.Label>Nr.</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="Nr..."
+                  value={comicBookNumber}
+                  onChange={(e) => setComicBookNumber(e.target.value)}
+                />
+              </div>
+            </div>
           </Form.Group>
 
           <EditionSection
@@ -344,6 +378,18 @@ export function EditEditionModal(props) {
             searchQuery={searchContributor}
             setSearchQuery={setSearchContributor}
           />
+
+          <Form.Group className="mt-3 mx-2">
+            <Form.Label>
+              Price: <span className="text-warning">(optional)</span>
+            </Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Price..."
+              value={comicPrice}
+              onChange={(e) => setComicPrice(e.target.value)}
+            />
+          </Form.Group>
         </Form>
       </Modal.Body>
 
