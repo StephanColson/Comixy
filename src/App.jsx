@@ -30,7 +30,7 @@ import { UniversePage } from "./pages/UniversePage.jsx";
 import { useUniverseCollectionData } from "./api/universeInfo.js";
 import { MyLibraryPage } from "./pages/MyLibrary.jsx";
 
-const NAV_HOME = "NAV_HOME";
+//const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
 const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
 const NAV_UNIVERSE_CATALOG = "NAV_UNIVERSE_CATALOG";
@@ -63,8 +63,8 @@ function NavigationBar(props) {
               className="me-auto"
             >
               <Nav.Item>
-                <Nav.Link className="nav-text" eventKey={NAV_HOME}>
-                  Home
+                <Nav.Link className="nav-text" eventKey={NAV_MY_LIBRARY}>
+                  My Library
                 </Nav.Link>
               </Nav.Item>
 
@@ -77,12 +77,6 @@ function NavigationBar(props) {
               <Nav.Item>
                 <Nav.Link className="nav-text" eventKey={NAV_SERIE_CATALOG}>
                   Serie Catalog
-                </Nav.Link>
-              </Nav.Item>
-
-              <Nav.Item>
-                <Nav.Link className="nav-text" eventKey={NAV_MY_LIBRARY}>
-                  My Library
                 </Nav.Link>
               </Nav.Item>
 
@@ -133,8 +127,6 @@ function NavigationBar(props) {
 function ActivePage(props) {
   const {
     activeNavBarItem,
-    initialGenre,
-    setInitialGenre,
     navigateTo,
     selectedSerieID,
     setSelectedSerieID,
@@ -172,42 +164,42 @@ function ActivePage(props) {
   });
 
   switch (activeNavBarItem) {
-    case NAV_HOME:
-      return (
-        <HomePage
-          comics={comicsWithImages || []}
-          editions={editions}
-          series={series}
-          organizations={organizations}
-          compendium={compendium}
-          setInitialGenre={setInitialGenre}
-          peoples={peoples}
-          onSelectComic={(comic) => {
-            setSelectedComicID(comic.id);
-            navigateTo(COMIC_EDITIONS);
-          }}
-          onSelectSerie={(serie) => {
-            setSelectedSerieID(serie.id);
-            navigateTo(COMIC_CATALOG);
-          }}
-          onSelectCompendium={(compendium) => {
-            setSelectedCompendiumID(compendium.id);
-            navigateTo(NAV_COLLECTION);
-          }}
-          onSelectPublisher={(publisher) => {
-            setSelectedPublisherID(publisher.id);
-            navigateTo(NAV_PUBLISHER);
-          }}
-          onSelectPerson={(person) => {
-            setSelectedPersonID(person.id);
-            navigateTo(NAV_PERSON);
-          }}
-          onDeleteComic={async (comic) => {
-            await deleteComic(comic, editions, comicContributors);
-          }}
-          navigateTo={navigateTo}
-        />
-      );
+    // case NAV_HOME:
+    //   return (
+    //     <HomePage
+    //       comics={comicsWithImages || []}
+    //       editions={editions}
+    //       series={series}
+    //       organizations={organizations}
+    //       compendium={compendium}
+    //       setInitialGenre={setInitialGenre}
+    //       peoples={peoples}
+    //       onSelectComic={(comic) => {
+    //         setSelectedComicID(comic.id);
+    //         navigateTo(COMIC_EDITIONS);
+    //       }}
+    //       onSelectSerie={(serie) => {
+    //         setSelectedSerieID(serie.id);
+    //         navigateTo(COMIC_CATALOG);
+    //       }}
+    //       onSelectCompendium={(compendium) => {
+    //         setSelectedCompendiumID(compendium.id);
+    //         navigateTo(NAV_COLLECTION);
+    //       }}
+    //       onSelectPublisher={(publisher) => {
+    //         setSelectedPublisherID(publisher.id);
+    //         navigateTo(NAV_PUBLISHER);
+    //       }}
+    //       onSelectPerson={(person) => {
+    //         setSelectedPersonID(person.id);
+    //         navigateTo(NAV_PERSON);
+    //       }}
+    //       onDeleteComic={async (comic) => {
+    //         await deleteComic(comic, editions, comicContributors);
+    //       }}
+    //       navigateTo={navigateTo}
+    //     />
+    //   );
     case COMIC_CATALOG:
       return (
         <ComicPage
@@ -220,7 +212,6 @@ function ActivePage(props) {
           series={series}
           selectedSerieID={selectedSerieID}
           comicContributors={comicContributors}
-          initialGenre={initialGenre}
         />
       );
 
@@ -383,7 +374,7 @@ function ActivePage(props) {
 
 function App() {
   const { currentUser, role } = useAuth();
-  const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_HOME);
+  const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_MY_LIBRARY);
   const [selectedComicID, setSelectedComicID] = useState(null);
   const [selectedSerieID, setSelectedSerieID] = useState(null);
   const [selectedUniverseID, setSelectedUniverseID] = useState(null);
@@ -399,11 +390,10 @@ function App() {
       if (key) {
         setActiveNavBarItem(key);
         if (
-          key === NAV_HOME ||
+          key === NAV_MY_LIBRARY ||
           key === COMIC_CATALOG ||
           key === NAV_SERIE_CATALOG ||
-          key === NAV_UNIVERSE_CATALOG ||
-          key === NAV_MY_LIBRARY
+          key === NAV_UNIVERSE_CATALOG
         ) {
           setSelectedComicID(null);
         }
