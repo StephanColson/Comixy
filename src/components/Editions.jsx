@@ -155,6 +155,12 @@ function Edition(props) {
               </Col>
             )}
 
+            {edition.spine && (
+              <Col xs={6}>
+                <strong>Spine:</strong> {edition.spine}
+              </Col>
+            )}
+
             <Col xs={6}>
               <strong>Publisher:</strong>
               <span

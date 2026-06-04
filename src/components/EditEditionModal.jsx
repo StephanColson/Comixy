@@ -58,6 +58,7 @@ export function EditEditionModal(props) {
     existingImgURLs: edition.imgURLs ?? [],
     compendiumID: edition.compendiumID ?? null,
     compendiumName: "",
+    spine: edition.spine ?? "",
   });
 
   const [contributors, setContributors] = useState(
@@ -169,6 +170,7 @@ export function EditEditionModal(props) {
         organizationName: editionForm.organizationName.trim(),
         imgURLs,
         compendiumID: compendiumID ?? null,
+        spine: editionForm.spine?.trim() || null,
       });
 
       const old = comicContributors.filter((cc) => cc.editionID === edition.id);

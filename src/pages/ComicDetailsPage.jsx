@@ -62,6 +62,7 @@ export function ComicDetailsPage(props) {
           : publisher?.name || "Unknown",
         displayContributors: contributors || [],
         compendiumTitle: collection?.title ?? null,
+        spine: ed.spine ?? null,
       };
     });
 

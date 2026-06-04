@@ -80,6 +80,7 @@ export function AddEditions(props) {
     imageFiles: [null, null, null],
     compendiumID: null,
     compendiumName: "",
+    spine: "",
   });
 
   const formats = editions.map((e) => e.format);
@@ -249,16 +250,15 @@ export function AddEditions(props) {
         (o) => normalize(o.name) === typedPublisher,
       );
 
-      const publisherID = editionForm.selfPublished
-        ? null
-        : editionForm.organizationID ||
-          (existingPublisher
-            ? existingPublisher.id
-            : typedPublisher
-              ? await addOrganization({
-                  name: editionForm.organizationName.trim(),
-                })
-              : null);
+      const publisherID =
+        editionForm.organizationID ||
+        (existingPublisher
+          ? existingPublisher.id
+          : typedPublisher
+            ? await addOrganization({
+                name: editionForm.organizationName.trim(),
+              })
+            : null);
 
       const typedCompendium = normalize(editionForm.compendiumName ?? "");
       const existingCompendium = compendium.find(
@@ -340,6 +340,7 @@ export function AddEditions(props) {
         numberInCollection: editionForm.numberInCollection || null,
         organizationID: publisherID,
         compendiumID: compendiumID ?? null,
+        spine: editionForm.spine?.trim() || null,
       });
 
       await Promise.all(

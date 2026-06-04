@@ -320,6 +320,21 @@ export function EditionSection(props) {
             placeholder="year published"
           />
         </Col>
+
+        <Col lg={12}>
+          <label className="form-label">
+            Spine: <span className="text-warning">(optional)</span>
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Spine text..."
+            value={editionForm.spine ?? ""}
+            onChange={(e) =>
+              setEditionForm((prev) => ({ ...prev, spine: e.target.value }))
+            }
+          />
+        </Col>
       </Row>
     </div>
   );

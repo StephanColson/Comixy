@@ -33,7 +33,7 @@ export async function getUserLibraryEntry(editionId, userId) {
     EDITION_COLLECTION_NAME,
     editionId,
     LIBRARY_SUBCOLLECTION_NAME,
-    userId
+    userId,
   );
   const snap = await getDoc(ref);
   if (!snap.exists()) return { ...defaultLibraryEntry };
@@ -46,7 +46,7 @@ export async function setUserLibraryEntry(editionId, userId, fields) {
     EDITION_COLLECTION_NAME,
     editionId,
     LIBRARY_SUBCOLLECTION_NAME,
-    userId
+    userId,
   );
   await setDoc(ref, fields, { merge: true });
 }
@@ -54,7 +54,7 @@ export async function setUserLibraryEntry(editionId, userId, fields) {
 export async function getUserOwnedEditions(userId) {
   const q = query(
     collectionGroup(firestoreDB, LIBRARY_SUBCOLLECTION_NAME),
-    where("owned", "==", true)
+    where("owned", "==", true),
   );
   const snap = await getDocs(q);
   return snap.docs
@@ -68,7 +68,7 @@ export async function getUserOwnedEditions(userId) {
 export async function getUserWishlist(userId) {
   const q = query(
     collectionGroup(firestoreDB, LIBRARY_SUBCOLLECTION_NAME),
-    where("wishlist", "==", true)
+    where("wishlist", "==", true),
   );
   const snap = await getDocs(q);
   return snap.docs
@@ -102,6 +102,7 @@ const editionConverter = {
     organizationID: dataInApp.organizationID,
     price: dataInApp.price ?? null,
     compendiumID: dataInApp.compendiumID ?? null,
+    spine: dataInApp.spine ?? null,
   }),
   fromFirestore: (snapshot, option) => {
     const data = snapshot.data(option);
