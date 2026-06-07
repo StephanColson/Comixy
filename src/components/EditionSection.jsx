@@ -335,6 +335,21 @@ export function EditionSection(props) {
             }
           />
         </Col>
+
+        <Col lg={12}>
+          <label className="form-label">
+            Notes: <span className="text-warning">(optional)</span>
+          </label>
+          <textarea
+            className="form-control"
+            placeholder="Extra notes about this edition..."
+            rows={3}
+            value={editionForm.note ?? ""}
+            onChange={(e) =>
+              setEditionForm((prev) => ({ ...prev, note: e.target.value }))
+            }
+          />
+        </Col>
       </Row>
     </div>
   );

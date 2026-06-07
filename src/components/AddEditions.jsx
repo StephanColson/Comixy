@@ -81,6 +81,7 @@ export function AddEditions(props) {
     compendiumID: null,
     compendiumName: "",
     spine: "",
+    note: "",
   });
 
   const formats = editions.map((e) => e.format);
@@ -341,6 +342,7 @@ export function AddEditions(props) {
         organizationID: publisherID,
         compendiumID: compendiumID ?? null,
         spine: editionForm.spine?.trim() || null,
+        note: editionForm.note?.trim() || null,
       });
 
       await Promise.all(

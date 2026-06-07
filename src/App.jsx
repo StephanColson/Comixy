@@ -7,8 +7,8 @@ import "rc-pagination/assets/index.css";
 import "./api/firebase.js";
 import { ComicPage } from "./pages/ComicPage.jsx";
 import { HomePage } from "./pages/HomePage.jsx";
-import { deleteComic, useComicCollectionData } from "./api/comicInfo.js";
-import { useSerieCollectionData } from "./api/serieInfo.js";
+import { useComicCollectionData } from "./api/comicInfo.js";
+import { deleteSerie, useSerieCollectionData } from "./api/serieInfo.js";
 import { Nav, Navbar, Container } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { SeriePage } from "./pages/SeriePage.jsx";
@@ -226,6 +226,9 @@ function ActivePage(props) {
           onSelectSerie={(serie) => {
             setSelectedSerieID(serie.id);
             navigateTo(COMIC_CATALOG);
+          }}
+          onDeleteSerie={async (serie) => {
+            await deleteSerie(serie, comics, editions, comicContributors);
           }}
         />
       );

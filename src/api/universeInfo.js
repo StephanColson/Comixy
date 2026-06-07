@@ -1,6 +1,13 @@
-import { addDoc, collection, query, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  query,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { firestoreDB } from "../api/firebase.js";
 import { useCollectionData } from "react-firebase-hooks/firestore";
+import { deleteSerie } from "./serieInfo.js";
 
 const UNIVERSE_COLLECTION_NAME = "Universes";
 
@@ -35,4 +42,20 @@ export function useUniverseCollectionData() {
   const queryRef = query(collectionRef);
   const [universes, loading, error] = useCollectionData(queryRef);
   return { universes, loading, error };
+}
+
+export async function deleteUniverse(
+  universe,
+  series,
+  comics,
+  editions,
+  comicContributors,
+) {
+  const universeSeries = series.filter((s) => s.universeID === universe.id);
+  await Promise.all(
+    universeSeries.map((serie) =>
+      deleteSerie(serie, comics, editions, comicContributors),
+    ),
+  );
+  await deleteDoc(universe.ref);
 }

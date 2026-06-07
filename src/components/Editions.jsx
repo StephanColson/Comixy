@@ -161,6 +161,12 @@ function Edition(props) {
               </Col>
             )}
 
+            {edition.note && (
+              <Col xs={12}>
+                <strong>Notes:</strong> {edition.note}
+              </Col>
+            )}
+
             <Col xs={6}>
               <strong>Publisher:</strong>
               <span

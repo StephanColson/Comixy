@@ -103,6 +103,7 @@ const editionConverter = {
     price: dataInApp.price ?? null,
     compendiumID: dataInApp.compendiumID ?? null,
     spine: dataInApp.spine ?? null,
+    note: dataInApp.note ?? null,
   }),
   fromFirestore: (snapshot, option) => {
     const data = snapshot.data(option);

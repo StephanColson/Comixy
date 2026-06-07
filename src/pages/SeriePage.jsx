@@ -5,17 +5,18 @@ import Pagination from "rc-pagination";
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 export function SeriePage(props) {
-  const { series, onSelectSerie } = props;
+  const { series, onSelectSerie, onDeleteSerie } = props;
   const [selectedLetter, setSelectedLetter] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const displaySerie = 20;
 
-const sortedSeries = useMemo(
-  () => [...(series || [])].sort((a, b) => a.title.localeCompare(b.title)),
+  const sortedSeries = useMemo(
+    () => [...(series || [])].sort((a, b) => a.title.localeCompare(b.title)),
     [series],
   );
 
-  const filteredSeries = useMemo(() =>
+  const filteredSeries = useMemo(
+    () =>
       selectedLetter
         ? sortedSeries.filter((s) =>
             s.title.toUpperCase().startsWith(selectedLetter),
@@ -50,7 +51,12 @@ const sortedSeries = useMemo(
       </div>
 
       <div>
-        <Series key={`${selectedLetter}-${currentPage}`} series={paginatedSeries} onSelectSerie={onSelectSerie} />
+        <Series
+          key={`${selectedLetter}-${currentPage}`}
+          series={paginatedSeries}
+          onSelectSerie={onSelectSerie}
+          onDeleteSerie={onDeleteSerie}
+        />
       </div>
 
       <Pagination
