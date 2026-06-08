@@ -9,6 +9,10 @@ import { ComicPage } from "./pages/ComicPage.jsx";
 import { HomePage } from "./pages/HomePage.jsx";
 import { useComicCollectionData } from "./api/comicInfo.js";
 import { deleteSerie, useSerieCollectionData } from "./api/serieInfo.js";
+import {
+  deleteUniverse,
+  useUniverseCollectionData,
+} from "./api/universeInfo.js";
 import { Nav, Navbar, Container } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { SeriePage } from "./pages/SeriePage.jsx";
@@ -27,10 +31,8 @@ import { PersonDetailsPage } from "./pages/PersonDetailsPage.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import { LoginPage } from "./pages/LoginPage.jsx";
 import { UniversePage } from "./pages/UniversePage.jsx";
-import { useUniverseCollectionData } from "./api/universeInfo.js";
 import { MyLibraryPage } from "./pages/MyLibrary.jsx";
 
-//const NAV_HOME = "NAV_HOME";
 const COMIC_CATALOG = "COMIC_CATALOG";
 const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
 const NAV_UNIVERSE_CATALOG = "NAV_UNIVERSE_CATALOG";
@@ -164,42 +166,6 @@ function ActivePage(props) {
   });
 
   switch (activeNavBarItem) {
-    // case NAV_HOME:
-    //   return (
-    //     <HomePage
-    //       comics={comicsWithImages || []}
-    //       editions={editions}
-    //       series={series}
-    //       organizations={organizations}
-    //       compendium={compendium}
-    //       setInitialGenre={setInitialGenre}
-    //       peoples={peoples}
-    //       onSelectComic={(comic) => {
-    //         setSelectedComicID(comic.id);
-    //         navigateTo(COMIC_EDITIONS);
-    //       }}
-    //       onSelectSerie={(serie) => {
-    //         setSelectedSerieID(serie.id);
-    //         navigateTo(COMIC_CATALOG);
-    //       }}
-    //       onSelectCompendium={(compendium) => {
-    //         setSelectedCompendiumID(compendium.id);
-    //         navigateTo(NAV_COLLECTION);
-    //       }}
-    //       onSelectPublisher={(publisher) => {
-    //         setSelectedPublisherID(publisher.id);
-    //         navigateTo(NAV_PUBLISHER);
-    //       }}
-    //       onSelectPerson={(person) => {
-    //         setSelectedPersonID(person.id);
-    //         navigateTo(NAV_PERSON);
-    //       }}
-    //       onDeleteComic={async (comic) => {
-    //         await deleteComic(comic, editions, comicContributors);
-    //       }}
-    //       navigateTo={navigateTo}
-    //     />
-    //   );
     case COMIC_CATALOG:
       return (
         <ComicPage
@@ -239,6 +205,15 @@ function ActivePage(props) {
           onSelectUniverse={(universe) => {
             setSelectedUniverseID(universe.id);
             navigateTo(NAV_SERIE_CATALOG);
+          }}
+          onDeleteUniverse={async (universe) => {
+            await deleteUniverse(
+              universe,
+              series,
+              comics,
+              editions,
+              comicContributors,
+            );
           }}
         />
       );

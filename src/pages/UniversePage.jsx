@@ -5,7 +5,7 @@ import { Universes } from "../components/Universe.jsx";
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
 export function UniversePage(props) {
-  const { universes, onSelectUniverse } = props;
+  const { universes, onSelectUniverse, onDeleteUniverse } = props;
   const [selectedLexicon, setSelectedLexicon] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const displayUniverse = 20;
@@ -47,9 +47,10 @@ export function UniversePage(props) {
 
       <div>
         <Universes
-        key={`${selectedLexicon}-${currentPage}`}
+          key={`${selectedLexicon}-${currentPage}`}
           universes={paginatedUniverses}
           onSelectUniverse={onSelectUniverse}
+          onDeleteUniverse={onDeleteUniverse}
         />
       </div>
 
