@@ -8,10 +8,8 @@ import {
   getDoc,
   setDoc,
   getDocs,
-  collectionGroup,
   query,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { uploadImage } from "./storage.js";
 import { deleteComicContributor } from "./comicContributer.js";
@@ -51,32 +49,45 @@ export async function setUserLibraryEntry(editionId, userId, fields) {
   await setDoc(ref, fields, { merge: true });
 }
 
-export async function getUserOwnedEditions(userId) {
-  const q = query(
-    collectionGroup(firestoreDB, LIBRARY_SUBCOLLECTION_NAME),
-    where("owned", "==", true),
+async function getUserEntriesByField(userId, field) {
+  const editionsSnap = await getDocs(
+    collection(firestoreDB, EDITION_COLLECTION_NAME),
   );
-  const snap = await getDocs(q);
-  return snap.docs
-    .filter((d) => d.id === userId)
-    .map((d) => ({
-      editionId: d.ref.parent.parent.id,
-      ...d.data(),
-    }));
+
+  const results = await Promise.all(
+    editionsSnap.docs.map(async (editionDoc) => {
+      const libraryRef = doc(
+        firestoreDB,
+        EDITION_COLLECTION_NAME,
+        editionDoc.id,
+        LIBRARY_SUBCOLLECTION_NAME,
+        userId,
+      );
+      const librarySnap = await getDoc(libraryRef);
+      if (!librarySnap.exists()) return null;
+      const data = librarySnap.data();
+      if (!data[field]) return null;
+      return { editionId: editionDoc.id, ...data };
+    }),
+  );
+
+  return results.filter(Boolean);
+}
+
+export async function getUserOwnedEditions(userId) {
+  return getUserEntriesByField(userId, "owned");
 }
 
 export async function getUserWishlist(userId) {
-  const q = query(
-    collectionGroup(firestoreDB, LIBRARY_SUBCOLLECTION_NAME),
-    where("wishlist", "==", true),
-  );
-  const snap = await getDocs(q);
-  return snap.docs
-    .filter((d) => d.id === userId)
-    .map((d) => ({
-      editionId: d.ref.parent.parent.id,
-      ...d.data(),
-    }));
+  return getUserEntriesByField(userId, "wishlist");
+}
+
+export async function getUserRead(userId) {
+  return getUserEntriesByField(userId, "read");
+}
+
+export async function getUserFavourites(userId) {
+  return getUserEntriesByField(userId, "favourite");
 }
 
 export async function uploadFile(file) {

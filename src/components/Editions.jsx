@@ -1,8 +1,18 @@
 import { Section } from "./Section.jsx";
 import { Carousel, Col, Row } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FlipMove from "react-flip-move";
 import ReactMarkdown from "react-markdown";
+import {
+  GiBookshelf,
+  GiBookmarklet,
+  GiBookCover,
+  GiHearts,
+} from "react-icons/gi";
+import {
+  getUserLibraryEntry,
+  setUserLibraryEntry,
+} from "../api/editionInfo.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
 function EditionThumbnails(props) {
@@ -102,7 +112,42 @@ function Edition(props) {
     onSelectPerson,
     onDelete,
   } = props;
-  const { role } = useAuth();
+
+  const { currentUser } = useAuth();
+  const [entry, setEntry] = useState(null);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    getUserLibraryEntry(edition.id, currentUser.uid).then(setEntry);
+  }, [edition.id, currentUser]);
+
+  async function toggleField(field) {
+    if (!currentUser || !entry) return;
+    const updated = { ...entry, [field]: !entry[field] };
+    setEntry(updated);
+    await setUserLibraryEntry(edition.id, currentUser.uid, updated);
+  }
+
+  const iconBtn = (field, Icon, label) => {
+    const active = entry?.[field];
+    return (
+      <button
+        title={label}
+        onClick={() => toggleField(field)}
+        style={{
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          color: active ? "#d4a520" : "#555",
+          fontSize: "1.4rem",
+          padding: "0.25rem 0.5rem",
+          transition: "color 0.2s",
+        }}
+      >
+        <Icon />
+      </button>
+    );
+  };
 
   return (
     <>
@@ -202,7 +247,32 @@ function Edition(props) {
               </Col>
             )}
 
-            <Col xs={12} className="mt-4">
+            <Col xs={12} className="mt-3">
+              {/* Library toggle icons */}
+              <div className="d-flex gap-1 mb-2">
+                {iconBtn("owned", GiBookshelf, "Owned")}
+                {iconBtn("read", GiBookCover, "Read")}
+                {iconBtn("favourite", GiHearts, "Favourite")}
+                {iconBtn("wishlist", GiBookmarklet, "Wishlist")}
+              </div>
+
+              <div className="d-flex gap-2">
+                <button
+                  className="btn btn-success btn-sm"
+                  onClick={() => onEdit(edition)}
+                >
+                  Edit Edition
+                </button>
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => onDelete(edition)}
+                >
+                  Delete Edition
+                </button>
+              </div>
+            </Col>
+
+            {/* <Col xs={12} className="mt-4">
               <button
                 className="btn btn-success btn-sm mx-2"
                 onClick={() => onEdit(edition)}
@@ -215,7 +285,7 @@ function Edition(props) {
               >
                 Delete Edition
               </button>
-            </Col>
+            </Col> */}
           </Row>
         </Col>
       </Row>

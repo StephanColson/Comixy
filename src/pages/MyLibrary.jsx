@@ -6,8 +6,12 @@ import {
   GiHearts,
 } from "react-icons/gi";
 import { useAuth } from "../context/AuthContext";
-import { getUserOwnedEditions } from "../api/editionInfo";
-import { useEditionCollectionData } from "../api/editionInfo";
+import {
+  getUserOwnedEditions,
+  getUserRead,
+  getUserFavourites,
+  useEditionCollectionData,
+} from "../api/editionInfo";
 import { useComicCollectionData } from "../api/comicInfo";
 import { useSerieCollectionData } from "../api/serieInfo";
 
@@ -18,10 +22,14 @@ export function MyLibraryPage() {
   const { series } = useSerieCollectionData();
 
   const [ownedEntries, setOwnedEntries] = useState([]);
+  const [readEntries, setReadEntries] = useState([]);
+  const [favouriteEntries, setFavouriteEntries] = useState([]);
 
   useEffect(() => {
     if (!currentUser) return;
     getUserOwnedEditions(currentUser.uid).then(setOwnedEntries);
+    getUserRead(currentUser.uid).then(setReadEntries);
+    getUserFavourites(currentUser.uid).then(setFavouriteEntries);
   }, [currentUser]);
 
   // Join owned entries with edition/comic/serie data
@@ -60,8 +68,16 @@ export function MyLibraryPage() {
           label="OWNED"
           value={ownedEntries.length}
         />
-        <StatBox icon={<GiBookCover size={48} />} label="READ" value={0} />
-        <StatBox icon={<GiHearts size={48} />} label="FAVOURITES" value={0} />
+        <StatBox
+          icon={<GiBookCover size={48} />}
+          label="READ"
+          value={readEntries.length}
+        />
+        <StatBox
+          icon={<GiHearts size={48} />}
+          label="FAVOURITES"
+          value={favouriteEntries.length}
+        />
         <StatBox
           icon={<GiBookmarklet size={48} />}
           label="WISHLIST"
