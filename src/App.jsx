@@ -351,7 +351,7 @@ function ActivePage(props) {
 }
 
 function App() {
-  const { currentUser, role } = useAuth();
+  const { currentUser } = useAuth();
   const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_MY_LIBRARY);
   const [selectedComicID, setSelectedComicID] = useState(null);
   const [selectedSerieID, setSelectedSerieID] = useState(null);

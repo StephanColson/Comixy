@@ -2,7 +2,6 @@ import FlipMove from "react-flip-move";
 import { Section } from "./Section.jsx";
 import { SectionCard } from "./SectionCard.jsx";
 import { Carousel, Col, Row } from "react-bootstrap";
-import { useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 
 function ComicGallery(props) {
@@ -61,8 +60,6 @@ export function Comics(props) {
   const sortedComics = [...comics].sort(
     (a, b) => Number(a.bookNumber) - Number(b.bookNumber),
   );
-  const [selectedComic, setSelectedComic] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
 
   if (carouselMode) {
     return (

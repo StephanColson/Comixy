@@ -1,6 +1,7 @@
 import { Section } from "../components/Section.jsx";
 import { Comics } from "../components/Comics.jsx";
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import Pagination from "rc-pagination";
 import { updateSerie } from "../api/serieInfo.js";
 import { deleteComic } from "../api/comicInfo.js";
@@ -75,7 +76,7 @@ export function ComicPage(props) {
               <>
                 <textarea
                   className="form-control w-75 mx-auto"
-                  rows={3}
+                  rows={5}
                   value={descriptionInput}
                   onChange={(e) => setDescriptionInput(e.target.value)}
                   placeholder="Enter serie description..."
@@ -98,7 +99,19 @@ export function ComicPage(props) {
             ) : (
               <>
                 {selectedSerie.description && (
-                  <p>{selectedSerie.description}</p>
+                  <div
+                    className="w-75 mx-auto text-start"
+                    style={{
+                      maxHeight: "150px",
+                      overflowY: "auto",
+                      background: "#1a1a1a",
+                      borderRadius: "8px",
+                      padding: "0.75rem 1rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <ReactMarkdown>{selectedSerie.description}</ReactMarkdown>
+                  </div>
                 )}
                 <button
                   className="btn btn-sm btn-outline-warning"

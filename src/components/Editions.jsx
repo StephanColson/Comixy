@@ -2,6 +2,7 @@ import { Section } from "./Section.jsx";
 import { Carousel, Col, Row } from "react-bootstrap";
 import { useState } from "react";
 import FlipMove from "react-flip-move";
+import ReactMarkdown from "react-markdown";
 import { useAuth } from "../context/AuthContext.jsx";
 
 function EditionThumbnails(props) {
@@ -163,7 +164,10 @@ function Edition(props) {
 
             {edition.note && (
               <Col xs={12}>
-                <strong>Notes:</strong> {edition.note}
+                <strong>Notes:</strong>
+                <div style={{ maxHeight: "100px", overflowY: "auto" }}>
+                  <ReactMarkdown>{edition.note}</ReactMarkdown>
+                </div>
               </Col>
             )}
 
