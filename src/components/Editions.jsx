@@ -1,4 +1,5 @@
 import { Section } from "./Section.jsx";
+import { conditions } from "../pages/MyLibrary.jsx";
 import { Carousel, Col, Row } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import FlipMove from "react-flip-move";
@@ -187,6 +188,25 @@ function Edition(props) {
               <Col xs={6}>
                 <strong>Year:</strong> {edition.printYear}
               </Col>
+            )}
+
+            {edition.condition && (
+              <span
+                style={{
+                  display: "inline-block",
+                  marginTop: "0.4rem",
+                  padding: "0.15rem 0.6rem",
+                  borderRadius: "999px",
+                  fontSize: "0.75rem",
+                  fontWeight: "bold",
+                  border: `1px solid ${conditions.find((c) => c.value === edition.condition)?.color ?? "#555"}`,
+                  color:
+                    conditions.find((c) => c.value === edition.condition)
+                      ?.color ?? "#555",
+                }}
+              >
+                {edition.condition}
+              </span>
             )}
 
             {edition.numberInCollection && (

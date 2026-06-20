@@ -17,6 +17,19 @@ import {
 import { useComicCollectionData } from "../api/comicInfo";
 import { useSerieCollectionData } from "../api/serieInfo";
 
+export const conditions = [
+  { value: "New", label: "New", color: "#4caf50" },
+  { value: "Mint", label: "Mint", color: "#8bc34a" },
+  { value: "Very Good", label: "Very Good", color: "#d4a520" },
+  { value: "Good", label: "Good", color: "#ff9800" },
+  { value: "Fair", label: "Fair", color: "#ff5722" },
+  { value: "Poor", label: "Poor", color: "#f44336" },
+];
+
+const condition_colour = Object.fromEntries(
+  conditions.map(({ value, color }) => [value, color]),
+);
+
 export function MyLibraryPage() {
   const { currentUser } = useAuth();
   const { editions } = useEditionCollectionData();
@@ -36,7 +49,6 @@ export function MyLibraryPage() {
     getUserWishlist(currentUser.uid).then(setWishlistEntries);
   }, [currentUser]);
 
-  // Join owned entries with edition/comic/serie data
   const ownedCards = ownedEntries
     .map((entry) => {
       const edition = editions?.find((e) => e.id === entry.editionId);
@@ -90,7 +102,6 @@ export function MyLibraryPage() {
         </p>
       </div>
 
-      {/* Stat counters */}
       <div
         style={{
           display: "flex",
@@ -123,7 +134,6 @@ export function MyLibraryPage() {
         />
       </div>
 
-      {/* On My Shelf */}
       <div style={{ padding: "0 2rem" }}>
         <p
           style={{
@@ -292,13 +302,8 @@ function StatBox({ icon, label, value }) {
 
 function ShelfCard({ edition, comic, serie }) {
   const cover = edition.imgURLs?.[0];
-  const conditionColor =
-    {
-      Mint: "#4caf50",
-      Good: "#d4a520",
-      Worn: "#ff9800",
-      Damaged: "#f44336",
-    }[edition.condition] ?? "#555";
+  const condition = edition.condition ?? null;
+  const conditionColor = condition_colour[condition] ?? "#555";
 
   return (
     <div
@@ -332,15 +337,20 @@ function ShelfCard({ edition, comic, serie }) {
         </div>
       )}
       <div style={{ padding: "0.5rem" }}>
-        {edition.condition && (
+        {condition && (
           <span
             style={{
+              display: "inline-block",
+              padding: "0.1rem 0.5rem",
+              borderRadius: "999px",
+              border: `1px solid ${conditionColor}`,
               fontSize: "0.7rem",
               color: conditionColor,
               fontWeight: "bold",
+              marginBottom: "0.25rem",
             }}
           >
-            {edition.condition}
+            {condition}
           </span>
         )}
         <p style={{ margin: 0, fontSize: "0.75rem", color: "#888" }}>

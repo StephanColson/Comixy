@@ -15,6 +15,7 @@ import { updateComic } from "../api/comicInfo.js";
 import { addOrganization } from "../api/organizationInfo.js";
 import { addCompendium } from "../api/compendiumInfo.js";
 import { updateSerie } from "../api/serieInfo.js";
+import { conditions } from "../pages/MyLibrary.jsx";
 
 export function EditEditionModal(props) {
   const {
@@ -60,6 +61,7 @@ export function EditEditionModal(props) {
     compendiumName: "",
     spine: edition.spine ?? "",
     note: edition.note ?? "",
+    condition: edition.condition || null,
   });
 
   const [contributors, setContributors] = useState(
@@ -173,6 +175,7 @@ export function EditEditionModal(props) {
         compendiumID: compendiumID ?? null,
         spine: editionForm.spine?.trim() || null,
         note: editionForm.note?.trim() || null,
+        condition: editionForm.condition || null,
       });
 
       const old = comicContributors.filter((cc) => cc.editionID === edition.id);
@@ -369,6 +372,33 @@ export function EditEditionModal(props) {
             organizations={organizations}
             compendium={compendium}
           />
+
+          <Form.Group className="mb-3">
+            <Form.Label>Condition</Form.Label>
+            <Form.Select
+              value={editionForm.condition ?? ""}
+              onChange={(e) =>
+                setEditionForm((prev) => ({
+                  ...prev,
+                  condition: e.target.value || null,
+                }))
+              }
+              style={{
+                background: "#1a1a1a",
+                border: "1px solid #333",
+                color:
+                  conditions.find((c) => c.value === editionForm.condition)
+                    ?.color ?? "#888",
+              }}
+            >
+              <option value="">— not set —</option>
+              {conditions.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
           <ContributorSection
             contributorDraft={contributorDraft}
