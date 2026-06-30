@@ -343,7 +343,14 @@ function ActivePage(props) {
     }
 
     case NAV_MY_LIBRARY: {
-      return <MyLibraryPage />;
+      return (
+        <MyLibraryPage
+          onCardClick={(comicId) => {
+            setSelectedComicID(comicId);
+            navigateTo(COMIC_EDITIONS);
+          }}
+        />
+      );
     }
     default:
       return;
