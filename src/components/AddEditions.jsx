@@ -301,16 +301,20 @@ export function AddEditions(props) {
       const contributorList = await Promise.all(
         contributors.map(async (c) => {
           const typedPerson = normalize(c.peopleName);
-          const existingPerson = peoples.find(
-            (p) => normalize(p.name) === typedPerson,
-          );
+          const existingPerson =
+            (c.qid && peoples.find((p) => p.qid === c.qid)) ||
+            peoples.find((p) => normalize(p.name) === typedPerson);
 
           const peopleID =
             c.peopleID ||
             (existingPerson
               ? existingPerson.id
               : typedPerson
-                ? await addPerson({ name: c.peopleName.trim() })
+                ? await addPerson({
+                    name: c.peopleName.trim(),
+                    qid: c.qid ?? null,
+                    alias: c.aliases ?? [],
+                  })
                 : null);
 
           const typedRole = normalize(c.roleName);

@@ -7,16 +7,28 @@ const PEOPLE_COLLECTION = "Peoples";
 const peopleConverter = {
   toFirestore: (dataInApp) => ({
     name: dataInApp.name,
+    alias: dataInApp.alias ?? [],
+    qid: dataInApp.qid ?? null,
   }),
   fromFirestore: (snapshot, option) => {
     const data = snapshot.data(option);
-    return { ...data, id: snapshot.id, ref: snapshot.ref };
+    return {
+      alias: [],
+      qid: null,
+      ...data,
+      id: snapshot.id,
+      ref: snapshot.ref,
+    };
   },
 };
 
 export async function addPerson(newPerson) {
   const collectionRef = collection(firestoreDB, "Peoples");
-  const docRef = await addDoc(collectionRef, newPerson);
+  const docRef = await addDoc(collectionRef, {
+    alias: [],
+    qid: null,
+    ...newPerson,
+  });
   return docRef.id;
 }
 

@@ -1,5 +1,7 @@
 import { Combobox } from "@headlessui/react";
 import { Row, Col } from "react-bootstrap";
+import { useState } from "react";
+import { DatawikiPersonPicker } from "./DatawikiPersonPicker.jsx";
 
 export function ContributorSection(props) {
   const {
@@ -14,6 +16,8 @@ export function ContributorSection(props) {
     searchQuery,
     setSearchQuery,
   } = props;
+
+  const [datawikiQuery, setDatawikiQuery] = useState(null);
 
   return (
     <>
@@ -177,14 +181,19 @@ export function ContributorSection(props) {
                 (!contributorDraft.roleID && !contributorDraft.roleName)
               }
               onClick={() => {
-                setContributors((prev) => [...prev, { ...contributorDraft }]);
-
-                setContributorDraft({
-                  peopleID: null,
-                  peopleName: "",
-                  roleID: null,
-                  roleName: "",
-                });
+                if (!contributorDraft.peopleID && contributorDraft.peopleName) {
+                  // New person — check Wikidata before committing
+                  setDatawikiQuery(contributorDraft.peopleName);
+                } else {
+                  // Existing person selected from the list — add directly
+                  setContributors((prev) => [...prev, { ...contributorDraft }]);
+                  setContributorDraft({
+                    peopleID: null,
+                    peopleName: "",
+                    roleID: null,
+                    roleName: "",
+                  });
+                }
               }}
             >
               Add
@@ -192,6 +201,31 @@ export function ContributorSection(props) {
           </Col>
         </Row>
       </div>
+
+      {datawikiQuery && (
+        <DatawikiPersonPicker
+          name={datawikiQuery}
+          onResolve={(result) => {
+            setContributors((prev) => [
+              ...prev,
+              {
+                ...contributorDraft,
+                qid: result?.qid ?? null,
+                aliases: result?.aliases ?? [],
+              },
+            ]);
+
+            setContributorDraft({
+              peopleID: null,
+              peopleName: "",
+              roleID: null,
+              roleName: "",
+            });
+
+            setDatawikiQuery(null);
+          }}
+        />
+      )}
 
       <div className="d-flex justify-content-center">
         <Row className="m-4">
