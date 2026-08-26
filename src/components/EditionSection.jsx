@@ -19,7 +19,7 @@ export function EditionSection(props) {
     <div className="d-flex justify-content-center">
       <Row className="m-2">
         <Row className="justify-content-center mb-5">
-          {[0, 1, 2].map((i) => (
+          {[0, 1, 2, 3, 4].map((i) => (
             <Col lg={2} key={i} className="text-center">
               <label className="form-label">
                 {i === 0 ? "Main Cover" : `Image ${i + 1}`}
@@ -36,7 +36,7 @@ export function EditionSection(props) {
                   }
                   alt={`preview ${i + 1}`}
                   className="img-fluid mb-2 rounded"
-                  style={{ maxHeight: "150px", objectFit: "contain" }}
+                  style={{ maxHeight: "9.375rem", objectFit: "contain" }}
                 />
               )}
 

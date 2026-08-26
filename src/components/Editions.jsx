@@ -40,7 +40,11 @@ function EditionThumbnails(props) {
 
       {images.length > 1 && (
         <FlipMove
-          className="d-flex"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 5.8rem)",
+            gap: "0.5rem",
+          }}
           easing="ease-in-out"
           appearAnimation="fade"
         >
@@ -49,7 +53,8 @@ function EditionThumbnails(props) {
               <img
                 src={url}
                 alt={`Thumbnail ${i + 1}`}
-                className="rounded w-50 object-fit-cover"
+                className="rounded object-fit-cover"
+                style={{ width: "5.8rem", height: "5.8rem", cursor: "pointer" }}
               />
             </div>
           ))}

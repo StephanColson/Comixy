@@ -77,7 +77,7 @@ export function AddEditions(props) {
     formatName: "",
     organizationID: null,
     organizationName: "",
-    imageFiles: [null, null, null],
+    imageFiles: [null, null, null, null, null],
     compendiumID: null,
     compendiumName: "",
     spine: "",
@@ -361,7 +361,10 @@ export function AddEditions(props) {
       );
 
       console.log("Submit complete!");
-      setEditionForm((prev) => ({ ...prev, imageFiles: [null, null, null] }));
+      setEditionForm((prev) => ({
+        ...prev,
+        imageFiles: [null, null, null, null, null],
+      }));
       setShowConfirmation(true);
     } catch (err) {
       console.error("Submit error:", err);

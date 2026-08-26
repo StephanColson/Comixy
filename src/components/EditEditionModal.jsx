@@ -55,7 +55,7 @@ export function EditEditionModal(props) {
     printTypeName: "",
     organizationID: edition.organizationID || null,
     organizationName: "",
-    imageFiles: [null, null, null],
+    imageFiles: [null, null, null, null, null],
     existingImgURLs: edition.imgURLs ?? [],
     compendiumID: edition.compendiumID ?? null,
     compendiumName: "",
@@ -156,7 +156,7 @@ export function EditEditionModal(props) {
 
       setUploading(true);
       const imgURLs = await Promise.all(
-        [0, 1, 2].map((i) =>
+        [0, 1, 2, 3, 4].map((i) =>
           editionForm.imageFiles[i]
             ? uploadFile(editionForm.imageFiles[i])
             : (editionForm.existingImgURLs[i] ?? null),
