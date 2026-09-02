@@ -242,7 +242,7 @@ function Edition(props) {
             )}
 
             <Col xs={6}>
-              <strong>Publisher:</strong>
+              <strong>Publisher:</strong>{" "}
               <span
                 className="pop-effect"
                 role="button"
