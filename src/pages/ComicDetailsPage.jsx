@@ -24,6 +24,7 @@ export function ComicDetailsPage(props) {
 
   const [editingEdition, setEditingEdition] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [sortOrder, setSortOrder] = useState("newest");
 
   if (!comic) return <div>No Comic Selected</div>;
 
@@ -60,6 +61,11 @@ export function ComicDetailsPage(props) {
         compendiumTitle: collection?.title ?? null,
         spine: ed.spine ?? null,
       };
+    })
+    .sort((a, b) => {
+      const yearA = a.printYear ?? 0;
+      const yearB = b.printYear ?? 0;
+      return sortOrder === "oldest" ? yearA - yearB : yearB - yearA;
     });
 
   return (
@@ -67,12 +73,20 @@ export function ComicDetailsPage(props) {
       <h2 className="text-center">
         {selectedSerie?.title}: {comic.title}
       </h2>
-      <div className="d-flex justify-content-center my-3">
+      <div className="d-flex justify-content-center align-items-center gap-2 my-3">
         <Button
           onClick={() => onAddEditions(comic)}
           className="btn btn-warning"
         >
           Add Editions
+        </Button>
+        <Button
+          variant="outline-warning"
+          onClick={() =>
+            setSortOrder((prev) => (prev === "newest" ? "oldest" : "newest"))
+          }
+        >
+          {sortOrder === "newest" ? "Newest → Oldest" : "Oldest → Newest"}
         </Button>
       </div>
       <Editions

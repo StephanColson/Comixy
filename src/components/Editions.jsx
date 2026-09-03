@@ -1,5 +1,4 @@
 import { Section } from "./Section.jsx";
-import { conditions } from "../pages/MyLibrary.jsx";
 import { Carousel, Col, Row } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import FlipMove from "react-flip-move";
@@ -13,6 +12,9 @@ import {
 import {
   getUserLibraryEntry,
   setUserLibraryEntry,
+  getUserCopies,
+  addCopy,
+  deleteCopy,
 } from "../api/editionInfo.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -121,25 +123,48 @@ function Edition(props) {
 
   const { currentUser } = useAuth();
   const [entry, setEntry] = useState(null);
+  const [copies, setCopies] = useState([]);
 
   useEffect(() => {
     if (!currentUser) return;
     getUserLibraryEntry(edition.id, currentUser.uid).then(setEntry);
+    getUserCopies(edition.id, currentUser.uid).then(setCopies);
   }, [edition.id, currentUser]);
 
-  async function toggleField(field) {
+  const isOwned = copies.length > 0;
+
+  async function toggleWishlist() {
+    if (!currentUser || !entry) return;
+    const updated = { ...entry, wishlist: !entry.wishlist };
+    setEntry(updated);
+    await setUserLibraryEntry(edition.id, currentUser.uid, updated);
+  }
+
+  async function toggleOwned() {
+    if (!currentUser) return;
+
+    if (isOwned) {
+      await deleteCopy(edition.id, currentUser.uid, copies[0].id);
+      setCopies([]);
+    } else {
+      await addCopy(edition.id, currentUser.uid);
+      const refreshed = await getUserCopies(edition.id, currentUser.uid);
+      setCopies(refreshed);
+    }
+  }
+
+  async function toggleEntryField(field) {
     if (!currentUser || !entry) return;
     const updated = { ...entry, [field]: !entry[field] };
     setEntry(updated);
     await setUserLibraryEntry(edition.id, currentUser.uid, updated);
   }
 
-  const iconBtn = (field, Icon, label) => {
-    const active = entry?.[field];
+  function iconBtn(active, onClick, Icon, label) {
     return (
       <button
         title={label}
-        onClick={() => toggleField(field)}
+        onClick={onClick}
         style={{
           background: "none",
           border: "none",
@@ -153,7 +178,7 @@ function Edition(props) {
         <Icon />
       </button>
     );
-  };
+  }
 
   return (
     <>
@@ -195,34 +220,9 @@ function Edition(props) {
               </Col>
             )}
 
-            {edition.condition && (
-              <span
-                style={{
-                  display: "inline-block",
-                  marginTop: "0.4rem",
-                  padding: "0.15rem 0.6rem",
-                  borderRadius: "999px",
-                  fontSize: "0.75rem",
-                  fontWeight: "bold",
-                  border: `1px solid ${conditions.find((c) => c.value === edition.condition)?.color ?? "#555"}`,
-                  color:
-                    conditions.find((c) => c.value === edition.condition)
-                      ?.color ?? "#555",
-                }}
-              >
-                {edition.condition}
-              </span>
-            )}
-
             {edition.numberInCollection && (
               <Col xs={6}>
                 <strong>Number:</strong> {edition.numberInCollection}
-              </Col>
-            )}
-
-            {edition.price && (
-              <Col xs={6}>
-                <strong>Price:</strong> €{edition.price}
               </Col>
             )}
 
@@ -275,10 +275,25 @@ function Edition(props) {
             <Col xs={12} className="mt-3">
               {/* Library toggle icons */}
               <div className="d-flex gap-1 mb-2">
-                {iconBtn("owned", GiBookshelf, "Owned")}
-                {iconBtn("read", GiBookCover, "Read")}
-                {iconBtn("favourite", GiHearts, "Favourite")}
-                {iconBtn("wishlist", GiBookmarklet, "Wishlist")}
+                {iconBtn(isOwned, toggleOwned, GiBookshelf, "Owned")}
+                {iconBtn(
+                  entry?.read,
+                  () => toggleEntryField("read"),
+                  GiBookCover,
+                  "Read",
+                )}
+                {iconBtn(
+                  entry?.favourite,
+                  () => toggleEntryField("favourite"),
+                  GiHearts,
+                  "Favourite",
+                )}
+                {iconBtn(
+                  entry?.wishlist,
+                  toggleWishlist,
+                  GiBookmarklet,
+                  "Wishlist",
+                )}
               </div>
 
               <div className="d-flex gap-2">
@@ -296,21 +311,6 @@ function Edition(props) {
                 </button>
               </div>
             </Col>
-
-            {/* <Col xs={12} className="mt-4">
-              <button
-                className="btn btn-success btn-sm mx-2"
-                onClick={() => onEdit(edition)}
-              >
-                Edit Edition
-              </button>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => onDelete(edition)}
-              >
-                Delete Edition
-              </button>
-            </Col> */}
           </Row>
         </Col>
       </Row>

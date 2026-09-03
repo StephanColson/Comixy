@@ -69,14 +69,6 @@ export function MyLibraryPage({ onCardClick }) {
   const collectionsReady = !!editions && !!comics && !!series;
   const isLoading = loading || !collectionsReady;
 
-  useEffect(() => {
-    if (!currentUser) return;
-    getUserOwnedEditions(currentUser.uid).then(setOwnedEntries);
-    getUserRead(currentUser.uid).then(setReadEntries);
-    getUserFavourites(currentUser.uid).then(setFavouriteEntries);
-    getUserWishlist(currentUser.uid).then(setWishlistEntries);
-  }, [currentUser]);
-
   function buildCards(entries) {
     return entries
       .map((entry) => {
@@ -336,7 +328,6 @@ export function MyLibraryPage({ onCardClick }) {
         </span>
       </div>
 
-      {/* Cards */}
       {/* Cards */}
       <div style={{ padding: "0 2rem 2rem" }}>
         {isLoading ? (

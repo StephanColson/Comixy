@@ -65,8 +65,6 @@ export function HomePage(props) {
             .map((p) => ({ id: p.id, label: p.name, type: "Person", data: p })),
         ];
 
-  const [genreList, setGenreList] = useState("");
-
   return (
     <>
       <div className="text-center mb-5">
