@@ -1,6 +1,7 @@
 import { firestoreDB } from "./firebase.js";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { addDoc, collection, query } from "firebase/firestore";
+import { updateDoc } from "firebase/firestore";
 
 const COMPENDIUM_COLLECTION_NAME = "Compendium";
 
@@ -20,8 +21,6 @@ export async function addCompendium(newCompendium) {
   const docRef = await addDoc(collectionRef, newCompendium);
   return docRef.id;
 }
-
-import { updateDoc } from "firebase/firestore";
 
 export async function updateCompendium(compendium) {
   await updateDoc(compendium.ref, { description: compendium.description });

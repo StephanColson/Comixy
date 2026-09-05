@@ -118,6 +118,8 @@ function Edition(props) {
     onSelectCompendium,
     onSelectPublisher,
     onSelectPerson,
+    onSelectComic,
+    onSelectSerie,
     onDelete,
   } = props;
 
@@ -189,88 +191,123 @@ function Edition(props) {
 
         <Col xs={12} md={9}>
           <Row className="g-2">
-            {edition.compendiumTitle && (
-              <Col xs={6}>
-                <strong>Collection: </strong>
-                <span
-                  className="pop-effect"
-                  role="button"
-                  onClick={() => onSelectCompendium(edition.compendiumID)}
-                >
-                  {edition.compendiumTitle}
-                </span>
-              </Col>
-            )}
+            <Col xs={12} md={6}>
+              <div className="d-flex flex-column gap-2">
+                {edition.serieTitle && (
+                  <div>
+                    <strong>Serie: </strong>
+                    <span
+                      className="pop-effect"
+                      role="button"
+                      onClick={() => onSelectSerie(edition.serieID)}
+                    >
+                      {edition.serieTitle}
+                    </span>
+                  </div>
+                )}
 
-            {edition.format && (
-              <Col xs={6}>
-                <strong>Format:</strong> {edition.format}
-              </Col>
-            )}
+                {edition.compendiumTitle && (
+                  <div>
+                    <strong>Collection: </strong>
+                    <span
+                      className="pop-effect"
+                      role="button"
+                      onClick={() => onSelectCompendium(edition.compendiumID)}
+                    >
+                      {edition.compendiumTitle}
+                    </span>
+                  </div>
+                )}
 
-            {edition.printType && (
-              <Col xs={6}>
-                <strong>Print Type:</strong> {edition.printType}
-              </Col>
-            )}
+                {edition.printType && (
+                  <div>
+                    <strong>Print Type:</strong> {edition.printType}
+                  </div>
+                )}
 
-            {edition.printYear && (
-              <Col xs={6}>
-                <strong>Year:</strong> {edition.printYear}
-              </Col>
-            )}
+                {edition.numberInCollection && (
+                  <div>
+                    <strong>Collection Number: </strong>
+                    {edition.numberInCollection}
+                  </div>
+                )}
 
-            {edition.numberInCollection && (
-              <Col xs={6}>
-                <strong>Number:</strong> {edition.numberInCollection}
-              </Col>
-            )}
-
-            {edition.spine && (
-              <Col xs={6}>
-                <strong>Spine:</strong> {edition.spine}
-              </Col>
-            )}
-
-            {edition.note && (
-              <Col xs={12}>
-                <strong>Notes:</strong>
-                <div style={{ maxHeight: "100px", overflowY: "auto" }}>
-                  <ReactMarkdown>{edition.note}</ReactMarkdown>
+                <div>
+                  <strong>Publisher:</strong>{" "}
+                  <span
+                    className="pop-effect"
+                    role="button"
+                    onClick={() => onSelectPublisher(edition.organizationID)}
+                  >
+                    {edition.publisherDisplay}
+                  </span>
                 </div>
-              </Col>
-            )}
-
-            <Col xs={6}>
-              <strong>Publisher:</strong>{" "}
-              <span
-                className="pop-effect"
-                role="button"
-                onClick={() => onSelectPublisher(edition.organizationID)}
-              >
-                {edition.publisherDisplay}
-              </span>
+              </div>
             </Col>
 
-            {edition.displayContributors?.length > 0 && (
-              <Col xs={12}>
-                <strong>Contributors:</strong>
-                <ul className="mb-0">
-                  {edition.displayContributors.map((c, i) => (
-                    <li key={i}>
-                      <span
-                        className="pop-effect"
-                        role="button"
-                        onClick={() => onSelectPerson(c.peopleID)}
-                      >
-                        {c.peopleName}
-                      </span>
-                      {""} — {c.roleName}
-                    </li>
-                  ))}
-                </ul>
-              </Col>
-            )}
+            <Col xs={12} md={6}>
+              <div className="d-flex flex-column gap-2">
+                {edition.comicTitle && (
+                  <div>
+                    <strong>Comic Title: </strong>
+                    <span
+                      className="pop-effect"
+                      role="button"
+                      onClick={() => onSelectComic(edition.comicID)}
+                    >
+                      {edition.comicTitle}
+                    </span>
+                  </div>
+                )}
+
+                {edition.format && (
+                  <div>
+                    <strong>Format:</strong> {edition.format}
+                  </div>
+                )}
+
+                {edition.printYear && (
+                  <div>
+                    <strong>Year:</strong> {edition.printYear}
+                  </div>
+                )}
+
+                {edition.spine && (
+                  <div>
+                    <strong>Spine:</strong> {edition.spine}
+                  </div>
+                )}
+
+                {edition.note && (
+                  <div>
+                    <strong>Notes:</strong>
+                    <div style={{ maxHeight: "100px", overflowY: "auto" }}>
+                      <ReactMarkdown>{edition.note}</ReactMarkdown>
+                    </div>
+                  </div>
+                )}
+
+                {edition.displayContributors?.length > 0 && (
+                  <div>
+                    <strong>Contributors:</strong>
+                    <ul className="mb-0">
+                      {edition.displayContributors.map((c, i) => (
+                        <li key={i}>
+                          <span
+                            className="pop-effect"
+                            role="button"
+                            onClick={() => onSelectPerson(c.peopleID)}
+                          >
+                            {c.peopleName}
+                          </span>
+                          {""} — {c.roleName}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </Col>
 
             <Col xs={12} className="mt-3">
               {/* Library toggle icons */}
@@ -325,6 +362,8 @@ export function Editions(props) {
     onSelectCompendium,
     onSelectPublisher,
     onSelectPerson,
+    onSelectComic,
+    onSelectSerie,
     onDeleteEdition,
   } = props;
 
@@ -343,6 +382,8 @@ export function Editions(props) {
               onSelectCompendium={onSelectCompendium}
               onSelectPublisher={onSelectPublisher}
               onSelectPerson={onSelectPerson}
+              onSelectComic={onSelectComic}
+              onSelectSerie={onSelectSerie}
               onDelete={onDeleteEdition}
             />
           </Col>

@@ -82,6 +82,7 @@ export function AddEditions(props) {
     compendiumName: "",
     spine: "",
     note: "",
+    numberInCollection: "",
   });
 
   const formats = editions.map((e) => e.format);

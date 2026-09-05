@@ -6,7 +6,6 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "rc-pagination/assets/index.css";
 import "./api/firebase.js";
 import { ComicPage } from "./pages/ComicPage.jsx";
-import { HomePage } from "./pages/HomePage.jsx";
 import { useComicCollectionData } from "./api/comicInfo.js";
 import { deleteSerie, useSerieCollectionData } from "./api/serieInfo.js";
 import {
@@ -22,7 +21,7 @@ import { useOrganizationCollectionData } from "./api/organizationInfo.js";
 import { useRoleCollectionData } from "./api/roleInfo.js";
 import { useComicContributorCollectionData } from "./api/comicContributer.js";
 import { usePeopleCollectionData } from "./api/personInfo.js";
-import { useEditionCollectionData } from "./api/editionInfo.js";
+import { useEditionCollectionData, deleteEdition } from "./api/editionInfo.js";
 import { AddEditionPage } from "./pages/AddEditionPage.jsx";
 import { useCompendiumCollectionData } from "./api/compendiumInfo.js";
 import { CompendiumPage } from "./pages/CompendiumPage.jsx";
@@ -286,10 +285,37 @@ function ActivePage(props) {
       return (
         <CompendiumPage
           compendium={selectedCompendium}
+          allCompendiums={compendium}
+          universes={universes}
           editions={editions}
-          onEditEdition={(edition) => {
-            setSelectedComicID(edition.comicID);
-            navigateTo(NAV_ADD_ED);
+          comics={comics}
+          series={series}
+          organizations={organizations}
+          roles={roles}
+          peoples={peoples}
+          comicContributors={comicContributors}
+          onDeleteEdition={async (edition) => {
+            await deleteEdition(edition, comicContributors);
+          }}
+          onSelectCompendium={(compendiumID) => {
+            setSelectedCompendiumID(compendiumID);
+            navigateTo(NAV_COLLECTION);
+          }}
+          onSelectPublisher={(publisherID) => {
+            setSelectedPublisherID(publisherID);
+            navigateTo(NAV_PUBLISHER);
+          }}
+          onSelectPerson={(peopleID) => {
+            setSelectedPersonID(peopleID);
+            navigateTo(NAV_PERSON);
+          }}
+          onSelectComic={(comicID) => {
+            setSelectedComicID(comicID);
+            navigateTo(COMIC_EDITIONS);
+          }}
+          onSelectSerie={(serieID) => {
+            setSelectedSerieID(serieID);
+            navigateTo(COMIC_CATALOG);
           }}
         />
       );

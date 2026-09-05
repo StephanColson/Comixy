@@ -294,6 +294,24 @@ export function EditionSection(props) {
           </Col>
         </Col>
 
+        <Col sm={6} lg={3}>
+          <label className="form-label">
+            Collectie Nr.: <span className="text-warning">(optional)</span>
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Number within the collection..."
+            value={editionForm.numberInCollection ?? ""}
+            onChange={(e) =>
+              setEditionForm((prev) => ({
+                ...prev,
+                numberInCollection: e.target.value,
+              }))
+            }
+          />
+        </Col>
+
         <Col sm={5} lg={2}>
           <label className="form-label">Published:</label>
           <input

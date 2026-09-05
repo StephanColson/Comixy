@@ -62,6 +62,7 @@ export function EditEditionModal(props) {
     spine: edition.spine ?? "",
     note: edition.note ?? "",
     condition: edition.condition || null,
+    numberInCollection: edition.numberInCollection ?? "",
   });
 
   const [contributors, setContributors] = useState(
@@ -176,6 +177,7 @@ export function EditEditionModal(props) {
         spine: editionForm.spine?.trim() || null,
         note: editionForm.note?.trim() || null,
         condition: editionForm.condition || null,
+        numberInCollection: editionForm.numberInCollection?.trim() || null,
       });
 
       const old = comicContributors.filter((cc) => cc.editionID === edition.id);

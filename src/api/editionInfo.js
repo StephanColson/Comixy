@@ -215,7 +215,8 @@ export async function addEdition(newEdition) {
 }
 
 export async function updateEdition(edition) {
-  await updateDoc(edition.ref, edition);
+  const cleanData = editionConverter.toFirestore(edition);
+  await updateDoc(edition.ref, cleanData);
 }
 
 export async function deleteEdition(edition, comicContributors) {
