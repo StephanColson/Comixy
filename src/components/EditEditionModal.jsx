@@ -53,6 +53,8 @@ export function EditEditionModal(props) {
     formatName: "",
     printType: edition.printType || null,
     printTypeName: "",
+    language: edition.language || null,
+    languageName: "",
     organizationID: edition.organizationID || null,
     organizationName: "",
     imageFiles: [null, null, null, null, null],
@@ -124,6 +126,17 @@ export function EditEditionModal(props) {
         editionForm.printType ||
         (typedPrintType ? editionForm.printTypeName.trim() : null);
 
+      const typedLanguage = normalize(editionForm.languageName);
+      const existingLanguage = editions
+        .map((e) => e.language)
+        .filter(Boolean)
+        .find((l) => normalize(l) === typedLanguage);
+
+      const finalLanguage =
+        existingLanguage ||
+        editionForm.language ||
+        (typedLanguage ? editionForm.languageName.trim() : null);
+
       const typedPublisher = normalize(editionForm.organizationName);
       const existingPublisher = organizations.find(
         (o) => normalize(o.name) === typedPublisher,
@@ -170,6 +183,7 @@ export function EditEditionModal(props) {
         printYear: editionForm.printYear || null,
         format: finalFormat,
         printType: finalPrintType,
+        language: finalLanguage,
         organizationID: publisherID,
         organizationName: editionForm.organizationName.trim(),
         imgURLs,
@@ -258,6 +272,7 @@ export function EditEditionModal(props) {
     setSearchQuery,
     filteredFormat,
     filteredPrintType,
+    filteredLanguage,
     filteredPublishers,
   } = useEditionFiltering({
     editions,
@@ -367,6 +382,7 @@ export function EditEditionModal(props) {
             setEditionForm={setEditionForm}
             filteredFormat={filteredFormat}
             filteredPrintType={filteredPrintType}
+            filteredLanguage={filteredLanguage}
             filteredPublishers={filteredPublishers}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}

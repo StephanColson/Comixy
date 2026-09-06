@@ -262,7 +262,13 @@ function Edition(props) {
 
                 {edition.format && (
                   <div>
-                    <strong>Format:</strong> {edition.format}
+                    <strong>Format: </strong> {edition.format}
+                  </div>
+                )}
+
+                {edition.language && (
+                  <div>
+                    <strong>Language: </strong> {edition.language}
                   </div>
                 )}
 

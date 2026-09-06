@@ -75,6 +75,8 @@ export function AddEditions(props) {
     printTypeName: "",
     format: null,
     formatName: "",
+    language: null,
+    languageName: "",
     organizationID: null,
     organizationName: "",
     imageFiles: [null, null, null, null, null],
@@ -132,6 +134,19 @@ export function AddEditions(props) {
     list: dataPrintType,
     search: editionForm.printTypeName,
     selector: (pt) => pt.label,
+  });
+
+  const language = editions.map((e) => e.language);
+  const uniqueLanguage = [...new Set(language)].filter(Boolean);
+  const dataLanguage = uniqueLanguage.map((l) => ({
+    id: l,
+    label: l,
+  }));
+
+  const filteredLanguage = filterList({
+    list: dataLanguage,
+    search: editionForm.languageName,
+    selector: (l) => l.label,
   });
 
   const filteredFormat = filterList({
@@ -299,6 +314,18 @@ export function AddEditions(props) {
         editionForm.printTypeName ||
         null;
 
+      const typedLanguage = normalize(editionForm.languageName);
+      const existingLanguage = editions
+        .map((e) => e.language)
+        .filter(Boolean)
+        .find((l) => normalize(l) === typedLanguage);
+
+      const finalLanguage =
+        existingLanguage ||
+        editionForm.language ||
+        editionForm.languageName ||
+        null;
+
       const contributorList = await Promise.all(
         contributors.map(async (c) => {
           const typedPerson = normalize(c.peopleName);
@@ -343,6 +370,7 @@ export function AddEditions(props) {
         imgURLs: imgURLs,
         printYear: editionForm.printYear || null,
         printType: finalPrintType,
+        language: finalLanguage,
         numberInCollection: editionForm.numberInCollection || null,
         organizationID: publisherID,
         compendiumID: compendiumID ?? null,
@@ -397,6 +425,7 @@ export function AddEditions(props) {
         setEditionForm={setEditionForm}
         filteredFormat={filteredFormat}
         filteredPrintType={filteredPrintType}
+        filteredLanguage={filteredLanguage}
         filteredPublishers={filteredPublishers}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}

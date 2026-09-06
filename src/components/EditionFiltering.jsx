@@ -6,6 +6,7 @@ export function useEditionFiltering(props) {
   const [searchQuery, setSearchQuery] = useState({
     format: "",
     printType: "",
+    language: "",
     publisher: "",
   });
 
@@ -19,6 +20,12 @@ export function useEditionFiltering(props) {
     const types = editions.map((e) => e.printType);
     const unique = [...new Set(types)];
     return unique.map((pt) => ({ id: pt, label: pt }));
+  }, [editions]);
+
+  const dataLanguage = useMemo(() => {
+    const languages = editions.map((e) => e.language);
+    const unique = [...new Set(languages)].filter(Boolean);
+    return unique.map((l) => ({ id: l, label: l }));
   }, [editions]);
 
   function filterList(list, search, selector) {
@@ -39,6 +46,12 @@ export function useEditionFiltering(props) {
     (pt) => pt.label,
   );
 
+  const filteredLanguage = filterList(
+    dataLanguage,
+    searchQuery.language,
+    (l) => l.label,
+  );
+
   const filteredPublishers = filterList(
     organizations,
     searchQuery.publisher,
@@ -50,6 +63,7 @@ export function useEditionFiltering(props) {
     setSearchQuery,
     filteredFormat,
     filteredPrintType,
+    filteredLanguage,
     filteredPublishers,
   };
 }

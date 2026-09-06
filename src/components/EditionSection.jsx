@@ -6,6 +6,7 @@ export function EditionSection(props) {
     editionForm,
     setEditionForm,
     filteredFormat,
+    filteredLanguage,
     filteredPrintType,
     filteredPublishers,
     searchQuery,
@@ -158,6 +159,50 @@ export function EditionSection(props) {
 
             <Combobox.Options className="list-group position-absolute z-3">
               {filteredFormat.slice(0, 5).map((opt) => (
+                <Combobox.Option
+                  key={opt.id}
+                  value={opt}
+                  className="list-group-item list-group-item-action"
+                >
+                  {opt.label}
+                </Combobox.Option>
+              ))}
+            </Combobox.Options>
+          </Combobox>
+        </Col>
+
+        <Col sm={6} lg={3}>
+          <label className="form-label">Language:</label>
+          <Combobox
+            value={
+              filteredLanguage.find((l) => l.id === editionForm.language) ??
+              (editionForm.languageName
+                ? { id: null, label: editionForm.languageName }
+                : null)
+            }
+            onChange={(opt) => {
+              setEditionForm((prev) => ({
+                ...prev,
+                language: opt ? opt.id : null,
+                languageName: opt?.id ? "" : prev.languageName,
+              }));
+            }}
+          >
+            <Combobox.Input
+              className="form-control"
+              displayValue={(opt) => opt?.label ?? editionForm.languageName}
+              placeholder="Select or type language…"
+              onChange={(e) =>
+                setEditionForm((prev) => ({
+                  ...prev,
+                  language: null,
+                  languageName: e.target.value,
+                }))
+              }
+            />
+
+            <Combobox.Options className="list-group position-absolute z-3">
+              {filteredLanguage.slice(0, 5).map((opt) => (
                 <Combobox.Option
                   key={opt.id}
                   value={opt}
