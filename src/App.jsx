@@ -31,20 +31,37 @@ import { useAuth } from "./context/AuthContext.jsx";
 import { LoginPage } from "./pages/LoginPage.jsx";
 import { UniversePage } from "./pages/UniversePage.jsx";
 import { MyLibraryPage } from "./pages/MyLibrary.jsx";
+import { GlobalSearch } from "./components/GlobalSearch.jsx";
 
-const COMIC_CATALOG = "COMIC_CATALOG";
-const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
-const NAV_UNIVERSE_CATALOG = "NAV_UNIVERSE_CATALOG";
-const COMIC_EDITIONS = "COMIC_EDITIONS";
+export const COMIC_CATALOG = "COMIC_CATALOG";
+export const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
+export const NAV_UNIVERSE_CATALOG = "NAV_UNIVERSE_CATALOG";
+export const COMIC_EDITIONS = "COMIC_EDITIONS";
 const NAV_ADD_FORM = "NAV_ADD_FORM";
 const NAV_ADD_ED = "NAV_ADD_ED";
-const NAV_COLLECTION = "NAV_COLLECTION";
-const NAV_PUBLISHER = "NAV_PUBLISHER";
-const NAV_PERSON = "NAV_PERSON";
+export const NAV_COLLECTION = "NAV_COLLECTION";
+export const NAV_PUBLISHER = "NAV_PUBLISHER";
+export const NAV_PERSON = "NAV_PERSON";
 const NAV_MY_LIBRARY = "NAV_MY_LIBRARY";
 
 function NavigationBar(props) {
-  const { activeNavBarItem, onSelectNavBarItem } = props;
+  const {
+    activeNavBarItem,
+    onSelectNavBarItem,
+    comics,
+    series,
+    universes,
+    peoples,
+    organizations,
+    compendium,
+    navigateTo,
+    setSelectedComicID,
+    setSelectedSerieID,
+    setSelectedUniverseID,
+    setSelectedPersonID,
+    setSelectedPublisherID,
+    setSelectedCompendiumID,
+  } = props;
   const { currentUser, role, logout } = useAuth();
 
   return (
@@ -87,6 +104,22 @@ function NavigationBar(props) {
                 </Nav.Link>
               </Nav.Item>
             </Nav>
+
+            <GlobalSearch
+              navigateTo={navigateTo}
+              setSelectedComicID={setSelectedComicID}
+              setSelectedSerieID={setSelectedSerieID}
+              setSelectedUniverseID={setSelectedUniverseID}
+              setSelectedPersonID={setSelectedPersonID}
+              setSelectedPublisherID={setSelectedPublisherID}
+              setSelectedCompendiumID={setSelectedCompendiumID}
+              comics={comics}
+              series={series}
+              universes={universes}
+              peoples={peoples}
+              organizations={organizations}
+              compendium={compendium}
+            />
 
             {currentUser && (
               <div className="d-flex align-items-center gap-2 ms-auto">
@@ -134,22 +167,24 @@ function ActivePage(props) {
     setSelectedComicID,
     selectedComicID,
     selectedUniverseID,
+    selectedPersonID,
     setSelectedUniverseID,
+    setSelectedPersonID,
+    selectedPublisherID,
+    setSelectedPublisherID,
+    selectedCompendiumID,
+    setSelectedCompendiumID,
+    comics,
+    series,
+    universes,
+    peoples,
+    organizations,
+    compendium,
   } = props;
 
-  const { comics } = useComicCollectionData();
   const { editions } = useEditionCollectionData();
-  const { series } = useSerieCollectionData();
-  const { universes } = useUniverseCollectionData();
-  const { compendium } = useCompendiumCollectionData();
-  const { organizations } = useOrganizationCollectionData();
   const { roles } = useRoleCollectionData();
-  const { peoples } = usePeopleCollectionData();
   const { comicContributors } = useComicContributorCollectionData();
-
-  const [selectedCompendiumID, setSelectedCompendiumID] = useState(null);
-  const [selectedPublisherID, setSelectedPublisherID] = useState(null);
-  const [selectedPersonID, setSelectedPersonID] = useState(null);
 
   function handleAddEditions(comic) {
     setSelectedComicID(comic.id);
@@ -389,6 +424,16 @@ function App() {
   const [selectedComicID, setSelectedComicID] = useState(null);
   const [selectedSerieID, setSelectedSerieID] = useState(null);
   const [selectedUniverseID, setSelectedUniverseID] = useState(null);
+  const [selectedPersonID, setSelectedPersonID] = useState(null);
+  const [selectedPublisherID, setSelectedPublisherID] = useState(null);
+  const [selectedCompendiumID, setSelectedCompendiumID] = useState(null);
+
+  const { comics } = useComicCollectionData();
+  const { series } = useSerieCollectionData();
+  const { universes } = useUniverseCollectionData();
+  const { peoples } = usePeopleCollectionData();
+  const { organizations } = useOrganizationCollectionData();
+  const { compendium } = useCompendiumCollectionData();
 
   function navigateTo(key) {
     window.location.hash = key;
@@ -430,6 +475,19 @@ function App() {
           }
           if (key === NAV_SERIE_CATALOG) setSelectedUniverseID(null);
         }}
+        navigateTo={navigateTo}
+        setSelectedComicID={setSelectedComicID}
+        setSelectedSerieID={setSelectedSerieID}
+        setSelectedUniverseID={setSelectedUniverseID}
+        setSelectedPersonID={setSelectedPersonID}
+        setSelectedPublisherID={setSelectedPublisherID}
+        setSelectedCompendiumID={setSelectedCompendiumID}
+        comics={comics}
+        series={series}
+        universes={universes}
+        peoples={peoples}
+        organizations={organizations}
+        compendium={compendium}
       />
       <div style={{ marginTop: "70px" }}>
         <ActivePage
@@ -441,6 +499,18 @@ function App() {
           setSelectedSerieID={setSelectedSerieID}
           setSelectedUniverseID={setSelectedUniverseID}
           selectedUniverseID={selectedUniverseID}
+          selectedPersonID={selectedPersonID}
+          setSelectedPersonID={setSelectedPersonID}
+          selectedPublisherID={selectedPublisherID}
+          setSelectedPublisherID={setSelectedPublisherID}
+          selectedCompendiumID={selectedCompendiumID}
+          setSelectedCompendiumID={setSelectedCompendiumID}
+          comics={comics}
+          series={series}
+          universes={universes}
+          peoples={peoples}
+          organizations={organizations}
+          compendium={compendium}
         />
       </div>
     </>
