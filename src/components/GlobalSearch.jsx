@@ -9,7 +9,7 @@ import {
   NAV_COLLECTION,
 } from "../App.jsx";
 
-const MAX_PER_CATEGORY = 2;
+const MAX_PER_CATEGORY = 5;
 
 export function GlobalSearch({
   navigateTo,

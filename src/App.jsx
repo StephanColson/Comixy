@@ -212,6 +212,8 @@ function ActivePage(props) {
           series={series}
           selectedSerieID={selectedSerieID}
           comicContributors={comicContributors}
+          organizations={organizations}
+          peoples={peoples}
         />
       );
 

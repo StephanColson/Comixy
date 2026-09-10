@@ -1,5 +1,6 @@
 import { Section } from "../components/Section.jsx";
 import { Comics } from "../components/Comics.jsx";
+import { ComicFiltersSidebar } from "../components/ComicFiltersSidebar.jsx";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import Pagination from "rc-pagination";
@@ -18,6 +19,82 @@ function useSlideSize() {
   return slideSize;
 }
 
+function comicMatchesFilters(
+  comic,
+  editions,
+  comicContributors,
+  peoples,
+  filters,
+) {
+  if (!filters) return true;
+
+  if (filters.bookNumberQuery) {
+    if (
+      !comic.bookNumber
+        ?.toString()
+        .toLowerCase()
+        .includes(filters.bookNumberQuery)
+    ) {
+      return false;
+    }
+  }
+
+  if (filters.personQuery) {
+    const matchingPeopleIDs = new Set(
+      (peoples ?? [])
+        .filter(
+          (p) =>
+            p.name?.toLowerCase().includes(filters.personQuery) ||
+            p.alias?.some((a) => a.toLowerCase().includes(filters.personQuery)),
+        )
+        .map((p) => p.id),
+    );
+    const hasMatchingContributor = (comicContributors ?? []).some(
+      (cc) => cc.comicID === comic.id && matchingPeopleIDs.has(cc.peopleID),
+    );
+    if (!hasMatchingContributor) return false;
+  }
+
+  const hasEditionFilters =
+    filters.formats.length > 0 ||
+    filters.publisherID ||
+    filters.language ||
+    filters.yearFrom != null ||
+    filters.yearTo != null ||
+    filters.spineQuery;
+
+  if (hasEditionFilters) {
+    const comicEditions = (editions ?? []).filter(
+      (e) => e.comicID === comic.id,
+    );
+    const hasMatchingEdition = comicEditions.some((ed) => {
+      if (
+        filters.formats.length > 0 &&
+        !filters.formats.includes(ed.format) &&
+        !filters.formats.includes(ed.printType)
+      ) {
+        return false;
+      }
+      if (filters.publisherID && ed.organizationID !== filters.publisherID)
+        return false;
+      if (filters.language && ed.language !== filters.language) return false;
+      if (filters.yearFrom != null && Number(ed.printYear) < filters.yearFrom)
+        return false;
+      if (filters.yearTo != null && Number(ed.printYear) > filters.yearTo)
+        return false;
+      if (
+        filters.spineQuery &&
+        !ed.spine?.toLowerCase().includes(filters.spineQuery)
+      )
+        return false;
+      return true;
+    });
+    if (!hasMatchingEdition) return false;
+  }
+
+  return true;
+}
+
 export function ComicPage(props) {
   const {
     comics,
@@ -26,14 +103,28 @@ export function ComicPage(props) {
     onSelectComic,
     series,
     comicContributors,
+    organizations,
+    peoples,
   } = props;
   const slideSize = useSlideSize();
+
+  const [appliedFilters, setAppliedFilters] = useState(null);
 
   const baseComics = selectedSerieID
     ? [...comics].filter((c) => c.serieID === selectedSerieID)
     : [...comics];
 
-  const sortedBaseComics = [...baseComics].sort(
+  const filteredComics = baseComics.filter((c) =>
+    comicMatchesFilters(
+      c,
+      editions,
+      comicContributors,
+      peoples,
+      appliedFilters,
+    ),
+  );
+
+  const sortedBaseComics = [...filteredComics].sort(
     (a, b) => Number(a.bookNumber) - Number(b.bookNumber),
   );
 
@@ -134,26 +225,39 @@ export function ComicPage(props) {
         onChange={setCurrentPage}
       />
 
-      <Section>
-        <Comics
-          comics={paginatedComics}
-          selectedSerieID={selectedSerieID}
-          series={series}
-          onSelectComic={onSelectComic}
-          onDeleteComic={async (comic) => {
-            await deleteComic(comic, editions, comicContributors);
-          }}
+      <div style={{ display: "flex", gap: "1.5rem", padding: "0 1.5rem" }}>
+        <ComicFiltersSidebar
           editions={editions}
-          slides={slides}
+          organizations={organizations}
+          onApply={(filters) => {
+            setAppliedFilters(filters);
+            setCurrentPage(1);
+          }}
         />
-      </Section>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <Section>
+            <Comics
+              comics={paginatedComics}
+              selectedSerieID={selectedSerieID}
+              series={series}
+              onSelectComic={onSelectComic}
+              onDeleteComic={async (comic) => {
+                await deleteComic(comic, editions, comicContributors);
+              }}
+              editions={editions}
+              slides={slides}
+            />
+          </Section>
+        </div>
+      </div>
 
       <Pagination
         className="my-3"
         align="center"
         current={currentPage}
         pageSize={displayComic}
-        total={baseComics.length}
+        total={sortedBaseComics.length}
         onChange={setCurrentPage}
       />
     </>
