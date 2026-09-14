@@ -19,13 +19,7 @@ function useSlideSize() {
   return slideSize;
 }
 
-function comicMatchesFilters(
-  comic,
-  editions,
-  comicContributors,
-  peoples,
-  filters,
-) {
+function comicMatchesFilters(comic, editions, comicContributors, filters) {
   if (!filters) return true;
 
   if (filters.bookNumberQuery) {
@@ -39,29 +33,21 @@ function comicMatchesFilters(
     }
   }
 
-  if (filters.personQuery) {
-    const matchingPeopleIDs = new Set(
-      (peoples ?? [])
-        .filter(
-          (p) =>
-            p.name?.toLowerCase().includes(filters.personQuery) ||
-            p.alias?.some((a) => a.toLowerCase().includes(filters.personQuery)),
-        )
-        .map((p) => p.id),
-    );
+  if (filters.personIDs.length > 0) {
     const hasMatchingContributor = (comicContributors ?? []).some(
-      (cc) => cc.comicID === comic.id && matchingPeopleIDs.has(cc.peopleID),
+      (cc) =>
+        cc.comicID === comic.id && filters.personIDs.includes(cc.peopleID),
     );
     if (!hasMatchingContributor) return false;
   }
 
   const hasEditionFilters =
     filters.formats.length > 0 ||
-    filters.publisherID ||
+    filters.publisherIDs.length > 0 ||
     filters.language ||
     filters.yearFrom != null ||
     filters.yearTo != null ||
-    filters.spineQuery;
+    filters.compendiumIDs.length > 0;
 
   if (hasEditionFilters) {
     const comicEditions = (editions ?? []).filter(
@@ -75,18 +61,23 @@ function comicMatchesFilters(
       ) {
         return false;
       }
-      if (filters.publisherID && ed.organizationID !== filters.publisherID)
+      if (
+        filters.publisherIDs.length > 0 &&
+        !filters.publisherIDs.includes(ed.organizationID)
+      ) {
         return false;
+      }
       if (filters.language && ed.language !== filters.language) return false;
       if (filters.yearFrom != null && Number(ed.printYear) < filters.yearFrom)
         return false;
       if (filters.yearTo != null && Number(ed.printYear) > filters.yearTo)
         return false;
       if (
-        filters.spineQuery &&
-        !ed.spine?.toLowerCase().includes(filters.spineQuery)
-      )
+        filters.compendiumIDs.length > 0 &&
+        !filters.compendiumIDs.includes(ed.compendiumID)
+      ) {
         return false;
+      }
       return true;
     });
     if (!hasMatchingEdition) return false;
@@ -105,6 +96,7 @@ export function ComicPage(props) {
     comicContributors,
     organizations,
     peoples,
+    compendium,
   } = props;
   const slideSize = useSlideSize();
 
@@ -114,14 +106,27 @@ export function ComicPage(props) {
     ? [...comics].filter((c) => c.serieID === selectedSerieID)
     : [...comics];
 
+  const baseComicIDs = new Set(baseComics.map((c) => c.id));
+  const serieEditions = (editions ?? []).filter((e) =>
+    baseComicIDs.has(e.comicID),
+  );
+
+  const usedPublisherIDs = new Set(
+    serieEditions.map((e) => e.organizationID).filter(Boolean),
+  );
+  const scopedOrganizations = (organizations ?? []).filter((o) =>
+    usedPublisherIDs.has(o.id),
+  );
+
+  const usedCompendiumIDs = new Set(
+    serieEditions.map((e) => e.compendiumID).filter(Boolean),
+  );
+  const scopedCompendium = (compendium ?? []).filter((c) =>
+    usedCompendiumIDs.has(c.id),
+  );
+
   const filteredComics = baseComics.filter((c) =>
-    comicMatchesFilters(
-      c,
-      editions,
-      comicContributors,
-      peoples,
-      appliedFilters,
-    ),
+    comicMatchesFilters(c, editions, comicContributors, appliedFilters),
   );
 
   const sortedBaseComics = [...filteredComics].sort(
@@ -227,8 +232,10 @@ export function ComicPage(props) {
 
       <div style={{ display: "flex", gap: "1.5rem", padding: "0 1.5rem" }}>
         <ComicFiltersSidebar
-          editions={editions}
-          organizations={organizations}
+          editions={serieEditions}
+          organizations={scopedOrganizations}
+          compendium={scopedCompendium}
+          peoples={peoples}
           onApply={(filters) => {
             setAppliedFilters(filters);
             setCurrentPage(1);

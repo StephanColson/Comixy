@@ -214,6 +214,7 @@ function ActivePage(props) {
           comicContributors={comicContributors}
           organizations={organizations}
           peoples={peoples}
+          compendium={compendium}
         />
       );
 
