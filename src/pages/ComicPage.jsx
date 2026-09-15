@@ -63,7 +63,9 @@ function comicMatchesFilters(comic, editions, comicContributors, filters) {
       }
       if (
         filters.publisherIDs.length > 0 &&
-        !filters.publisherIDs.includes(ed.organizationID)
+        !filters.publisherIDs.some((id) =>
+          (ed.organizationIDs ?? []).includes(id),
+        )
       ) {
         return false;
       }
@@ -74,7 +76,9 @@ function comicMatchesFilters(comic, editions, comicContributors, filters) {
         return false;
       if (
         filters.compendiumIDs.length > 0 &&
-        !filters.compendiumIDs.includes(ed.compendiumID)
+        !filters.compendiumIDs.some((id) =>
+          (ed.compendiumIDs ?? []).includes(id),
+        )
       ) {
         return false;
       }
@@ -112,14 +116,14 @@ export function ComicPage(props) {
   );
 
   const usedPublisherIDs = new Set(
-    serieEditions.map((e) => e.organizationID).filter(Boolean),
+    serieEditions.flatMap((e) => e.organizationIDs ?? []),
   );
   const scopedOrganizations = (organizations ?? []).filter((o) =>
     usedPublisherIDs.has(o.id),
   );
 
   const usedCompendiumIDs = new Set(
-    serieEditions.map((e) => e.compendiumID).filter(Boolean),
+    serieEditions.flatMap((e) => e.compendiumIDs ?? []),
   );
   const scopedCompendium = (compendium ?? []).filter((c) =>
     usedCompendiumIDs.has(c.id),

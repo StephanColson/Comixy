@@ -36,10 +36,15 @@ export function ComicDetailsPage(props) {
   const comicEditions = editions
     ?.filter((ed) => ed.comicID === comic.id)
     .map((ed) => {
-      const publisher = organizations?.find(
-        (org) => org.id === ed.organizationID,
-      );
-      const collection = compendium?.find((c) => c.id === ed.compendiumID);
+      const publisherDisplays = (ed.organizationIDs ?? [])
+        .map((id) => organizations?.find((org) => org.id === id))
+        .filter(Boolean)
+        .map((org) => ({ id: org.id, name: org.name }));
+
+      const compendiumDisplays = (ed.compendiumIDs ?? [])
+        .map((id) => compendium?.find((c) => c.id === id))
+        .filter(Boolean)
+        .map((c) => ({ id: c.id, title: c.title }));
 
       const contributors = comicContributors
         ?.filter((cc) => cc.editionID === ed.id)
@@ -56,9 +61,9 @@ export function ComicDetailsPage(props) {
 
       return {
         ...ed,
-        publisherDisplay: publisher?.name || "Unknown",
+        publisherDisplays,
         displayContributors: contributors || [],
-        compendiumTitle: collection?.title ?? null,
+        compendiumDisplays,
         spine: ed.spine ?? null,
       };
     })

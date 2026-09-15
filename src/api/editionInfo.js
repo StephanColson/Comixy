@@ -173,8 +173,8 @@ const editionConverter = {
     comicID: dataInApp.comicID,
     printType: dataInApp.printType,
     numberInCollection: dataInApp.numberInCollection,
-    organizationID: dataInApp.organizationID,
-    compendiumID: dataInApp.compendiumID ?? null,
+    organizationIDs: dataInApp.organizationIDs ?? [],
+    compendiumIDs: dataInApp.compendiumIDs ?? [],
     spine: dataInApp.spine ?? null,
     note: dataInApp.note ?? null,
     language: dataInApp.language ?? null,
@@ -186,15 +186,47 @@ const editionConverter = {
       : data.imgURL
         ? [data.imgURL]
         : [];
+
+    const organizationIDs = Array.isArray(data.organizationIDs)
+      ? data.organizationIDs
+      : data.organizationID
+        ? [data.organizationID]
+        : [];
+    const compendiumIDs = Array.isArray(data.compendiumIDs)
+      ? data.compendiumIDs
+      : data.compendiumID
+        ? [data.compendiumID]
+        : [];
     return {
       ...data,
       imgURLs,
-      compendiumID: data.compendiumID ?? null,
+      organizationIDs,
+      compendiumIDs,
       id: snapshot.id,
       ref: snapshot.ref,
     };
   },
 };
+
+export async function resolveSelectionIDs(
+  selections,
+  existingList,
+  getLabel,
+  createFn,
+) {
+  const normalize = (str) => (str || "").trim().toLowerCase();
+  const ids = await Promise.all(
+    selections.map(async (sel) => {
+      if (sel.id) return sel.id;
+      const existing = existingList.find(
+        (item) => normalize(getLabel(item)) === normalize(sel.name),
+      );
+      if (existing) return existing.id;
+      return await createFn(sel.name.trim());
+    }),
+  );
+  return [...new Set(ids)];
+}
 
 export function useEditionCollectionData() {
   const collectionRef = collection(

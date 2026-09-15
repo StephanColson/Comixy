@@ -206,16 +206,21 @@ function Edition(props) {
                   </div>
                 )}
 
-                {edition.compendiumTitle && (
+                {edition.compendiumDisplays?.length > 0 && (
                   <div>
                     <strong>Collection: </strong>
-                    <span
-                      className="pop-effect"
-                      role="button"
-                      onClick={() => onSelectCompendium(edition.compendiumID)}
-                    >
-                      {edition.compendiumTitle}
-                    </span>
+                    {edition.compendiumDisplays.map((c, i) => (
+                      <span key={c.id ?? i}>
+                        <span
+                          className="pop-effect"
+                          role="button"
+                          onClick={() => onSelectCompendium(c.id)}
+                        >
+                          {c.title}
+                        </span>
+                        {i < edition.compendiumDisplays.length - 1 && ", "}
+                      </span>
+                    ))}
                   </div>
                 )}
 
@@ -234,13 +239,20 @@ function Edition(props) {
 
                 <div>
                   <strong>Publisher:</strong>{" "}
-                  <span
-                    className="pop-effect"
-                    role="button"
-                    onClick={() => onSelectPublisher(edition.organizationID)}
-                  >
-                    {edition.publisherDisplay}
-                  </span>
+                  {edition.publisherDisplays?.length > 0
+                    ? edition.publisherDisplays.map((p, i) => (
+                        <span key={p.id ?? i}>
+                          <span
+                            className="pop-effect"
+                            role="button"
+                            onClick={() => onSelectPublisher(p.id)}
+                          >
+                            {p.name}
+                          </span>
+                          {i < edition.publisherDisplays.length - 1 && ", "}
+                        </span>
+                      ))
+                    : "Unknown"}
                 </div>
               </div>
             </Col>

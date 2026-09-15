@@ -1,5 +1,6 @@
 import { Combobox } from "@headlessui/react";
 import { Row, Col } from "react-bootstrap";
+import { MultiSelectChips } from "./MultiSelectChips.jsx";
 
 export function EditionSection(props) {
   const {
@@ -8,7 +9,6 @@ export function EditionSection(props) {
     filteredFormat,
     filteredLanguage,
     filteredPrintType,
-    filteredPublishers,
     searchQuery,
     setSearchQuery,
     currentYear,
@@ -57,73 +57,27 @@ export function EditionSection(props) {
         </Row>
 
         <Col lg={12}>
-          <label className="form-label">
-            Collection: <span className="text-warning">(optional)</span>
-          </label>
-          <Combobox
-            value={
-              compendium.find((cpd) => cpd.id === editionForm.compendiumID) ??
-              (editionForm.compendiumName
-                ? { title: editionForm.compendiumName }
-                : null)
+          <MultiSelectChips
+            label={
+              <>
+                Collection: <span className="text-warning">(optional)</span>
+              </>
             }
-            onChange={(opt) => {
+            options={compendium ?? []}
+            getOptionLabel={(c) => c.title}
+            selections={editionForm.compendiumSelections}
+            onChange={(selections) =>
               setEditionForm((prev) => ({
                 ...prev,
-                compendiumID: opt?.id ?? null,
-                compendiumName: opt?.id ? "" : (opt?.title ?? ""),
-              }));
-            }}
-          >
-            <Combobox.Input
-              className="form-control"
-              displayValue={(opt) => opt?.title ?? ""}
-              placeholder="Select or type a collection..."
-              onChange={(e) => {
-                setSearchQuery((prev) => ({
-                  ...prev,
-                  compendium: e.target.value,
-                }));
-                setEditionForm((prev) => ({
-                  ...prev,
-                  compendiumName: e.target.value,
-                  compendiumID: null,
-                }));
-              }}
-            />
-            <Combobox.Options className="list-group position-absolute z-3">
-              {compendium
-                ?.filter((c) =>
-                  c.title
-                    .toLowerCase()
-                    .includes((searchQuery.compendium || "").toLowerCase()),
-                )
-                .slice(0, 5)
-                .map((c) => (
-                  <Combobox.Option
-                    key={c.id}
-                    value={c}
-                    className="list-group-item list-group-item-action"
-                  >
-                    {c.title}
-                  </Combobox.Option>
-                ))}
-
-              {searchQuery.compendium &&
-                !compendium?.some(
-                  (c) =>
-                    c.title?.toLowerCase() ===
-                    searchQuery.compendium.toLowerCase(),
-                ) && (
-                  <Combobox.Option
-                    value={{ title: searchQuery.compendium }}
-                    className="list-group-item list-group-item-action text-primary"
-                  >
-                    Create "{searchQuery.compendium}"
-                  </Combobox.Option>
-                )}
-            </Combobox.Options>
-          </Combobox>
+                compendiumSelections: selections,
+              }))
+            }
+            searchValue={searchQuery.compendium || ""}
+            onSearchChange={(value) =>
+              setSearchQuery((prev) => ({ ...prev, compendium: value }))
+            }
+            placeholder="Search or create a collection..."
+          />
         </Col>
 
         <Col sm={6} lg={3}>
@@ -260,83 +214,23 @@ export function EditionSection(props) {
         </Col>
 
         <Col sm={7} lg={3}>
-          <Col>
-            <label className="form-label">Publisher:</label>
-
-            <Combobox
-              value={
-                organizations.find(
-                  (p) => p.id === editionForm.organizationID,
-                ) ??
-                (editionForm.organizationName
-                  ? { name: editionForm.organizationName }
-                  : null)
-              }
-              onChange={(opt) => {
-                if (!opt) {
-                  setEditionForm((prev) => ({
-                    ...prev,
-                    organizationID: null,
-                    organizationName: "",
-                  }));
-                } else if (opt.id) {
-                  setEditionForm((prev) => ({
-                    ...prev,
-                    organizationID: opt.id,
-                    organizationName: "",
-                  }));
-                } else {
-                  setEditionForm((prev) => ({
-                    ...prev,
-                    organizationID: null,
-                    organizationName: opt.name,
-                  }));
-                }
-              }}
-            >
-              <Combobox.Input
-                className="form-control"
-                displayValue={(opt) => opt?.name ?? ""}
-                placeholder="Select or type a publisher..."
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setSearchQuery((prev) => ({ ...prev, publisher: value }));
-
-                  setEditionForm((prev) => ({
-                    ...prev,
-                    organizationID: null,
-                    organizationName: value,
-                  }));
-                }}
-              />
-
-              <Combobox.Options className="list-group position-absolute z-3">
-                {filteredPublishers.slice(0, 5).map((opt) => (
-                  <Combobox.Option
-                    key={opt.id}
-                    value={opt}
-                    className="list-group-item list-group-item-action"
-                  >
-                    {opt.name}
-                  </Combobox.Option>
-                ))}
-
-                {searchQuery.publisher !== "" &&
-                  !filteredPublishers.some(
-                    (p) =>
-                      p.name?.toLowerCase() ===
-                      searchQuery.publisher.toLowerCase(),
-                  ) && (
-                    <Combobox.Option
-                      value={{ name: searchQuery.publisher }}
-                      className="list-group-item list-group-item-action text-primary"
-                    >
-                      Create “{searchQuery.publisher}”
-                    </Combobox.Option>
-                  )}
-              </Combobox.Options>
-            </Combobox>
-          </Col>
+          <MultiSelectChips
+            label="Publisher:"
+            options={organizations ?? []}
+            getOptionLabel={(o) => o.name}
+            selections={editionForm.organizationSelections}
+            onChange={(selections) =>
+              setEditionForm((prev) => ({
+                ...prev,
+                organizationSelections: selections,
+              }))
+            }
+            searchValue={searchQuery.publisher || ""}
+            onSearchChange={(value) =>
+              setSearchQuery((prev) => ({ ...prev, publisher: value }))
+            }
+            placeholder="Search or create a publisher..."
+          />
         </Col>
 
         <Col sm={6} lg={3}>

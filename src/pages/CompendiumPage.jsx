@@ -26,7 +26,7 @@ export function CompendiumPage(props) {
 
   const [editingEdition, setEditingEdition] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [sortOrder, setSortOrder] = useState("asc"); // "asc" | "desc"
+  const [sortOrder, setSortOrder] = useState("asc");
 
   if (!compendium) return <div>No Collection Selected</div>;
 
@@ -36,18 +36,23 @@ export function CompendiumPage(props) {
   }
 
   const compendiumEditions = editions
-    ?.filter((ed) => ed.compendiumID === compendium.id)
+    ?.filter((ed) => (ed.compendiumIDs ?? []).includes(compendium.id))
     .map((ed) => {
-      const publisher = organizations?.find(
-        (org) => org.id === ed.organizationID,
-      );
+      const publisherDisplays = (ed.organizationIDs ?? [])
+        .map((id) => organizations?.find((org) => org.id === id))
+        .filter(Boolean)
+        .map((org) => ({ id: org.id, name: org.name }));
+
+      const compendiumDisplays = (ed.compendiumIDs ?? [])
+        .map((id) => allCompendiums?.find((c) => c.id === id))
+        .filter(Boolean)
+        .map((c) => ({ id: c.id, title: c.title }));
 
       const contributors = comicContributors
         ?.filter((cc) => cc.editionID === ed.id)
         .map((cc) => {
           const person = peoples?.find((p) => p.id === cc.peopleID);
           const role = roles?.find((r) => r.id === cc.roleID);
-
           return {
             peopleName: person?.name || "Unknown",
             roleName: role?.type || "Unknown",
@@ -60,9 +65,9 @@ export function CompendiumPage(props) {
 
       return {
         ...ed,
-        publisherDisplay: publisher?.name || "Unknown",
+        publisherDisplays,
         displayContributors: contributors || [],
-        compendiumTitle: compendium.title,
+        compendiumDisplays,
         spine: ed.spine ?? null,
         comicTitle: comic?.title ?? null,
         serieTitle: serie?.title ?? null,
@@ -72,7 +77,6 @@ export function CompendiumPage(props) {
     .sort((a, b) => {
       const numA = a.numberInCollection ?? "";
       const numB = b.numberInCollection ?? "";
-      // no number set → push to the end, regardless of sort direction
       if (!numA && !numB) return 0;
       if (!numA) return 1;
       if (!numB) return -1;

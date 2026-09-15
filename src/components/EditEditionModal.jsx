@@ -14,6 +14,7 @@ import { Combobox } from "@headlessui/react";
 import { updateComic } from "../api/comicInfo.js";
 import { addOrganization } from "../api/organizationInfo.js";
 import { addCompendium } from "../api/compendiumInfo.js";
+import { resolveSelectionIDs } from "../api/editionInfo.js";
 import { updateSerie } from "../api/serieInfo.js";
 import { conditions } from "../pages/MyLibrary.jsx";
 
@@ -55,12 +56,16 @@ export function EditEditionModal(props) {
     printTypeName: "",
     language: edition.language || null,
     languageName: "",
-    organizationID: edition.organizationID || null,
-    organizationName: "",
+    organizationSelections: (edition.organizationIDs ?? [])
+      .map((id) => organizations.find((o) => o.id === id))
+      .filter(Boolean)
+      .map((o) => ({ id: o.id, name: o.name })),
+    compendiumSelections: (edition.compendiumIDs ?? [])
+      .map((id) => compendium.find((c) => c.id === id))
+      .filter(Boolean)
+      .map((c) => ({ id: c.id, name: c.title })),
     imageFiles: [null, null, null, null, null],
     existingImgURLs: edition.imgURLs ?? [],
-    compendiumID: edition.compendiumID ?? null,
-    compendiumName: "",
     spine: edition.spine ?? "",
     note: edition.note ?? "",
     condition: edition.condition || null,
@@ -137,36 +142,19 @@ export function EditEditionModal(props) {
         editionForm.language ||
         (typedLanguage ? editionForm.languageName.trim() : null);
 
-      const typedPublisher = normalize(editionForm.organizationName);
-      const existingPublisher = organizations.find(
-        (o) => normalize(o.name) === typedPublisher,
+      const organizationIDs = await resolveSelectionIDs(
+        editionForm.organizationSelections,
+        organizations,
+        (o) => o.name,
+        (name) => addOrganization({ name }),
       );
 
-      const publisherID =
-        editionForm.organizationID ||
-        (existingPublisher
-          ? existingPublisher.id
-          : typedPublisher
-            ? await addOrganization({
-                name: editionForm.organizationName.trim(),
-              })
-            : null);
-
-      const typedCompendium = normalize(editionForm.compendiumName ?? "");
-      const existingCompendium = compendium.find(
-        (c) => normalize(c.title) === typedCompendium,
+      const compendiumIDs = await resolveSelectionIDs(
+        editionForm.compendiumSelections,
+        compendium,
+        (c) => c.title,
+        (name) => addCompendium({ title: name, description: "" }),
       );
-
-      const compendiumID =
-        editionForm.compendiumID ||
-        (existingCompendium
-          ? existingCompendium.id
-          : typedCompendium
-            ? await addCompendium({
-                title: editionForm.compendiumName.trim(),
-                description: "",
-              })
-            : null);
 
       setUploading(true);
       const imgURLs = await Promise.all(
@@ -184,10 +172,10 @@ export function EditEditionModal(props) {
         format: finalFormat,
         printType: finalPrintType,
         language: finalLanguage,
-        organizationID: publisherID,
+        organizationIDs,
         organizationName: editionForm.organizationName.trim(),
         imgURLs,
-        compendiumID: compendiumID ?? null,
+        compendiumIDs,
         spine: editionForm.spine?.trim() || null,
         note: editionForm.note?.trim() || null,
         condition: editionForm.condition || null,
