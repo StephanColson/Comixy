@@ -173,7 +173,6 @@ export function EditEditionModal(props) {
         printType: finalPrintType,
         language: finalLanguage,
         organizationIDs,
-        organizationName: editionForm.organizationName.trim(),
         imgURLs,
         compendiumIDs,
         spine: editionForm.spine?.trim() || null,
