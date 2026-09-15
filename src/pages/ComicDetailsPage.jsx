@@ -3,6 +3,7 @@ import { useState } from "react";
 import { EditEditionModal } from "../components/EditEditionModal.jsx";
 import { Button } from "react-bootstrap";
 import { deleteEdition } from "../api/editionInfo.js";
+import { useAppConfig } from "../api/appConfigInfo.js";
 
 export function ComicDetailsPage(props) {
   const {
@@ -25,6 +26,9 @@ export function ComicDetailsPage(props) {
   const [editingEdition, setEditingEdition] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [sortOrder, setSortOrder] = useState("newest");
+
+  const { config } = useAppConfig();
+  const bannerURL = config?.comicDetailsBannerURL;
 
   if (!comic) return <div>No Comic Selected</div>;
 
@@ -75,35 +79,92 @@ export function ComicDetailsPage(props) {
 
   return (
     <>
-      <h2 className="text-center">
-        {selectedSerie?.title}: {comic.title}
-      </h2>
-      <div className="d-flex justify-content-center align-items-center gap-2 my-3">
-        <Button
-          onClick={() => onAddEditions(comic)}
-          className="btn btn-warning"
-        >
-          Add Editions
-        </Button>
-        <Button
-          variant="outline-warning"
-          onClick={() =>
-            setSortOrder((prev) => (prev === "newest" ? "oldest" : "newest"))
-          }
-        >
-          {sortOrder === "newest" ? "Newest → Oldest" : "Oldest → Newest"}
-        </Button>
-      </div>
-      <Editions
-        editions={comicEditions}
-        onEditEdition={handleEditEdition}
-        onSelectCompendium={onSelectCompendium}
-        onSelectPublisher={onSelectPublisher}
-        onSelectPerson={onSelectPerson}
-        onDeleteEdition={async (edition) => {
-          await deleteEdition(edition, comicContributors);
+      <div
+        style={{
+          position: "relative",
+          borderRadius: "12px",
+          overflow: "hidden",
+          margin: "0 1.5rem 1.5rem",
+          borderLeft: "4px solid #d4a520",
         }}
-      />
+      >
+        {bannerURL ? (
+          <img
+            src={bannerURL}
+            alt=""
+            style={{
+              width: "100%",
+              height: "320px",
+              objectFit: "cover",
+              objectPosition: "60% 25%",
+              display: "block",
+            }}
+          />
+        ) : (
+          <div style={{ minHeight: "320px", background: "#1a1a1a" }} />
+        )}
+
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.75) 40%, rgba(0,0,0,0.2) 100%)",
+          }}
+        />
+
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            padding: "1.5rem 2rem",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: "0.4rem",
+          }}
+        >
+          <div style={{ color: "#888", fontSize: "0.85rem" }}>
+            {selectedSerie?.title} / Book {comic.bookNumber} / {comic.title}
+          </div>
+
+          <h2 style={{ color: "#fff", margin: 0 }}>
+            {selectedSerie?.title}: {comic.bookNumber} {comic.title}
+          </h2>
+
+          <div className="d-flex align-items-center gap-2 mt-2">
+            <Button
+              onClick={() => onAddEditions(comic)}
+              className="btn btn-warning"
+            >
+              Add Editions
+            </Button>
+            <Button
+              variant="outline-warning"
+              onClick={() =>
+                setSortOrder((prev) =>
+                  prev === "newest" ? "oldest" : "newest",
+                )
+              }
+            >
+              {sortOrder === "newest" ? "Newest → Oldest" : "Oldest → Newest"}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="comic-editions-wide" style={{ margin: "0 1.5rem" }}>
+        <Editions
+          editions={comicEditions}
+          onEditEdition={handleEditEdition}
+          onSelectCompendium={onSelectCompendium}
+          onSelectPublisher={onSelectPublisher}
+          onSelectPerson={onSelectPerson}
+          onDeleteEdition={async (edition) => {
+            await deleteEdition(edition, comicContributors);
+          }}
+        />
+      </div>
 
       {showEditModal && (
         <EditEditionModal

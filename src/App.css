@@ -190,3 +190,13 @@ body {
     background-position: -200% 0;
   }
 }
+
+.comic-editions-wide .section-bg {
+  max-width: none;
+  width: 100%;
+  padding: 1.5rem;
+}
+
+.comic-editions-wide .section-bg > .row {
+  margin-top: 1rem;
+}
