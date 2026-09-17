@@ -218,6 +218,7 @@ function Edition(props) {
                         >
                           {c.title}
                         </span>
+                        {c.number && ` (#${c.number})`}
                         {i < edition.compendiumDisplays.length - 1 && ", "}
                       </span>
                     ))}
@@ -227,13 +228,6 @@ function Edition(props) {
                 {edition.printType && (
                   <div>
                     <strong>Print Type:</strong> {edition.printType}
-                  </div>
-                )}
-
-                {edition.numberInCollection && (
-                  <div>
-                    <strong>Collection Number: </strong>
-                    {edition.numberInCollection}
                   </div>
                 )}
 

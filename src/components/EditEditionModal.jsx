@@ -63,7 +63,11 @@ export function EditEditionModal(props) {
     compendiumSelections: (edition.compendiumIDs ?? [])
       .map((id) => compendium.find((c) => c.id === id))
       .filter(Boolean)
-      .map((c) => ({ id: c.id, name: c.title })),
+      .map((c) => ({
+        id: c.id,
+        name: c.title,
+        number: edition.collectionNumbers?.[c.id] ?? "",
+      })),
     imageFiles: [null, null, null, null, null],
     existingImgURLs: edition.imgURLs ?? [],
     spine: edition.spine ?? "",
@@ -149,12 +153,21 @@ export function EditEditionModal(props) {
         (name) => addOrganization({ name }),
       );
 
-      const compendiumIDs = await resolveSelectionIDs(
-        editionForm.compendiumSelections,
-        compendium,
-        (c) => c.title,
-        (name) => addCompendium({ title: name, description: "" }),
-      );
+      const compendiumIDs = [];
+      const collectionNumbers = {};
+      for (const sel of editionForm.compendiumSelections) {
+        let id = sel.id;
+        if (!id) {
+          const existing = compendium.find(
+            (c) => normalize(c.title) === normalize(sel.name),
+          );
+          id = existing
+            ? existing.id
+            : await addCompendium({ title: sel.name.trim(), description: "" });
+        }
+        compendiumIDs.push(id);
+        if (sel.number?.trim()) collectionNumbers[id] = sel.number.trim();
+      }
 
       setUploading(true);
       const imgURLs = await Promise.all(
@@ -175,10 +188,10 @@ export function EditEditionModal(props) {
         organizationIDs,
         imgURLs,
         compendiumIDs,
+        collectionNumbers,
         spine: editionForm.spine?.trim() || null,
         note: editionForm.note?.trim() || null,
         condition: editionForm.condition || null,
-        numberInCollection: editionForm.numberInCollection?.trim() || null,
       });
 
       const old = comicContributors.filter((cc) => cc.editionID === edition.id);

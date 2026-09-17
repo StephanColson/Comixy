@@ -172,7 +172,7 @@ const editionConverter = {
     printYear: dataInApp.printYear,
     comicID: dataInApp.comicID,
     printType: dataInApp.printType,
-    numberInCollection: dataInApp.numberInCollection,
+    collectionNumbers: dataInApp.collectionNumbers ?? {},
     organizationIDs: dataInApp.organizationIDs ?? [],
     compendiumIDs: dataInApp.compendiumIDs ?? [],
     spine: dataInApp.spine ?? null,
@@ -197,10 +197,16 @@ const editionConverter = {
       : data.compendiumID
         ? [data.compendiumID]
         : [];
+    const collectionNumbers = data.collectionNumbers
+      ? data.collectionNumbers
+      : compendiumIDs.length === 1 && data.numberInCollection
+        ? { [compendiumIDs[0]]: data.numberInCollection }
+        : {};
     return {
       ...data,
       imgURLs,
       organizationIDs,
+      collectionNumbers,
       compendiumIDs,
       id: snapshot.id,
       ref: snapshot.ref,

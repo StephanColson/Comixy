@@ -83,7 +83,6 @@ export function AddEditions(props) {
     imageFiles: [null, null, null, null, null],
     spine: "",
     note: "",
-    numberInCollection: "",
   });
 
   const formats = editions.map((e) => e.format);
@@ -268,12 +267,21 @@ export function AddEditions(props) {
         (name) => addOrganization({ name }),
       );
 
-      const compendiumIDs = await resolveSelectionIDs(
-        editionForm.compendiumSelections,
-        compendium,
-        (c) => c.title,
-        (name) => addCompendium({ title: name, description: "" }),
-      );
+      const compendiumIDs = [];
+      const collectionNumbers = {};
+      for (const sel of editionForm.compendiumSelections) {
+        let id = sel.id;
+        if (!id) {
+          const existing = compendium.find(
+            (c) => normalize(c.title) === normalize(sel.name),
+          );
+          id = existing
+            ? existing.id
+            : await addCompendium({ title: sel.name.trim(), description: "" });
+        }
+        compendiumIDs.push(id);
+        if (sel.number?.trim()) collectionNumbers[id] = sel.number.trim();
+      }
 
       const typedFormat = normalize(editionForm.formatName);
       const existingFormat = editions
@@ -353,7 +361,7 @@ export function AddEditions(props) {
         printYear: editionForm.printYear || null,
         printType: finalPrintType,
         language: finalLanguage,
-        numberInCollection: editionForm.numberInCollection || null,
+        collectionNumbers,
         organizationIDs,
         compendiumIDs,
         spine: editionForm.spine?.trim() || null,

@@ -46,7 +46,11 @@ export function CompendiumPage(props) {
       const compendiumDisplays = (ed.compendiumIDs ?? [])
         .map((id) => allCompendiums?.find((c) => c.id === id))
         .filter(Boolean)
-        .map((c) => ({ id: c.id, title: c.title }));
+        .map((c) => ({
+          id: c.id,
+          title: c.title,
+          number: ed.collectionNumbers?.[c.id] ?? null,
+        }));
 
       const contributors = comicContributors
         ?.filter((cc) => cc.editionID === ed.id)

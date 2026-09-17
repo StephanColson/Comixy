@@ -9,6 +9,8 @@ export function MultiSelectChips({
   searchValue,
   onSearchChange,
   placeholder,
+  showNumberField = false,
+  numberPlaceholder = "Nr.",
 }) {
   const filtered = (options ?? []).filter((o) =>
     getOptionLabel(o)
@@ -18,7 +20,9 @@ export function MultiSelectChips({
 
   function addExisting(option) {
     if (selections.some((s) => s.id === option.id)) return;
-    onChange([...selections, { id: option.id, name: getOptionLabel(option) }]);
+    const newSelection = { id: option.id, name: getOptionLabel(option) };
+    if (showNumberField) newSelection.number = "";
+    onChange([...selections, newSelection]);
     onSearchChange("");
   }
 
@@ -27,12 +31,20 @@ export function MultiSelectChips({
     if (!trimmed) return;
     if (selections.some((s) => s.name.toLowerCase() === trimmed.toLowerCase()))
       return;
-    onChange([...selections, { id: null, name: trimmed }]);
+    const newSelection = { id: null, name: trimmed };
+    if (showNumberField) newSelection.number = "";
+    onChange([...selections, newSelection]);
     onSearchChange("");
   }
 
   function remove(index) {
     onChange(selections.filter((_, i) => i !== index));
+  }
+
+  function updateNumber(index, value) {
+    const updated = [...selections];
+    updated[index] = { ...updated[index], number: value };
+    onChange(updated);
   }
 
   return (
@@ -76,27 +88,66 @@ export function MultiSelectChips({
         </Combobox.Options>
       </Combobox>
 
-      {selections.length > 0 && (
-        <div className="d-flex flex-wrap gap-2 mt-2">
-          {selections.map((s, i) => (
-            <span
-              key={`${s.id ?? "new"}-${s.name}-${i}`}
-              onClick={() => remove(i)}
-              style={{
-                background: "#1a1500",
-                color: "#d4a520",
-                fontSize: "0.8rem",
-                padding: "0.2rem 0.6rem",
-                borderRadius: "999px",
-                cursor: "pointer",
-                border: "1px solid #d4a520",
-              }}
-            >
-              {s.name} ✕
-            </span>
-          ))}
-        </div>
-      )}
+      {selections.length > 0 &&
+        (showNumberField ? (
+          <div className="d-flex flex-column gap-2 mt-2">
+            {selections.map((s, i) => (
+              <div
+                key={`${s.id ?? "new"}-${s.name}-${i}`}
+                className="d-flex align-items-center gap-2"
+              >
+                <span
+                  style={{
+                    background: "#1a1500",
+                    color: "#d4a520",
+                    fontSize: "0.8rem",
+                    padding: "0.2rem 0.6rem",
+                    borderRadius: "999px",
+                    border: "1px solid #d4a520",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {s.name}
+                </span>
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  style={{ maxWidth: "8rem" }}
+                  placeholder={numberPlaceholder}
+                  value={s.number ?? ""}
+                  onChange={(e) => updateNumber(i, e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => remove(i)}
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="d-flex flex-wrap gap-2 mt-2">
+            {selections.map((s, i) => (
+              <span
+                key={`${s.id ?? "new"}-${s.name}-${i}`}
+                onClick={() => remove(i)}
+                style={{
+                  background: "#1a1500",
+                  color: "#d4a520",
+                  fontSize: "0.8rem",
+                  padding: "0.2rem 0.6rem",
+                  borderRadius: "999px",
+                  cursor: "pointer",
+                  border: "1px solid #d4a520",
+                }}
+              >
+                {s.name} ✕
+              </span>
+            ))}
+          </div>
+        ))}
     </div>
   );
 }

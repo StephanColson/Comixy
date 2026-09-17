@@ -77,6 +77,8 @@ export function EditionSection(props) {
               setSearchQuery((prev) => ({ ...prev, compendium: value }))
             }
             placeholder="Search or create a collection..."
+            showNumberField
+            numberPlaceholder="Collection #"
           />
         </Col>
 
@@ -230,24 +232,6 @@ export function EditionSection(props) {
               setSearchQuery((prev) => ({ ...prev, publisher: value }))
             }
             placeholder="Search or create a publisher..."
-          />
-        </Col>
-
-        <Col sm={6} lg={3}>
-          <label className="form-label">
-            Collectie Nr.: <span className="text-warning">(optional)</span>
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Number within the collection..."
-            value={editionForm.numberInCollection ?? ""}
-            onChange={(e) =>
-              setEditionForm((prev) => ({
-                ...prev,
-                numberInCollection: e.target.value,
-              }))
-            }
           />
         </Col>
 
