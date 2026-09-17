@@ -287,10 +287,26 @@ function ActivePage(props) {
         (s) => s.id === selectedComic?.serieID,
       );
 
+      const serieComics = comics
+        ?.filter((c) => c.serieID === selectedComic?.serieID)
+        .sort((a, b) => Number(a.bookNumber) - Number(b.bookNumber));
+
+      function handleNavigateComic(direction) {
+        if (!serieComics || serieComics.length === 0) return;
+        const currentIndex = serieComics.findIndex(
+          (c) => c.id === selectedComicID,
+        );
+        if (currentIndex === -1) return;
+        const nextIndex =
+          (currentIndex + direction + serieComics.length) % serieComics.length;
+        setSelectedComicID(serieComics[nextIndex].id);
+      }
+
       return (
         <ComicDetailsPage
           comic={selectedComic}
           onAddEditions={handleAddEditions}
+          onNavigateComic={handleNavigateComic}
           universes={universes}
           series={series}
           selectedSerie={selectedSerie}

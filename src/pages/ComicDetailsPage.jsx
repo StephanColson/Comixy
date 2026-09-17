@@ -15,6 +15,7 @@ export function ComicDetailsPage(props) {
     editions,
     series,
     onAddEditions,
+    onNavigateComic,
     compendium,
     selectedSerie,
     onSelectCompendium,
@@ -81,79 +82,137 @@ export function ComicDetailsPage(props) {
     <>
       <div
         style={{
-          position: "relative",
-          borderRadius: "12px",
-          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
           margin: "0 1.5rem 1.5rem",
-          borderLeft: "4px solid #d4a520",
         }}
       >
-        {bannerURL ? (
-          <img
-            src={bannerURL}
-            alt=""
+        {onNavigateComic && (
+          <button
+            onClick={() => onNavigateComic(-1)}
+            title="Previous comic"
             style={{
-              width: "100%",
-              height: "320px",
-              objectFit: "cover",
-              objectPosition: "60% 25%",
-              display: "block",
+              flexShrink: 0,
+              background: "rgba(0,0,0,0.5)",
+              border: "1px solid #d4a520",
+              borderRadius: "50%",
+              width: "2.5rem",
+              height: "2.5rem",
+              color: "#d4a520",
+              fontSize: "1.3rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
             }}
-          />
-        ) : (
-          <div style={{ minHeight: "320px", background: "#1a1a1a" }} />
+          >
+            <i className="bi bi-chevron-left"></i>
+          </button>
         )}
 
         <div
           style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.75) 40%, rgba(0,0,0,0.2) 100%)",
-          }}
-        />
-
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            padding: "1.5rem 2rem",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: "0.4rem",
+            position: "relative",
+            borderRadius: "12px",
+            overflow: "hidden",
+            flex: 1,
+            borderLeft: "4px solid #d4a520",
           }}
         >
-          <div style={{ color: "#888", fontSize: "0.85rem" }}>
-            {selectedSerie?.title} / Book {comic.bookNumber} / {comic.title}
-          </div>
+          {bannerURL ? (
+            <img
+              src={bannerURL}
+              alt=""
+              style={{
+                width: "100%",
+                height: "320px",
+                objectFit: "cover",
+                objectPosition: "60% 25%",
+                display: "block",
+              }}
+            />
+          ) : (
+            <div style={{ minHeight: "320px", background: "#1a1a1a" }} />
+          )}
 
-          <h2 style={{ color: "#fff", margin: 0 }}>
-            {selectedSerie?.title}: {comic.bookNumber} {comic.title}
-          </h2>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.75) 40%, rgba(0,0,0,0.2) 100%)",
+            }}
+          />
 
-          <div className="d-flex align-items-center gap-2 mt-2">
-            <Button
-              onClick={() => onAddEditions(comic)}
-              className="btn btn-warning"
-            >
-              Add Editions
-            </Button>
-            <Button
-              variant="outline-warning"
-              onClick={() =>
-                setSortOrder((prev) =>
-                  prev === "newest" ? "oldest" : "newest",
-                )
-              }
-            >
-              {sortOrder === "newest" ? "Newest → Oldest" : "Oldest → Newest"}
-            </Button>
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              padding: "1.5rem 2rem",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: "0.4rem",
+            }}
+          >
+            <div style={{ color: "#888", fontSize: "0.85rem" }}>
+              {selectedSerie?.title} / Book {comic.bookNumber} / {comic.title}
+            </div>
+
+            <h2 style={{ color: "#fff", margin: 0 }}>
+              {selectedSerie?.title}: {comic.bookNumber} {comic.title}
+            </h2>
+
+            <div className="d-flex align-items-center gap-2 mt-2">
+              <Button
+                onClick={() => onAddEditions(comic)}
+                className="btn btn-warning"
+              >
+                Add Editions
+              </Button>
+              <Button
+                variant="outline-warning"
+                onClick={() =>
+                  setSortOrder((prev) =>
+                    prev === "newest" ? "oldest" : "newest",
+                  )
+                }
+              >
+                {sortOrder === "newest" ? "Newest → Oldest" : "Oldest → Newest"}
+              </Button>
+            </div>
           </div>
         </div>
+
+        {onNavigateComic && (
+          <button
+            onClick={() => onNavigateComic(1)}
+            title="Next comic"
+            style={{
+              flexShrink: 0,
+              background: "rgba(0,0,0,0.5)",
+              border: "1px solid #d4a520",
+              borderRadius: "50%",
+              width: "2.5rem",
+              height: "2.5rem",
+              color: "#d4a520",
+              fontSize: "1.3rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <i className="bi bi-chevron-right"></i>
+          </button>
+        )}
       </div>
 
-      <div className="comic-editions-wide" style={{ margin: "0 1.5rem" }}>
+      <div
+        className="comic-editions-wide"
+        style={{ margin: "0 4.75rem 1.5rem" }}
+      >
         <Editions
           editions={comicEditions}
           onEditEdition={handleEditEdition}
