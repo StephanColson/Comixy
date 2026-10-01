@@ -18,6 +18,18 @@ export function LoginPage() {
         />
         Sign in with Google
       </button>
+
+      <p className="text-muted mt-4" style={{ fontSize: "0.8rem" }}>
+        By signing in, you agree to our{" "}
+        <a href="#NAV_TERMS" style={{ color: "#d4a520" }}>
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a href="#NAV_PRIVACY" style={{ color: "#d4a520" }}>
+          Privacy Policy
+        </a>
+        .
+      </p>
     </div>
   );
 }

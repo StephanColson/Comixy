@@ -1,3 +1,4 @@
+App;
 import "normalize.css";
 import "./App.css";
 import "react-tabs/style/react-tabs.css";
@@ -5,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "rc-pagination/assets/index.css";
 import "./api/firebase.js";
+import { DashboardPage } from "./pages/DashboardPage.jsx";
 import { ComicPage } from "./pages/ComicPage.jsx";
 import { useComicCollectionData } from "./api/comicInfo.js";
 import { deleteSerie, useSerieCollectionData } from "./api/serieInfo.js";
@@ -32,6 +34,14 @@ import { LoginPage } from "./pages/LoginPage.jsx";
 import { UniversePage } from "./pages/UniversePage.jsx";
 import { MyLibraryPage } from "./pages/MyLibrary.jsx";
 import { GlobalSearch } from "./components/GlobalSearch.jsx";
+
+import { PrivacyPolicyPage } from "./pages/privacyPolicy.jsx";
+import { TermsOfServicePage } from "./pages/TermsOfService.jsx";
+
+export const NAV_PRIVACY = "NAV_PRIVACY";
+export const NAV_TERMS = "NAV_TERMS";
+
+export const NAV_DASHBOARD = "NAV_DASHBOARD";
 
 export const COMIC_CATALOG = "COMIC_CATALOG";
 export const NAV_SERIE_CATALOG = "NAV_SERIE_CATALOG";
@@ -80,6 +90,14 @@ function NavigationBar(props) {
               }
               className="me-auto"
             >
+              {(role === "admin" || role === "mod") && (
+                <Nav.Item>
+                  <Nav.Link className="nav-text" eventKey={NAV_DASHBOARD}>
+                    Dashboard
+                  </Nav.Link>
+                </Nav.Item>
+              )}
+
               <Nav.Item>
                 <Nav.Link className="nav-text" eventKey={NAV_MY_LIBRARY}>
                   My Library
@@ -200,6 +218,18 @@ function ActivePage(props) {
   });
 
   switch (activeNavBarItem) {
+    case NAV_DASHBOARD:
+      return (
+        <DashboardPage
+          comics={comics}
+          editions={editions}
+          series={series}
+          universes={universes}
+          peoples={peoples}
+          organizations={organizations}
+        />
+      );
+
     case COMIC_CATALOG:
       return (
         <ComicPage
@@ -439,7 +469,9 @@ function ActivePage(props) {
 
 function App() {
   const { currentUser } = useAuth();
-  const [activeNavBarItem, setActiveNavBarItem] = useState(NAV_MY_LIBRARY);
+  const [activeNavBarItem, setActiveNavBarItem] = useState(
+    () => window.location.hash.replace("#", "") || NAV_MY_LIBRARY,
+  );
   const [selectedComicID, setSelectedComicID] = useState(null);
   const [selectedSerieID, setSelectedSerieID] = useState(null);
   const [selectedUniverseID, setSelectedUniverseID] = useState(null);
@@ -459,25 +491,39 @@ function App() {
     setActiveNavBarItem(key);
   }
 
+  function goBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigateTo(NAV_MY_LIBRARY);
+    }
+  }
+
   useEffect(() => {
     const handleHashChange = () => {
-      const key = window.location.hash.replace("#", "");
-      if (key) {
-        setActiveNavBarItem(key);
-        if (
-          key === NAV_MY_LIBRARY ||
-          key === COMIC_CATALOG ||
-          key === NAV_SERIE_CATALOG ||
-          key === NAV_UNIVERSE_CATALOG
-        ) {
-          setSelectedComicID(null);
-        }
+      const key = window.location.hash.replace("#", "") || NAV_MY_LIBRARY;
+
+      setActiveNavBarItem(key);
+
+      if (
+        key === NAV_MY_LIBRARY ||
+        key === COMIC_CATALOG ||
+        key === NAV_SERIE_CATALOG ||
+        key === NAV_UNIVERSE_CATALOG
+      ) {
+        setSelectedComicID(null);
       }
     };
 
     window.addEventListener("hashchange", handleHashChange);
+
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
+
+  if (activeNavBarItem === NAV_PRIVACY)
+    return <PrivacyPolicyPage onBack={goBack} />;
+  if (activeNavBarItem === NAV_TERMS)
+    return <TermsOfServicePage onBack={goBack} />;
 
   if (currentUser === undefined)
     return <div className="text-center mt-5">Loading...</div>;
@@ -532,6 +578,31 @@ function App() {
           compendium={compendium}
         />
       </div>
+
+      <footer
+        style={{
+          textAlign: "center",
+          padding: "1rem",
+          color: "#555",
+          fontSize: "0.8rem",
+        }}
+      >
+        <span
+          className="pop-effect"
+          role="button"
+          onClick={() => navigateTo(NAV_PRIVACY)}
+        >
+          Privacy Policy
+        </span>
+        {" · "}
+        <span
+          className="pop-effect"
+          role="button"
+          onClick={() => navigateTo(NAV_TERMS)}
+        >
+          Terms of Service
+        </span>
+      </footer>
     </>
   );
 }
