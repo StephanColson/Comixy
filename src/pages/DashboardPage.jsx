@@ -1,16 +1,10 @@
 import { useAuth } from "../context/AuthContext.jsx";
 import {
-  GiBackup,
   GiBatMask,
   GiBlackBook,
-  GiPapers,
   GiFlexibleLamp,
   GiPhotoCamera,
-  GiShintoShrine,
-  GiWireframeGlobe,
-  GiBookshelf,
   GiCardJoker,
-  GiInfinity,
   GiSpiderWeb,
   GiDeathStar,
 } from "react-icons/gi";
@@ -84,38 +78,107 @@ export function DashboardPage({
 
   return (
     <div className="container py-4">
-      <h2 className="mb-4">Dashboard</h2>
+      <div className="text-center mb-4" style={{ color: "#d4a520" }}>
+        <h1>Dashboard</h1>
+        <p style={{ color: "#888" }}>Overview of the catalog</p>
+      </div>
 
       <div className="row g-3 mb-4">
         {STAT_META.map(({ key, label, Icon }) => (
           <div className="col-6 col-md-4 col-lg-3" key={key}>
-            <div className="card h-100 text-center p-3">
-              <Icon size={36} color="#d4a520" className="mb-2 mx-auto" />
-              <div className="fs-2 fw-bold">{values[key]}</div>
-              <div className="text-muted">{label}</div>
+            <div
+              className="h-100 text-center"
+              style={{
+                border: "1px solid #d4a520",
+                borderRadius: "1rem",
+                padding: "1.5rem",
+                color: "#d4a520",
+                background: "#1a1500",
+              }}
+            >
+              <Icon size={36} color="#d4a520" className="mx-auto" />
+              <h2 style={{ margin: "0.5rem 0 0.25rem", color: "#d4a520" }}>
+                {values[key]}
+              </h2>
+              <p style={{ margin: 0, fontSize: "0.8rem" }}>
+                {label.toUpperCase()}
+              </p>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="card p-3">
-        <h5 className="mb-3">Data completeness</h5>
+      <div
+        style={{
+          border: "1px solid #d4a520",
+          borderRadius: "1rem",
+          padding: "1.5rem",
+          background: "#1a1500",
+        }}
+      >
+        <p
+          style={{
+            color: "#d4a520",
+            textTransform: "uppercase",
+            fontSize: "0.8rem",
+            letterSpacing: "0.1em",
+            marginBottom: "1rem",
+          }}
+        >
+          Data completeness
+        </p>
         {health.map(({ label, done, total }) => {
           const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+          const barColor = pct === 100 ? "#4caf50" : "#d4a520";
           return (
-            <div className="mb-3" key={label}>
-              <div className="d-flex justify-content-between">
-                <span>{label}</span>
-                <span className="text-muted">
-                  {done} / {total} ({pct}%)
-                </span>
-              </div>
-              <div className="progress" style={{ height: "12px" }}>
+            <div
+              key={label}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+                marginBottom: "0.75rem",
+              }}
+            >
+              <span
+                style={{
+                  width: "180px",
+                  color: "#d4a520",
+                  fontSize: "0.9rem",
+                  flexShrink: 0,
+                }}
+              >
+                {label}
+              </span>
+              <div
+                style={{
+                  flex: 1,
+                  background: "#2a2a2a",
+                  borderRadius: "4px",
+                  height: "10px",
+                }}
+              >
                 <div
-                  className="progress-bar"
-                  style={{ width: `${pct}%`, background: "#d4a520" }}
+                  style={{
+                    width: `${pct}%`,
+                    background: barColor,
+                    height: "100%",
+                    borderRadius: "4px",
+                    transition: "width 0.4s ease",
+                  }}
                 />
               </div>
+              <span
+                style={{
+                  color: "#d4a520",
+                  fontSize: "0.85rem",
+                  flexShrink: 0,
+                  width: "110px",
+                  textAlign: "right",
+                }}
+              >
+                {done} / {total} ({pct}%)
+              </span>
             </div>
           );
         })}
